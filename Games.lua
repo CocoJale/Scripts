@@ -14,4 +14,4 @@ https://www.roblox.com/games/18141059031/FREE-UGC-Coinflip-RNG
 https://www.roblox.com/games/18460720061/Free-UGC-Clicker
 https://www.roblox.com/games/537413528/Build-A-Boat-For-Treasure
 https://www.roblox.com/games/7979341445/Worlds-Hardest-Game
-Universal
+Inf Yield Edit
