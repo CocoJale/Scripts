@@ -11,4 +11,5 @@ https://www.roblox.com/games/17563379022/EVENT-Ninja-Cutter-Simulator
 https://www.roblox.com/games/18141059031/FREE-UGC-Coinflip-RNG
 https://www.roblox.com/games/537413528/Build-A-Boat-For-Treasure
 https://www.roblox.com/games/7979341445/Worlds-Hardest-Game
+https://www.roblox.com/games/14905728989/FREE-UGC-Max-Mara-Coats-Adventure
 Inf Yield Edit
