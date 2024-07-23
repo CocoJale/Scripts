@@ -16,5 +16,6 @@ https://www.roblox.com/games/12641272458/Teamwork-Puzzles-2-Obby
 https://www.roblox.com/games/18460720061/Free-UGC-Clicker
 https://www.roblox.com/games/6441847031/CHAOS
 https://www.roblox.com/games/15662999964/Rock-Climb-Simulator
+https://www.roblox.com/games/17029739626/SPIN-FOR-FREE-MYSTERYS-UGC
 Inf Yield Edit
 Script Hub
