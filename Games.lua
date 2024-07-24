@@ -19,5 +19,6 @@ https://www.roblox.com/games/15662999964/Rock-Climb-Simulator
 https://www.roblox.com/games/17029739626/SPIN-FOR-FREE-MYSTERYS-UGC
 https://www.roblox.com/games/17349641313/Inside-out-2-Simulator
 https://www.roblox.com/games/15240364157/1M-Get-Faster-Every-Click
+https://www.roblox.com/games/16296849828/Beta-Spin-4-Lims
 Inf Yield Edit
 Script Hub
