@@ -18,5 +18,6 @@ https://www.roblox.com/games/6441847031/CHAOS
 https://www.roblox.com/games/15662999964/Rock-Climb-Simulator
 https://www.roblox.com/games/17029739626/SPIN-FOR-FREE-MYSTERYS-UGC
 https://www.roblox.com/games/17349641313/Inside-out-2-Simulator
+https://www.roblox.com/games/15240364157/1M-Get-Faster-Every-Click
 Inf Yield Edit
 Script Hub
