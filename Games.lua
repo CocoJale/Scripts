@@ -22,5 +22,6 @@ https://www.roblox.com/games/15240364157/1M-Get-Faster-Every-Click(OP)
 https://www.roblox.com/games/16296849828/Beta-Spin-4-Lims(Basic)
 https://www.roblox.com/games/15269951959/Legends-Battlegrounds(OP)
 https://www.roblox.com/games/9346039031/Limited-Free-UGC-My-Hello-Kitty-Cafe-Build(basic)
+https://www.roblox.com/games/8980446061/Free-UGC-Ultaverse(basic)
 Inf Yield Edit
 Script Hub
