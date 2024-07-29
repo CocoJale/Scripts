@@ -21,11 +21,12 @@ https://www.roblox.com/games/17349641313/Inside-out-2-Simulator(Basic)
 https://www.roblox.com/games/15240364157/1M-Get-Faster-Every-Click(OP)
 https://www.roblox.com/games/16296849828/Beta-Spin-4-Lims(Basic)
 https://www.roblox.com/games/15269951959/Legends-Battlegrounds(OP)
-https://www.roblox.com/games/9346039031/Limited-Free-UGC-My-Hello-Kitty-Cafe-Build(basic)
+https://www.roblox.com/games/9346039031/Limited-Free-UGC-My-Hello-Kitty-Cafe-Build(Basic)
 https://www.roblox.com/games/8980446061/Free-UGC-Ultaverse(basic)
-https://www.roblox.com/games/17103905229/UPD-1-Collect-for-UGC(OP)
+https://www.roblox.com/games/17103905229/UPD-1-Collect-for-UGC(PATCHED)
 https://www.roblox.com/games/16832699537/Steal-Milk-For-UGC(OP)
-https://www.roblox.com/games/16351911381/Wonder-Chase-The-BMX-Challenge
-https://www.roblox.com/games/18540132601/Monster-HORROR
+https://www.roblox.com/games/16351911381/Wonder-Chase-The-BMX-Challenge(OP)
+https://www.roblox.com/games/18540132601/Monster-HORROR(Strong)
+https://www.roblox.com/games/17399803699/ODDS-BOOST-Spin-2-Win-Free-UGC(Normal
 Inf Yield Edit
 Script Hub
