@@ -26,5 +26,6 @@ https://www.roblox.com/games/8980446061/Free-UGC-Ultaverse(basic)
 https://www.roblox.com/games/17103905229/UPD-1-Collect-for-UGC(OP)
 https://www.roblox.com/games/16832699537/Steal-Milk-For-UGC(OP)
 https://www.roblox.com/games/16351911381/Wonder-Chase-The-BMX-Challenge
+https://www.roblox.com/games/18540132601/Monster-HORROR
 Inf Yield Edit
 Script Hub
