@@ -4330,7 +4330,7 @@ end
 
 CMDs = {}
 CMDs[#CMDs + 1] = {NAME = 'wynerd / wyd', DESC = 'Executes wynerd '}
-CMDs[#CMDs + 1] = {NAME = 'coco / hub', DESC = 'Executes Coco's Script HUb'}
+CMDs[#CMDs + 1] = {NAME = 'coco / hub', DESC = 'Executes Cocos Script HUb'}
 CMDs[#CMDs + 1] = {NAME = 'ado / adonis / adonisbypass', DESC = 'Executes adonis bypasser script'}
 CMDs[#CMDs + 1] = {NAME = 'guardian / guard', DESC = 'Executes Guardian'}
 CMDs[#CMDs + 1] = {NAME = 'ikura / iku', DESC = 'Executes Ikura hub'}
