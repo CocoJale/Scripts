@@ -4329,6 +4329,12 @@ function autoComplete(str,curText)
 end
 
 CMDs = {}
+CMDs[#CMDs + 1] = {NAME = 'wynerd / wyd', DESC = 'Executes wynerd '}
+CMDs[#CMDs + 1] = {NAME = 'coco / hub', DESC = 'Executes Coco's Script HUb'}
+CMDs[#CMDs + 1] = {NAME = 'ado / adonis / adonisbypass', DESC = 'Executes adonis bypasser script'}
+CMDs[#CMDs + 1] = {NAME = 'guardian / guard', DESC = 'Executes Guardian'}
+CMDs[#CMDs + 1] = {NAME = 'ikura / iku', DESC = 'Executes Ikura hub'}
+CMDs[#CMDs + 1] = {NAME = 'hideplayer / hideplayers / hplayer', DESC = 'Hide other players to boost FPS'}
 CMDs[#CMDs + 1] = {NAME = 'discord / support / help', DESC = 'Invite to the Infinite Yield support server.'}
 CMDs[#CMDs + 1] = {NAME = 'console', DESC = 'Loads old Roblox console'}
 CMDs[#CMDs + 1] = {NAME = 'explorer / dex', DESC = 'Opens DEX by Moon'}
@@ -4380,11 +4386,6 @@ CMDs[#CMDs + 1] = {NAME = 'lastcommand / lastcmd', DESC = 'Executes the previous
 CMDs[#CMDs + 1] = {NAME = 'exit', DESC = 'Kills roblox process'}
 CMDs[#CMDs + 1] = {NAME = '', DESC = ''}
 CMDs[#CMDs + 1] = {NAME = 'noclip', DESC = 'Go through objects'}
-CMDs[#CMDs + 1] = {NAME = 'wynerd / wyd', DESC = 'Executes wynerd '}
-CMDs[#CMDs + 1] = {NAME = 'ado / adonis / adonisbypass', DESC = 'Executes adonis bypasser script'}
-CMDs[#CMDs + 1] = {NAME = 'guardian / guard', DESC = 'Executes Guardian'}
-CMDs[#CMDs + 1] = {NAME = 'ikura / iku', DESC = 'Executes Ikura hub'}
-CMDs[#CMDs + 1] = {NAME = 'hideplayer / hideplayers / hplayer', DESC = 'Hide other players to boost FPS'}
 CMDs[#CMDs + 1] = {NAME = 'unnoclip / clip', DESC = 'Disables noclip'}
 CMDs[#CMDs + 1] = {NAME = 'fly [speed]', DESC = 'Makes you fly'}
 CMDs[#CMDs + 1] = {NAME = 'unfly', DESC = 'Disables fly'}
@@ -6860,6 +6861,10 @@ end)
 
 addcmd('wynerd',{'wyd'},function(args, speaker)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Imalwibest/Imalwibest/main/wynerdV2.lua",true))()
+end)
+
+addcmd('coco',{'cocohub'},function(args, speaker)
+(loadstring(game:HttpGet("https://raw.githubusercontent.com/OneCreatorX-New/TwoDev/main/LoaderCoco.lua"))())("Script%20Hub")
 end)
 
 addcmd('guardian',{'guard'},function(args, speaker)
