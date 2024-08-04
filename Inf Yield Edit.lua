@@ -6863,7 +6863,7 @@ addcmd('wynerd',{'wyd'},function(args, speaker)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Imalwibest/Imalwibest/main/wynerdV2.lua",true))()
 end)
 
-addcmd('coco',{'cocohub'},function(args, speaker)
+addcmd('coco',{'hub'},function(args, speaker)
 (loadstring(game:HttpGet("https://raw.githubusercontent.com/OneCreatorX-New/TwoDev/main/LoaderCoco.lua"))())("Script%20Hub")
 end)
 
