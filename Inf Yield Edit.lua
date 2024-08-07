@@ -6345,10 +6345,10 @@ end)
 
 addcmd('discord', {'support', 'help'}, function(args, speaker)
 	if everyClipboard then
-		toClipboard('https://discord.com/invite/dYHag43eeU')
-		notify('Discord Invite', 'Copied to clipboard!\ndiscord.gg/dYHag43eeU')
+		toClipboard('https://discord.com/invite/CrmzTg5JPJ')
+		notify('Discord Invite', 'Copied to clipboard!\ndiscord.gg/CrmzTg5JPJ')
 	else
-		notify('Discord Invite', 'discord.gg/dYHag43eeU')
+		notify('Discord Invite', 'discord.gg/CrmzTg5JPJ')
 	end
 	if httprequest then
 		httprequest({
@@ -6870,7 +6870,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wyvernleaker/WYVERN/m
 end)
 
 addcmd('bringmenu',{'Bringmenu','bringtool','Bringtool'},function(args, speaker)
--- LocalScript
 
 local function getRoot(character)
     return character and character:FindFirstChild("HumanoidRootPart")
