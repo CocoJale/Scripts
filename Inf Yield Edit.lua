@@ -6870,50 +6870,43 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/wyvernleaker/WYVERN/m
 end)
 
 addcmd('bringmenu',{'Bringmenu','bringtool','Bringtool'},function(args, speaker)
+-- LocalScript
 
+-- Function to get the HumanoidRootPart of the player's character
 local function getRoot(character)
     return character and character:FindFirstChild("HumanoidRootPart")
 end
 
-local function teleportModelsInFrontOfPlayer(player, modelName, offset)
+-- Function to teleport models with a specified name 5 studs in front of the player's hitbox
+local function teleportModelsInFrontOfPlayer(player, modelName)
     local character = player.Character
     local humanoidRootPart = getRoot(character)
+
     if not humanoidRootPart then
         warn("HumanoidRootPart not found in player's character!")
         return
     end
 
-    local moveOffset = humanoidRootPart.CFrame.LookVector * offset
+    -- Get the forward vector (5 studs in front of the player)
+    local offset = humanoidRootPart.CFrame.LookVector * 5
+
     for _, model in pairs(workspace:GetDescendants()) do
         if model:IsA("Model") and model.Name:lower() == modelName:lower() and model.PrimaryPart then
             local modelPrimaryPart = model.PrimaryPart
-            modelPrimaryPart.CFrame = humanoidRootPart.CFrame + moveOffset
+            modelPrimaryPart.CFrame = humanoidRootPart.CFrame + offset
         end
     end
 end
 
-local function teleportPartsInFrontOfPlayer(player, partName, offset)
-    local character = player.Character
-    local humanoidRootPart = getRoot(character)
-    if not humanoidRootPart then
-        warn("HumanoidRootPart not found in player's character!")
-        return
-    end
-
-    local moveOffset = humanoidRootPart.CFrame.LookVector * offset
-    for _, part in pairs(workspace:GetDescendants()) do
-        if part.Name:lower() == partName:lower() and part:IsA("BasePart") then
-            part.CFrame = humanoidRootPart.CFrame + moveOffset
-        end
-    end
-end
-
+-- Function to setup GUI
 local function setupGUI()
     local player = game.Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
+
+    -- Ensure only one instance of the GUI is created
     local existingGui = playerGui:FindFirstChild("TeleportGui")
     if existingGui then
-        return 
+        return -- Exit if GUI already exists
     end
 
     local screenGui = Instance.new("ScreenGui")
@@ -6922,7 +6915,7 @@ local function setupGUI()
 
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 250, 0, 160)
+    mainFrame.Size = UDim2.new(0, 250, 0, 130)
     mainFrame.Position = UDim2.new(0.5, -125, 1, -200)
     mainFrame.BackgroundTransparency = 0.5
     mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -6931,10 +6924,12 @@ local function setupGUI()
     mainFrame.Active = true
     mainFrame.Parent = screenGui
 
+    -- Function to make the frame draggable on both desktop and mobile
     local function makeDraggable(frame)
         local dragging = false
         local dragStart = nil
         local startPos = nil
+
         local function updatePosition(input)
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
@@ -6945,6 +6940,7 @@ local function setupGUI()
                 dragging = true
                 dragStart = input.Position
                 startPos = frame.Position
+
                 input.Changed:Connect(function()
                     if input.UserInputState == Enum.UserInputState.End then
                         dragging = false
@@ -6959,6 +6955,7 @@ local function setupGUI()
             end
         end
 
+        -- Connect to input events
         frame.InputBegan:Connect(onInputBegan)
         frame.InputChanged:Connect(onInputChanged)
     end
@@ -6979,77 +6976,45 @@ local function setupGUI()
 
     local headlineLabel = Instance.new("TextLabel")
     headlineLabel.Name = "HeadlineLabel"
-    headlineLabel.Size = UDim2.new(1, -30, 0, 30)
+    headlineLabel.Size = UDim2.new(1, -30, 0, 30)  -- Adjusted to leave space for the close button
     headlineLabel.Position = UDim2.new(0, 0, 0, 0)
     headlineLabel.BackgroundTransparency = 1
-    headlineLabel.Text = "Model/Part Teleporter"
+    headlineLabel.Text = "Model Teleporter"
     headlineLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     headlineLabel.TextSize = 24
     headlineLabel.Font = Enum.Font.SourceSansBold
     headlineLabel.TextStrokeTransparency = 0.5
     headlineLabel.Parent = mainFrame
 
-    local nameTextBox = Instance.new("TextBox")
-    nameTextBox.Name = "NameTextBox"
-    nameTextBox.Size = UDim2.new(1, -20, 0, 30)
-    nameTextBox.Position = UDim2.new(0, 10, 0, 40)
-    nameTextBox.BackgroundTransparency = 0.1
-    nameTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    nameTextBox.TextSize = 18
-    nameTextBox.Font = Enum.Font.SourceSans
-    nameTextBox.PlaceholderText = "Model/Part Name Here"
-    nameTextBox.Parent = mainFrame
-
-    local distanceTextBox = Instance.new("TextBox")
-    distanceTextBox.Name = "DistanceTextBox"
-    distanceTextBox.Size = UDim2.new(1, -20, 0, 30)
-    distanceTextBox.Position = UDim2.new(0, 10, 0, 80)
-    distanceTextBox.BackgroundTransparency = 0.1
-    distanceTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    distanceTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    distanceTextBox.TextSize = 18
-    distanceTextBox.Font = Enum.Font.SourceSans
-    distanceTextBox.PlaceholderText = "Bring Distance Here"
-    distanceTextBox.Parent = mainFrame
+    local textBox = Instance.new("TextBox")
+    textBox.Name = "ModelNameTextBox"
+    textBox.Size = UDim2.new(1, -20, 0, 30)
+    textBox.Position = UDim2.new(0, 10, 0, 40)
+    textBox.BackgroundTransparency = 0.1
+    textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    textBox.TextSize = 18
+    textBox.Font = Enum.Font.SourceSans
+    textBox.PlaceholderText = "Enter Model Name"
+    textBox.Parent = mainFrame
 
     local bringModelButton = Instance.new("TextButton")
     bringModelButton.Name = "BringModelButton"
-    bringModelButton.Size = UDim2.new(0.5, -15, 0, 30)
-    bringModelButton.Position = UDim2.new(0, 10, 0, 120)
+    bringModelButton.Size = UDim2.new(1, -20, 0, 30)
+    bringModelButton.Position = UDim2.new(0, 10, 0, 80)
     bringModelButton.BackgroundTransparency = 0.1
     bringModelButton.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
     bringModelButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     bringModelButton.TextSize = 18
     bringModelButton.Font = Enum.Font.SourceSansBold
-    bringModelButton.Text = "Bring Model"
+    bringModelButton.Text = "Bring Models"
     bringModelButton.Parent = mainFrame
 
-    local bringPartButton = Instance.new("TextButton")
-    bringPartButton.Name = "BringPartButton"
-    bringPartButton.Size = UDim2.new(0.5, -15, 0, 30)
-    bringPartButton.Position = UDim2.new(0.5, 5, 0, 120)
-    bringPartButton.BackgroundTransparency = 0.1
-    bringPartButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    bringPartButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    bringPartButton.TextSize = 18
-    bringPartButton.Font = Enum.Font.SourceSansBold
-    bringPartButton.Text = "Bring Part"
-    bringPartButton.Parent = mainFrame
-
+    -- Function to bring models 5 studs in front of player's hitbox based on textbox input
     local function bringModels()
-        local modelName = nameTextBox.Text
-        local offset = tonumber(distanceTextBox.Text) or 0
+        local modelName = textBox.Text
         if modelName and modelName ~= "" then
-            teleportModelsInFrontOfPlayer(player, modelName, offset)
-        end
-    end
-
-    local function bringParts()
-        local partName = nameTextBox.Text
-        local offset = tonumber(distanceTextBox.Text) or 0
-        if partName and partName ~= "" then
-            teleportPartsInFrontOfPlayer(player, partName, offset)
+            teleportModelsInFrontOfPlayer(player, modelName)
         end
     end
 
@@ -7057,24 +7022,26 @@ local function setupGUI()
         screenGui:Destroy()
     end
 
+    -- Connect buttons to functions
     bringModelButton.MouseButton1Click:Connect(bringModels)
-    bringPartButton.MouseButton1Click:Connect(bringParts)
     closeButton.MouseButton1Click:Connect(closeGUI)
 end
 
+-- Function to setup GUI on CharacterAdded event
 local function onCharacterAdded()
     local player = game.Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
 
+    -- Ensure only one instance of the GUI is created
     local existingGui = playerGui:FindFirstChild("TeleportGui")
     if not existingGui then
         setupGUI()
     end
 end
 
+-- Connect to CharacterAdded event and also setup GUI initially
 game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 onCharacterAdded()  -- Setup GUI on initial load
-
 end)
 
 addcmd('coco',{'hub'},function(args, speaker)
