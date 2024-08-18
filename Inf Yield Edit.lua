@@ -6870,7 +6870,7 @@ addcmd('wyvern',{'wyv'},function(args, speaker)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wyvernleaker/WYVERN/main/WYVERN.lua",true))()
 end)
 
-addcmd('redblue',{'red'},{'blue'},function(args, speaker)
+addcmd('redblue',{'red','blue'},function(args, speaker)
 loadstring(game:HttpGet("https://boykisser.army/p/raw/pl6mjl4xoy"))()
 end)
 
