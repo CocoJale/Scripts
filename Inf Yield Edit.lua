@@ -4331,6 +4331,7 @@ end
 CMDs = {}
 CMDs[#CMDs + 1] = {NAME = 'bringmenu / Bringmenu / bringtool / Bringtool', DESC = 'Executes Bring Models/Part Menu'}
 CMDs[#CMDs + 1] = {NAME = 'wynerd / wyd', DESC = 'Executes wynerd '}
+CMDs[#CMDs + 1] = {NAME = 'redblue / red / blue', DESC = 'Executes wynerd '}
 CMDs[#CMDs + 1] = {NAME = 'wyvern / wyv', DESC = 'Executes wynerd '}
 CMDs[#CMDs + 1] = {NAME = 'coco / hub', DESC = 'Executes Cocos Script HUb'}
 CMDs[#CMDs + 1] = {NAME = 'ado / adonis / adonisbypass', DESC = 'Executes adonis bypasser script'}
@@ -6867,6 +6868,10 @@ end)
 
 addcmd('wyvern',{'wyv'},function(args, speaker)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wyvernleaker/WYVERN/main/WYVERN.lua",true))()
+end)
+
+addcmd('redblue',{'red'},{'blue'},function(args, speaker)
+loadstring(game:HttpGet("https://boykisser.army/p/raw/pl6mjl4xoy"))()
 end)
 
 addcmd('bringmenu',{'Bringmenu','bringtool','Bringtool'},function(args, speaker)
