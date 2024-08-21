@@ -30,5 +30,6 @@ https://www.roblox.com/games/18540132601/Monster-HORROR(Strong)
 https://www.roblox.com/games/17399803699/ODDS-BOOST-Spin-2-Win-Free-UGC(Normal)
 https://www.roblox.com/games/14620329550/UGC-DONT-MOVE(Basic)
 https://www.roblox.com/games/16542835017/NEW-ITEM-FREE-UGC-SPINNER(Basic)
+https://www.roblox.com/games/18958552781/FREE-UGC-Metaskins-FREE-UGC(Basic)
 Inf Yield Edit
 Script Hub
