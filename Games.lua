@@ -33,5 +33,6 @@ https://www.roblox.com/games/16542835017/NEW-ITEM-FREE-UGC-SPINNER(Basic)
 https://www.roblox.com/games/18958552781/FREE-UGC-Metaskins-FREE-UGC(Basic)
 https://www.roblox.com/games/7406897155/Coded-Clothing-Mall-V3(Basic)
 https://www.roblox.com/games/17216786206/FREE-UGC-PLAYGROUND-Break-the-Bear-Event(Basic)
+https://www.roblox.com/games/18801171902/AVL-The-Show-OGRE-JERRY-SUIT(OP)
 Inf Yield Edit
 Script Hub
