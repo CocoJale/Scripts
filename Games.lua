@@ -34,7 +34,6 @@ https://www.roblox.com/games/18958552781/FREE-UGC-Metaskins-FREE-UGC(Basic)
 https://www.roblox.com/games/7406897155/Coded-Clothing-Mall-V3(Basic)
 https://www.roblox.com/games/17216786206/FREE-UGC-PLAYGROUND-Break-the-Bear-Event(Basic)
 https://www.roblox.com/games/18801171902/AVL-The-Show-OGRE-JERRY-SUIT(OP)
-https://www.roblox.com/games/139460379361923/COLLECT-STARS-FOR-UGC(AUTO RJ Version)
-https://www.roblox.com/games/139460379361923/COLLECT-STARS-FOR-UGC(no rejoin version)
+https://www.roblox.com/games/139460379361923/COLLECT-STARS-FOR-UGC
 Inf Yield Edit
 Script Hub
