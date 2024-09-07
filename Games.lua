@@ -37,5 +37,6 @@ https://www.roblox.com/games/18801171902/AVL-The-Show-OGRE-JERRY-SUIT(OP)
 https://www.roblox.com/games/139460379361923/COLLECT-STARS-FOR-UGC
 https://www.roblox.com/games/18204147339/Push-Them-Off-BETA-FREE-UGC
 https://www.roblox.com/games/17359625840/FREE-UGC-Brawl-Stars-Pet-Simulator(OP)
+https://www.roblox.com/games/121011177561201/Slap-for-UGC(Basic)
 Inf Yield Edit
 Script Hub
