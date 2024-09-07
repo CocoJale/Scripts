@@ -1,6 +1,5 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
--- Initial Notification
 OrionLib:MakeNotification({
     Name = "Coco's Script Hub",
     Content = "",
@@ -14,86 +13,6 @@ local Window = OrionLib:MakeWindow({
     SaveConfig = true, 
     ConfigFolder = "Have fun :)"
 })
-
--- Setup GUI Function
-local function setupGUI()
-    local player = game.Players.LocalPlayer
-    if not player then
-        warn("Player not found.")
-        return
-    end
-
-    local playerGui = player:WaitForChild("PlayerGui")
-
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "NotificationGui"
-    screenGui.Parent = playerGui
-
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 220, 0, 75)
-    mainFrame.Position = UDim2.new(0.5, -110, 1, -110)
-    mainFrame.BackgroundTransparency = 0.7
-    mainFrame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-    mainFrame.BorderSizePixel = 2
-    mainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    mainFrame.Visible = false
-    mainFrame.Parent = screenGui
-
-    local headlineLabel = Instance.new("TextLabel")
-    headlineLabel.Name = "HeadlineLabel"
-    headlineLabel.Size = UDim2.new(1, 0, 0, 30)
-    headlineLabel.Position = UDim2.new(0, 0, 0, 0)
-    headlineLabel.BackgroundTransparency = 1
-    headlineLabel.Text = "Thanks for using my script"
-    headlineLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    headlineLabel.TextSize = 24
-    headlineLabel.Font = Enum.Font.SourceSansBold
-    headlineLabel.TextStrokeTransparency = 0.5
-    headlineLabel.Parent = mainFrame
-
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Name = "TextLabel"
-    textLabel.Size = UDim2.new(1, 0, 1, -30)
-    textLabel.Position = UDim2.new(0, 0, 0, 30) 
-    textLabel.BackgroundTransparency = 1
-    textLabel.Text = "Enjoy using my script :)"
-    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) 
-    textLabel.TextSize = 18
-    textLabel.Font = Enum.Font.SourceSans
-    textLabel.TextStrokeTransparency = 0.5
-    textLabel.TextWrapped = true
-    textLabel.TextYAlignment = Enum.TextYAlignment.Center
-    textLabel.Parent = mainFrame
-
-    local tweenService = game:GetService("TweenService")
-
-    local fadeInTweenInfo = TweenInfo.new(
-        1,
-        Enum.EasingStyle.Quad,
-        Enum.EasingDirection.In
-    )
-
-    local fadeOutTweenInfo = TweenInfo.new(
-        1,
-        Enum.EasingStyle.Quad,
-        Enum.EasingDirection.Out
-    )
-
-    local fadeInTween = tweenService:Create(mainFrame, fadeInTweenInfo, {BackgroundTransparency = 0.3})
-    local fadeOutTween = tweenService:Create(mainFrame, fadeOutTweenInfo, {BackgroundTransparency = 1})
-    local function showNotification()
-        mainFrame.Visible = true
-        fadeInTween:Play()
-        fadeInTween.Completed:Wait()
-        wait(4)
-        fadeOutTween:Play()
-        fadeOutTween.Completed:Wait()
-        mainFrame.Visible = false
-    end
-
-    showNotification()
-end
 
 local function mainScript()
     local GameName = "Coco's Script Hub"
