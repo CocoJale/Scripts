@@ -38,5 +38,6 @@ https://www.roblox.com/games/139460379361923/COLLECT-STARS-FOR-UGC
 https://www.roblox.com/games/18204147339/Push-Them-Off-BETA-FREE-UGC
 https://www.roblox.com/games/17359625840/FREE-UGC-Brawl-Stars-Pet-Simulator(OP)
 https://www.roblox.com/games/121011177561201/Slap-for-UGC(Basic)
+https://www.roblox.com/games/100985484341458/FREE-UGC-Collect-plushies(Basic)
 Inf Yield Edit
 Script Hub
