@@ -41,5 +41,6 @@ https://www.roblox.com/games/121011177561201/Slap-for-UGC(Basic)
 https://www.roblox.com/games/119233979179206/FREE-UGC-Commando-Firelord(Basic)
 https://www.roblox.com/games/134400464719820/FREE-UGC-OBBY-FOR-UGC(Basic)
 https://www.roblox.com/games/18901904172/Robux-RNG(Basic)
+https://www.roblox.com/games/81493541492179/LOreal-Paris-Catwalk-Simulator
 Inf Yield Edit
 Script Hub
