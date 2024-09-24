@@ -41,7 +41,8 @@ https://www.roblox.com/games/121011177561201/Slap-for-UGC(Basic)
 https://www.roblox.com/games/119233979179206/FREE-UGC-Commando-Firelord(Basic)
 https://www.roblox.com/games/134400464719820/FREE-UGC-OBBY-FOR-UGC(Basic)
 https://www.roblox.com/games/18901904172/Robux-RNG(Basic)
-https://www.roblox.com/games/81493541492179/LOreal-Paris-Catwalk-Simulator
-https://www.roblox.com/games/13167807959/Outfit-Ideas-Mall-2000-Fits
+https://www.roblox.com/games/81493541492179/LOreal-Paris-Catwalk-Simulator(OP)
+https://www.roblox.com/games/13167807959/Outfit-Ideas-Mall-2000-Fits(Basic
+https://www.roblox.com/games/14731334228/FREE-LIMITED-Dont-Touch(Basic)
 Inf Yield Edit
 Script Hub
