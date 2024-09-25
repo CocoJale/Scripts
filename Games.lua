@@ -44,5 +44,6 @@ https://www.roblox.com/games/18901904172/Robux-RNG(Basic)
 https://www.roblox.com/games/81493541492179/LOreal-Paris-Catwalk-Simulator(OP)
 https://www.roblox.com/games/13167807959/Outfit-Ideas-Mall-2000-Fits(Basic
 https://www.roblox.com/games/14731334228/FREE-LIMITED-Dont-Touch(Basic)
+https://www.roblox.com/games/100619947411064/AFK-FOR-UGC(Basic)
 Inf Yield Edit
 Script Hub
