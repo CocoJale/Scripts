@@ -11,7 +11,7 @@ local Tab1 = GameName:NewSection(tab1name)
 Tab1:CreateButton("UGC1", function(value)
 local args = {
     [1] = 1,
-    [2] = -300000
+    [2] = -0
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("PurchaseUGCEvent"):FireServer(unpack(args)) end)
@@ -19,7 +19,7 @@ game:GetService("ReplicatedStorage"):WaitForChild("PurchaseUGCEvent"):FireServer
 Tab1:CreateButton("UGC 2", function(value)
 local args = {
     [1] = 2,
-    [2] = -300000
+    [2] = -0
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("PurchaseUGCEvent"):FireServer(unpack(args)) end)
@@ -27,7 +27,7 @@ game:GetService("ReplicatedStorage"):WaitForChild("PurchaseUGCEvent"):FireServer
 Tab1:CreateButton("UGC 3", function(value)
 local args = {
     [1] = 3,
-    [2] = -300000
+    [2] = -0
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("PurchaseUGCEvent"):FireServer(unpack(args)) end)
