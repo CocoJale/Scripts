@@ -23,6 +23,12 @@ Tab1:CreateButton("Instant Get UGC", function(value)
         }
         game:GetService("ReplicatedStorage").Packages.Knit.Services.HatchimalsQuestService.RE.CollectBrick:FireServer(unpack(args2))
     end
+        local args = {
+    [1] = true
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HatchimalsQuestService"):WaitForChild("RE"):WaitForChild("ClaimRewards"):FireServer(unpack(args))
+
 end)
 
 local Tab3 = GameName:NewSection(tab3name)
