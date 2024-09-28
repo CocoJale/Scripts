@@ -48,5 +48,6 @@ https://www.roblox.com/games/100619947411064/AFK-FOR-UGC(Basic)
 https://www.roblox.com/games/13451596695/Amazons-Joyful-Horizons-Find-the-Stickers-20(Basic)
 https://www.roblox.com/games/17756790122/Google-Be-Internet-Awesome-World(OP)
 https://www.roblox.com/games/18956347505/UPDATE6-Tap-Empire-Clicker-Simulator(Basic)
+https://www.roblox.com/games/6507422231/Twilight-Daycare
 Inf Yield Edit
 Script Hub
