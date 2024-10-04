@@ -52,5 +52,6 @@ https://www.roblox.com/games/6507422231/Twilight-Daycare
 https://www.roblox.com/games/79750132313801/FREE-UGC-Do-nothing-and-get-rewarded(Basic)
 https://www.roblox.com/games/15432848623/Netflix-Nextworld-EARLY-ACCESS
 https://www.roblox.com/games/8472851459/Really-Easy-Obby
+https://www.roblox.com/games/87477950892341/unnamed(Мир Самоката)
 Inf Yield Edit
 Script Hub
