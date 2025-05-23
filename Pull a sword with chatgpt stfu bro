@@ -1,0 +1,45 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local Tab1 = Library:NewWindow("Pull A Sword")
+
+local Tab1Section1 = Tab1:NewSection("Tab1")
+
+local autoTrainEnabled = false
+local fireDelay = 0.1
+
+Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
+    local num = tonumber(text)
+    if num and num > 0 then
+        fireDelay = num
+    end
+end)
+
+Tab1Section1:CreateToggle("Auto Train/Attack", function(value)
+    autoTrainEnabled = value
+    if autoTrainEnabled then
+        task.spawn(function()
+            while autoTrainEnabled do
+                local ReplicatedStorage = game:GetService("ReplicatedStorage")
+                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+                local Events = Remotes:WaitForChild("Events")
+
+                Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                Events:WaitForChild("ClickEvent"):FireServer()
+
+                task.wait(fireDelay)
+            end
+        end)
+    end
+end)
+
+Tab1Section1:CreateButton("Load Infinite Yield", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end)
+
+Tab1Section1:CreateButton("HHeight 1", function()
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+    if humanoid then
+        humanoid.HipHeight = 12
+    end
+end)
