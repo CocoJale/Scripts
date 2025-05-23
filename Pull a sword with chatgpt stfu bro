@@ -34,7 +34,7 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
                 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
                 local Events = Remotes:WaitForChild("Events")
 
-                for i = 1, 10 do
+                for i = 1, 5 do
                     Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 end
 
