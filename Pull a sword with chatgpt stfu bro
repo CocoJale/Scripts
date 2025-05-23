@@ -25,6 +25,26 @@ Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     end
 end)
 
+Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
+    local running = value
+    if running then
+        task.spawn(function()
+            while running do
+                local ReplicatedStorage = game:GetService("ReplicatedStorage")
+                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+                local Events = Remotes:WaitForChild("Events")
+
+                for i = 1, 10 do
+                    Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                end
+
+                task.wait()
+            end
+        end)
+    end
+end)
+
+
 Tab1Section1:CreateToggle("Auto Click Event", function(value)
     autoClickEventEnabled = value
     if autoClickEventEnabled then
