@@ -4,22 +4,39 @@ local Tab1 = Library:NewWindow("Pull A Sword")
 
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
-local autoTrainEnabled = false
-local fireDelay = 0.05
+local autoDungeonClickEnabled = false
+local autoClickEventEnabled = false
+local fireDelay = 0.1
 
-Tab1Section1:CreateToggle("Auto Train/Attack", function(value)
-    autoTrainEnabled = value
-    if autoTrainEnabled then
+Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
+    autoDungeonClickEnabled = value
+    if autoDungeonClickEnabled then
         task.spawn(function()
-            while autoTrainEnabled do
+            while autoDungeonClickEnabled do
                 local ReplicatedStorage = game:GetService("ReplicatedStorage")
                 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
                 local Events = Remotes:WaitForChild("Events")
 
                 Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-                Events:WaitForChild("ClickEvent"):FireServer()
 
                 task.wait(fireDelay)
+            end
+        end)
+    end
+end)
+
+Tab1Section1:CreateToggle("Auto Click Event", function(value)
+    autoClickEventEnabled = value
+    if autoClickEventEnabled then
+        task.spawn(function()
+            while autoClickEventEnabled do
+                local ReplicatedStorage = game:GetService("ReplicatedStorage")
+                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+                local Events = Remotes:WaitForChild("Events")
+
+                Events:WaitForChild("ClickEvent"):FireServer()
+
+                task.wait() -- no delay control, defaults to a short wait
             end
         end)
     end
@@ -48,7 +65,7 @@ Tab1Section1:CreateButton("HHeight 1", function()
     local player = game.Players.LocalPlayer
     local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-        humanoid.HipHeight = 3
+        humanoid.HipHeight = 1
     end
 end)
 
