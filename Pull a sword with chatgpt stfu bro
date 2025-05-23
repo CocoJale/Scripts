@@ -5,7 +5,7 @@ local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
 local autoTrainEnabled = false
-local fireDelay = 0.05
+local fireDelay = 0.1
 
 Tab1Section1:CreateToggle("Auto Train/Attack", function(value)
     autoTrainEnabled = value
@@ -36,11 +36,19 @@ Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
 
-Tab1Section1:CreateButton("HHeight 1", function()
+Tab1Section1:CreateButton("HHeight 12", function()
     local player = game.Players.LocalPlayer
     local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
         humanoid.HipHeight = 12
+    end
+end)
+
+Tab1Section1:CreateButton("HHeight 1", function()
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+    if humanoid then
+        humanoid.HipHeight = 3
     end
 end)
 
