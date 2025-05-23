@@ -5,7 +5,7 @@ local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
 local autoTrainEnabled = false
-local fireDelay = 0.1
+local fireDelay = 0.05
 
 Tab1Section1:CreateToggle("Auto Train/Attack", function(value)
     autoTrainEnabled = value
