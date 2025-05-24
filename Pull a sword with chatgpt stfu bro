@@ -6,7 +6,7 @@ local Tab1Section1 = Tab1:NewSection("Tab1")
 
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
-local fireDelay = 0.01
+local fireDelay = 0.001
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
