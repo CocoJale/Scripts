@@ -69,6 +69,15 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     end
 end)
 
+Tab1Section1:CreateButton("WalkSpeed 75", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = 75
+    end
+end)
+
 Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
