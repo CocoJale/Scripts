@@ -72,6 +72,11 @@ end)
 
 Tab1Section1:CreateToggle("Generate Invites", function(state)
     toggles.generateInvites = state
+
+    -- Fire RemoveC with 1 when enabled, 0 when disabled
+    local removeC = Events:WaitForChild("RemoveC")
+    removeC:FireServer(state and 1 or 0)
+
     if state then
         task.spawn(function()
             while toggles.generateInvites do
