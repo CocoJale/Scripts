@@ -57,7 +57,8 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Generate (Lazyfish/Bossbot)", function(value)
+-- NEW TOGGLE: Dragon6
+Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
     _G.AutoWinDragon6 = value
     if _G.AutoWinDragon6 then
         task.spawn(function()
