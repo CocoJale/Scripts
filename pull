@@ -6,7 +6,6 @@ local Tab1Section1 = Tab1:NewSection("Tab1")
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
-local bossFightCount = 10 -- default loop count for LazyFish/BossBot
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
@@ -58,13 +57,13 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
--- LazyFish/BossBot Toggle
+-- NEW TOGGLE: Dragon6
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
-    local AutoWinDragon6 = value
-    if AutoWinDragon6 then
+    _G.AutoWinDragon6 = value
+    if _G.AutoWinDragon6 then
         task.spawn(function()
-            while AutoWinDragon6 do
-                for i = 1, bossFightCount do
+            while _G.AutoWinDragon6 do
+                for i = 1, 10 do
                     local args = {
                         "Dragon6",
                         "Chaos"
@@ -83,33 +82,15 @@ end)
 
 Tab1Section1:CreateButton("Generate anywhere", function()
     local args = {
-        1
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
-end)
-
-Tab1Section1:CreateTextbox("Set LazyFish/BossBot Speed", function(text)
-    local num = tonumber(text)
-    if num and num > 0 then
-        bossFightCount = num
-    end
+    1
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local num = tonumber(text)
     if num and num > 0 then
         fireDelay = num
-    end
-end)
-
-Tab1Section1:CreateTextbox("Set HipHeight", function(text)
-    local num = tonumber(text)
-    if num then
-        local player = game.Players.LocalPlayer
-        local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
-        if humanoid then
-            humanoid.HipHeight = num
-        end
     end
 end)
 
@@ -125,9 +106,22 @@ Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
     end
 end)
 
+Tab1Section1:CreateTextbox("Set HipHeight", function(text)
+    local num = tonumber(text)
+    if num then
+        local player = game.Players.LocalPlayer
+        local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+        if humanoid then
+            humanoid.HipHeight = num
+        end
+    end
+end)
+
+
 Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
+
 
 Tab1Section1:CreateButton("Antilag", function()
     local Lighting = game:GetService("Lighting")
