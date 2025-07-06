@@ -61,7 +61,7 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
 end)
 
 Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
-    autoWinBossBot = value
+    _G.AutoWinBossBot = value
 
     local removeArgs = { value and 1 or 0 }
     game:GetService("ReplicatedStorage")
@@ -70,10 +70,10 @@ Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if autoWinBossBot then
+    if _G.AutoWinBossBot then
         task.spawn(function()
-            while autoWinBossBot do
-                local args = { "BossBot", "Chaos" }
+            while _G.AutoWinBossBot do
+                local args = {"BossBot", "Chaos"}
                 game:GetService("ReplicatedStorage")
                     :WaitForChild("Remotes")
                     :WaitForChild("Events")
@@ -86,7 +86,7 @@ Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
 end)
 
 Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
-    autoWinLazyFish = value
+    _G.AutoWinLazyFish = value
 
     local removeArgs = { value and 1 or 0 }
     game:GetService("ReplicatedStorage")
@@ -95,10 +95,10 @@ Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if autoWinLazyFish then
+    if _G.AutoWinLazyFish then
         task.spawn(function()
-            while autoWinLazyFish do
-                local args = { "LazyFish", "Chaos" }
+            while _G.AutoWinLazyFish do
+                local args = {"LazyFish", "Chaos"}
                 game:GetService("ReplicatedStorage")
                     :WaitForChild("Remotes")
                     :WaitForChild("Events")
@@ -109,6 +109,7 @@ Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
         end)
     end
 end)
+
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local num = tonumber(text)
