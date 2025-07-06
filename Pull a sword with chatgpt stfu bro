@@ -1,7 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local Tab1 = Library:NewWindow("Pull A Sword")
-
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
 local autoDungeonClickEnabled = false
@@ -16,6 +15,7 @@ Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
                 local ReplicatedStorage = game:GetService("ReplicatedStorage")
                 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
                 local Events = Remotes:WaitForChild("Events")
+
                 Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 task.wait(fireDelay)
             end
@@ -31,6 +31,7 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
                 local ReplicatedStorage = game:GetService("ReplicatedStorage")
                 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
                 local Events = Remotes:WaitForChild("Events")
+
                 for i = 1, 5 do
                     Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 end
@@ -48,18 +49,58 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
                 local ReplicatedStorage = game:GetService("ReplicatedStorage")
                 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
                 local Events = Remotes:WaitForChild("Events")
+
                 Events:WaitForChild("ClickEvent"):FireServer()
-                task.wait() -- no delay control, defaults to a short wait
+                task.wait()
             end
         end)
     end
 end)
 
-Tab1Section1:CreateButton("RemoveC", function()
-local args = {
-    1
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+-- NEW TOGGLE: Dragon5
+Tab1Section1:CreateToggle("Generate Crystals (Bossbot)", function(value)
+    _G.AutoWinDragon5 = value
+    if _G.AutoWinDragon5 then
+        task.spawn(function()
+            while _G.AutoWinDragon5 do
+                for i = 1, 10 do
+                    local args = {
+                        "Dragon5",
+                        "Chaos"
+                    }
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                    task.wait()
+                end
+            end
+        end)
+    end
+end)
+
+-- NEW TOGGLE: Dragon6
+Tab1Section1:CreateToggle("Generate Crystals (Lazyfish)", function(value)
+    _G.AutoWinDragon6 = value
+    if _G.AutoWinDragon6 then
+        task.spawn(function()
+            while _G.AutoWinDragon6 do
+                for i = 1, 10 do
+                    local args = {
+                        "Dragon6",
+                        "Chaos"
+                    }
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                    task.wait()
+                end
+            end
+        end)
+    end
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
