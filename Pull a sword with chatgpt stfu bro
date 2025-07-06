@@ -6,6 +6,8 @@ local Tab1Section1 = Tab1:NewSection("Tab1")
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
+local autoWinBossBot = false
+local autoWinLazyFish = false
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
@@ -35,6 +37,7 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
                 for i = 1, 5 do
                     Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 end
+
                 task.wait()
             end
         end)
@@ -57,29 +60,51 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Generate Invites", function(value)
-    _G.GenerateInvites = value
-    if _G.GenerateInvites then
+Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
+    autoWinBossBot = value
+
+    local removeArgs = { value and 1 or 0 }
+    game:GetService("ReplicatedStorage")
+        :WaitForChild("Remotes")
+        :WaitForChild("Events")
+        :WaitForChild("RemoveC")
+        :FireServer(unpack(removeArgs))
+
+    if autoWinBossBot then
         task.spawn(function()
-            while _G.GenerateInvites do
-                for i = 1, 20 do
-                    local args = {"Dragon5", "Chaos"}
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                    task.wait()
-                end
-                for i = 1, 20 do
-                    local args = {"Dragon6", "Chaos"}
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                    task.wait()
-                end
+            while autoWinBossBot do
+                local args = { "BossBot", "Chaos" }
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("Events")
+                    :WaitForChild("WinMegaBossEvent")
+                    :FireServer(unpack(args))
+                task.wait()
+            end
+        end)
+    end
+end)
+
+Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
+    autoWinLazyFish = value
+
+    local removeArgs = { value and 1 or 0 }
+    game:GetService("ReplicatedStorage")
+        :WaitForChild("Remotes")
+        :WaitForChild("Events")
+        :WaitForChild("RemoveC")
+        :FireServer(unpack(removeArgs))
+
+    if autoWinLazyFish then
+        task.spawn(function()
+            while autoWinLazyFish do
+                local args = { "LazyFish", "Chaos" }
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("Events")
+                    :WaitForChild("WinMegaBossEvent")
+                    :FireServer(unpack(args))
+                task.wait()
             end
         end)
     end
