@@ -1,9 +1,13 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
 local Tab1 = Library:NewWindow("Pull A Sword")
+
 local Tab1Section1 = Tab1:NewSection("Tab1")
+
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
+
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
     if autoDungeonClickEnabled then
@@ -18,6 +22,7 @@ Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
         end)
     end
 end)
+
 Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
     local running = value
     if running then
@@ -34,6 +39,7 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
         end)
     end
 end)
+
 Tab1Section1:CreateToggle("Auto Click Event", function(value)
     autoClickEventEnabled = value
     if autoClickEventEnabled then
@@ -48,18 +54,21 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
         end)
     end
 end)
+
 Tab1Section1:CreateButton("RemoveC", function()
 local args = {
     1
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
 end)
+
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local num = tonumber(text)
     if num and num > 0 then
         fireDelay = num
     end
 end)
+
 Tab1Section1:CreateButton("WalkSpeed 75", function()
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
@@ -68,9 +77,11 @@ Tab1Section1:CreateButton("WalkSpeed 75", function()
         humanoid.WalkSpeed = 75
     end
 end)
+
 Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
+
 Tab1Section1:CreateButton("HHeight 12", function()
     local player = game.Players.LocalPlayer
     local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
@@ -78,6 +89,7 @@ Tab1Section1:CreateButton("HHeight 12", function()
         humanoid.HipHeight = 12
     end
 end)
+
 Tab1Section1:CreateButton("HHeight 1", function()
     local player = game.Players.LocalPlayer
     local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
@@ -85,6 +97,7 @@ Tab1Section1:CreateButton("HHeight 1", function()
         humanoid.HipHeight = 1
     end
 end)
+
 Tab1Section1:CreateButton("Antilag", function()
     local Lighting = game:GetService("Lighting")
     local RunService = game:GetService("RunService")
