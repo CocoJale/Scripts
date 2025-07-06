@@ -62,7 +62,7 @@ Tab1Section1:CreateToggle("Generate Invites", function(value)
     if _G.GenerateInvites then
         task.spawn(function()
             while _G.GenerateInvites do
-                for i = 1, 50 do
+                for i = 1, 20 do
                     local args = {"Dragon5", "Chaos"}
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
@@ -71,7 +71,7 @@ Tab1Section1:CreateToggle("Generate Invites", function(value)
                         :FireServer(unpack(args))
                     task.wait()
                 end
-                for i = 1, 50 do
+                for i = 1, 20 do
                     local args = {"Dragon6", "Chaos"}
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
