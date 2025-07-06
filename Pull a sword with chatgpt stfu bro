@@ -60,7 +60,6 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
--- Fixed toggles for BossBot and LazyFish with RemoveC remote firing once per toggle change
 Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
     autoWinBossBot = value
 
@@ -71,17 +70,15 @@ Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if value then
+    if autoWinBossBot then
         task.spawn(function()
             while autoWinBossBot do
                 local args = { "BossBot", "Chaos" }
-                for i = 1, 20 do
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                end
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("Events")
+                    :WaitForChild("WinMegaBossEvent")
+                    :FireServer(unpack(args))
                 task.wait()
             end
         end)
@@ -98,17 +95,15 @@ Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if value then
+    if autoWinLazyFish then
         task.spawn(function()
             while autoWinLazyFish do
                 local args = { "LazyFish", "Chaos" }
-                for i = 1, 20 do
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                end
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("Events")
+                    :WaitForChild("WinMegaBossEvent")
+                    :FireServer(unpack(args))
                 task.wait()
             end
         end)
