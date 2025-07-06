@@ -74,11 +74,13 @@ Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
         task.spawn(function()
             while autoWinBossBot do
                 local args = { "BossBot", "Chaos" }
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Remotes")
-                    :WaitForChild("Events")
-                    :WaitForChild("WinMegaBossEvent")
-                    :FireServer(unpack(args))
+                for i = 1, 20 do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                end
                 task.wait()
             end
         end)
@@ -99,11 +101,13 @@ Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
         task.spawn(function()
             while autoWinLazyFish do
                 local args = { "LazyFish", "Chaos" }
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Remotes")
-                    :WaitForChild("Events")
-                    :WaitForChild("WinMegaBossEvent")
-                    :FireServer(unpack(args))
+                for i = 1, 20 do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                end
                 task.wait()
             end
         end)
