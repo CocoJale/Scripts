@@ -87,33 +87,38 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     end
 end)
 
-Tab1Section1:CreateButton("WalkSpeed 75", function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid.WalkSpeed = 75
+Tab1Section1:CreateButton("Generate anywhere", function()
+    local args = {
+    1
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+end)
+
+Tab1Section1:CreateTextbox("Set HipHeight", function(text)
+    local num = tonumber(text)
+    if num then
+        local player = game.Players.LocalPlayer
+        local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+        if humanoid then
+            humanoid.HipHeight = num
+        end
+    end
+end)
+
+Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
+    local num = tonumber(text)
+    if num then
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = num
+        end
     end
 end)
 
 Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-end)
-
-Tab1Section1:CreateButton("HHeight 12", function()
-    local player = game.Players.LocalPlayer
-    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
-    if humanoid then
-        humanoid.HipHeight = 12
-    end
-end)
-
-Tab1Section1:CreateButton("HHeight 1", function()
-    local player = game.Players.LocalPlayer
-    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
-    if humanoid then
-        humanoid.HipHeight = 1
-    end
 end)
 
 Tab1Section1:CreateButton("Antilag", function()
