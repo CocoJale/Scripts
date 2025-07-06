@@ -57,9 +57,6 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
-
-
--- NEW TOGGLE: Dragon6
 Tab1Section1:CreateToggle("Generate (Lazyfish/Bossbot)", function(value)
     _G.AutoWinDragon6 = value
     if _G.AutoWinDragon6 then
