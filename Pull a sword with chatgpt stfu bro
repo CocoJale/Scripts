@@ -1,11 +1,8 @@
--- Load UI Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
--- Window & Section
 local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
--- Services (cached for performance)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local Events = Remotes:WaitForChild("Events")
@@ -14,7 +11,6 @@ local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
--- Variables
 local fireDelay = 0.001
 local toggles = {
     autoDungeonClick = false,
@@ -23,30 +19,11 @@ local toggles = {
     generateInvites = false
 }
 
--- Helper to safely get humanoid
 local function getHumanoid()
     local player = Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     return character:FindFirstChildOfClass("Humanoid")
 end
-
--- DROPDOWN for Boss Selection
-local bossMap = {
-    ["BossBot"] = "Dragon5",
-    ["LazyFish"] = "Dragon6"
-}
-
-Tab1Section1:CreateDropdown("Select Boss", {"BossBot", "LazyFish"}, function(selected)
-    local bossName = bossMap[selected]
-    if bossName then
-        for i = 1, 10 do
-            Events:WaitForChild("WinMegaBossEvent"):FireServer(bossName, "Chaos")
-            task.wait()
-        end
-    end
-end)
-
--- TOGGLES
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(state)
     toggles.autoDungeonClick = state
@@ -89,7 +66,6 @@ end)
 Tab1Section1:CreateToggle("Generate Invites", function(state)
     toggles.generateInvites = state
 
-    -- Fire RemoveC with 1 when enabled, 0 when disabled
     local removeC = Events:WaitForChild("RemoveC")
     removeC:FireServer(state and 1 or 0)
 
@@ -107,15 +83,12 @@ Tab1Section1:CreateToggle("Generate Invites", function(state)
     end
 end)
 
--- Textbox for delay
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local num = tonumber(text)
     if num and num > 0 then
         fireDelay = num
     end
 end)
-
--- BUTTONS
 
 Tab1Section1:CreateButton("WalkSpeed 75", function()
     local humanoid = getHumanoid()
@@ -143,7 +116,6 @@ Tab1Section1:CreateButton("HHeight 1", function()
 end)
 
 Tab1Section1:CreateButton("Antilag", function()
-    -- Terrain
     local Terrain = Workspace:FindFirstChildOfClass('Terrain')
     if Terrain then
         Terrain.WaterWaveSize = 0
@@ -151,39 +123,13 @@ Tab1Section1:CreateButton("Antilag", function()
         Terrain.WaterReflectance = 0
         Terrain.WaterTransparency = 0
     end
-    -- Lighting
     Lighting.GlobalShadows = false
     Lighting.FogEnd = 9e9
     settings().Rendering.QualityLevel = 1
 
-    -- Parts and Effects
     for _, v in ipairs(game:GetDescendants()) do
         if v:IsA("Part") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
             v.Material = Enum.Material.Plastic
             v.Reflectance = 0
         elseif v:IsA("Decal") then
-            v.Transparency = 1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Lifetime = NumberRange.new(0)
-        elseif v:IsA("Explosion") then
-            v.BlastPressure = 1
-            v.BlastRadius = 1
-        end
-    end
-
-    -- Lighting Effects
-    for _, v in ipairs(Lighting:GetDescendants()) do
-        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
-            v.Enabled = false
-        end
-    end
-
-    -- Auto-remove laggy new objects
-    Workspace.DescendantAdded:Connect(function(child)
-        task.defer(function()
-            if child:IsA('ForceField') or child:IsA('Sparkles') or child:IsA('Smoke') or child:IsA('Fire') then
-                child:Destroy()
-            end
-        end)
-    end)
-end)
+            v.
