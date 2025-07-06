@@ -6,6 +6,7 @@ local Tab1Section1 = Tab1:NewSection("Tab1")
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
+local bossFightCount = 10 -- default loop count for LazyFish/BossBot
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
@@ -57,13 +58,13 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
--- NEW TOGGLE: Dragon6
+-- LazyFish/BossBot Toggle
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
-    _G.AutoWinDragon6 = value
-    if _G.AutoWinDragon6 then
+    local AutoWinDragon6 = value
+    if AutoWinDragon6 then
         task.spawn(function()
-            while _G.AutoWinDragon6 do
-                for i = 1, 10 do
+            while AutoWinDragon6 do
+                for i = 1, bossFightCount do
                     local args = {
                         "Dragon6",
                         "Chaos"
@@ -82,9 +83,16 @@ end)
 
 Tab1Section1:CreateButton("Generate anywhere", function()
     local args = {
-    1
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+        1
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+end)
+
+Tab1Section1:CreateTextbox("Set LazyFish/BossBot Speed", function(text)
+    local num = tonumber(text)
+    if num and num > 0 then
+        bossFightCount = num
+    end
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
