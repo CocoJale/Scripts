@@ -1,7 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local Tab1 = Library:NewWindow("Pull A Sword")
-
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
 local autoDungeonClickEnabled = false
@@ -18,7 +17,6 @@ Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
                 local Events = Remotes:WaitForChild("Events")
 
                 Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-
                 task.wait(fireDelay)
             end
         end)
@@ -37,13 +35,11 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
                 for i = 1, 5 do
                     Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 end
-
                 task.wait()
             end
         end)
     end
 end)
-
 
 Tab1Section1:CreateToggle("Auto Click Event", function(value)
     autoClickEventEnabled = value
@@ -55,8 +51,36 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
                 local Events = Remotes:WaitForChild("Events")
 
                 Events:WaitForChild("ClickEvent"):FireServer()
+                task.wait()
+            end
+        end)
+    end
+end)
 
-                task.wait() -- no delay control, defaults to a short wait
+-- ✅ NEW COMBINED TOGGLE
+Tab1Section1:CreateToggle("Generate Invites", function(value)
+    _G.GenerateInvites = value
+    if _G.GenerateInvites then
+        task.spawn(function()
+            while _G.GenerateInvites do
+                for i = 1, 10 do
+                    local args = {"Dragon5", "Chaos"}
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                    task.wait()
+                end
+                for i = 1, 10 do
+                    local args = {"Dragon6", "Chaos"}
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("WinMegaBossEvent")
+                        :FireServer(unpack(args))
+                    task.wait()
+                end
             end
         end)
     end
