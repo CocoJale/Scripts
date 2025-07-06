@@ -2,7 +2,7 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 -- Window & Section
-local Tab1 = Library:NewWindow("Pull A Sword v1")
+local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
 -- Services (cached for performance)
@@ -30,7 +30,23 @@ local function getHumanoid()
     return character:FindFirstChildOfClass("Humanoid")
 end
 
--- Toggles
+-- DROPDOWN for Boss Selection
+local bossMap = {
+    ["BossBot"] = "Dragon5",
+    ["LazyFish"] = "Dragon6"
+}
+
+Tab1Section1:CreateDropdown("Select Boss", {"BossBot", "LazyFish"}, function(selected)
+    local bossName = bossMap[selected]
+    if bossName then
+        for i = 1, 10 do
+            Events:WaitForChild("WinMegaBossEvent"):FireServer(bossName, "Chaos")
+            task.wait()
+        end
+    end
+end)
+
+-- TOGGLES
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(state)
     toggles.autoDungeonClick = state
@@ -99,7 +115,7 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     end
 end)
 
--- Buttons
+-- BUTTONS
 
 Tab1Section1:CreateButton("WalkSpeed 75", function()
     local humanoid = getHumanoid()
