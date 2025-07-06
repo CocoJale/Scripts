@@ -1,21 +1,42 @@
+-- Load UI Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
+-- Window & Section
 local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
-local autoDungeonClickEnabled = false
-local autoClickEventEnabled = false
+-- Services (cached for performance)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local Events = Remotes:WaitForChild("Events")
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+-- Variables
 local fireDelay = 0.001
+local toggles = {
+    autoDungeonClick = false,
+    dungeonClickV2 = false,
+    autoClickEvent = false,
+    generateInvites = false
+}
 
-Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
-    autoDungeonClickEnabled = value
-    if autoDungeonClickEnabled then
+-- Helper to safely get humanoid
+local function getHumanoid()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    return character:FindFirstChildOfClass("Humanoid")
+end
+
+-- Toggles
+
+Tab1Section1:CreateToggle("Auto Dungeon Click", function(state)
+    toggles.autoDungeonClick = state
+    if state then
         task.spawn(function()
-            while autoDungeonClickEnabled do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
-
+            while toggles.autoDungeonClick do
                 Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 task.wait(fireDelay)
             end
@@ -23,15 +44,11 @@ Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
-    local running = value
-    if running then
+Tab1Section1:CreateToggle("Dungeon Click V2", function(state)
+    toggles.dungeonClickV2 = state
+    if state then
         task.spawn(function()
-            while running do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
-
+            while toggles.dungeonClickV2 do
                 for i = 1, 5 do
                     Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
                 end
@@ -41,15 +58,11 @@ Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Auto Click Event", function(value)
-    autoClickEventEnabled = value
-    if autoClickEventEnabled then
+Tab1Section1:CreateToggle("Auto Click Event", function(state)
+    toggles.autoClickEvent = state
+    if state then
         task.spawn(function()
-            while autoClickEventEnabled do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
-
+            while toggles.autoClickEvent do
                 Events:WaitForChild("ClickEvent"):FireServer()
                 task.wait()
             end
@@ -57,34 +70,23 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Generate Invites", function(value)
-    _G.GenerateInvites = value
-    if _G.GenerateInvites then
+Tab1Section1:CreateToggle("Generate Invites", function(state)
+    toggles.generateInvites = state
+    if state then
         task.spawn(function()
-            while _G.GenerateInvites do
-                for i = 1, 10 do
-                    local args = {"Dragon5", "Chaos"}
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                    task.wait()
-                end
-                for i = 1, 10 do
-                    local args = {"Dragon6", "Chaos"}
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                    task.wait()
+            while toggles.generateInvites do
+                for _, boss in ipairs({"Dragon5", "Dragon6"}) do
+                    for i = 1, 10 do
+                        Events:WaitForChild("WinMegaBossEvent"):FireServer(boss, "Chaos")
+                        task.wait()
+                    end
                 end
             end
         end)
     end
 end)
 
+-- Textbox for delay
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local num = tonumber(text)
     if num and num > 0 then
@@ -92,10 +94,10 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     end
 end)
 
+-- Buttons
+
 Tab1Section1:CreateButton("WalkSpeed 75", function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local humanoid = getHumanoid()
     if humanoid then
         humanoid.WalkSpeed = 75
     end
@@ -106,37 +108,37 @@ Tab1Section1:CreateButton("Load Infinite Yield", function()
 end)
 
 Tab1Section1:CreateButton("HHeight 12", function()
-    local player = game.Players.LocalPlayer
-    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+    local humanoid = getHumanoid()
     if humanoid then
         humanoid.HipHeight = 12
     end
 end)
 
 Tab1Section1:CreateButton("HHeight 1", function()
-    local player = game.Players.LocalPlayer
-    local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
+    local humanoid = getHumanoid()
     if humanoid then
         humanoid.HipHeight = 1
     end
 end)
 
 Tab1Section1:CreateButton("Antilag", function()
-    local Lighting = game:GetService("Lighting")
-    local RunService = game:GetService("RunService")
-    local Terrain = workspace:FindFirstChildOfClass('Terrain')
+    -- Terrain
+    local Terrain = Workspace:FindFirstChildOfClass('Terrain')
     if Terrain then
         Terrain.WaterWaveSize = 0
         Terrain.WaterWaveSpeed = 0
         Terrain.WaterReflectance = 0
         Terrain.WaterTransparency = 0
     end
+    -- Lighting
     Lighting.GlobalShadows = false
     Lighting.FogEnd = 9e9
     settings().Rendering.QualityLevel = 1
-    for i, v in pairs(game:GetDescendants()) do
+
+    -- Parts and Effects
+    for _, v in ipairs(game:GetDescendants()) do
         if v:IsA("Part") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
-            v.Material = "Plastic"
+            v.Material = Enum.Material.Plastic
             v.Reflectance = 0
         elseif v:IsA("Decal") then
             v.Transparency = 1
@@ -147,21 +149,18 @@ Tab1Section1:CreateButton("Antilag", function()
             v.BlastRadius = 1
         end
     end
-    for i, v in pairs(Lighting:GetDescendants()) do
+
+    -- Lighting Effects
+    for _, v in ipairs(Lighting:GetDescendants()) do
         if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
             v.Enabled = false
         end
     end
-    workspace.DescendantAdded:Connect(function(child)
-        task.spawn(function()
-            if child:IsA('ForceField') then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            elseif child:IsA('Sparkles') then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            elseif child:IsA('Smoke') or child:IsA('Fire') then
-                RunService.Heartbeat:Wait()
+
+    -- Auto-remove laggy new objects
+    Workspace.DescendantAdded:Connect(function(child)
+        task.defer(function()
+            if child:IsA('ForceField') or child:IsA('Sparkles') or child:IsA('Smoke') or child:IsA('Fire') then
                 child:Destroy()
             end
         end)
