@@ -60,6 +60,7 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
+-- Fixed toggles for BossBot and LazyFish with RemoveC remote firing once per toggle change
 Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
     autoWinBossBot = value
 
@@ -70,11 +71,11 @@ Tab1Section1:CreateToggle("Auto Win BossBot", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if autoWinBossBot then
+    if value then
         task.spawn(function()
             while autoWinBossBot do
-                for i = 1, 20 do
                 local args = { "BossBot", "Chaos" }
+                for i = 1, 20 do
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
                         :WaitForChild("Events")
@@ -97,11 +98,11 @@ Tab1Section1:CreateToggle("Auto Win LazyFish", function(value)
         :WaitForChild("RemoveC")
         :FireServer(unpack(removeArgs))
 
-    if autoWinLazyFish then
+    if value then
         task.spawn(function()
             while autoWinLazyFish do
-                for i = 1, 20 do
                 local args = { "LazyFish", "Chaos" }
+                for i = 1, 20 do
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
                         :WaitForChild("Events")
