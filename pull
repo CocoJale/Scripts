@@ -7,6 +7,15 @@ local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
 
+local function fireRemoveC(value)
+    local args = { value }
+    game:GetService("ReplicatedStorage")
+        :WaitForChild("Remotes")
+        :WaitForChild("Events")
+        :WaitForChild("RemoveC")
+        :FireServer(unpack(args))
+end
+
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
     if autoDungeonClickEnabled then
@@ -57,10 +66,17 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
--- NEW TOGGLE: Dragon5
+-- NEW TOGGLE: Dragon5 (Bossbot)
 Tab1Section1:CreateToggle("Generate Crystals (Bossbot)", function(value)
     _G.AutoWinDragon5 = value
-    if _G.AutoWinDragon5 then
+    local Events = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+    if value then
+        -- Fire RemoveC with 1 once
+        fireRemoveC(1)
+        -- Wait 10ms before firing Generate code
+        task.wait(0.01)
+
         task.spawn(function()
             while _G.AutoWinDragon5 do
                 for i = 1, 10 do
@@ -68,22 +84,28 @@ Tab1Section1:CreateToggle("Generate Crystals (Bossbot)", function(value)
                         "Dragon5",
                         "Chaos"
                     }
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
+                    Events:WaitForChild("WinMegaBossEvent"):FireServer(unpack(args))
                     task.wait()
                 end
             end
         end)
+    else
+        -- On disable, fire RemoveC with 0 once
+        fireRemoveC(0)
     end
 end)
 
--- NEW TOGGLE: Dragon6
+-- NEW TOGGLE: Dragon6 (Lazyfish)
 Tab1Section1:CreateToggle("Generate Crystals (Lazyfish)", function(value)
     _G.AutoWinDragon6 = value
-    if _G.AutoWinDragon6 then
+    local Events = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+    if value then
+        -- Fire RemoveC with 1 once
+        fireRemoveC(1)
+        -- Wait 10ms before firing Generate code
+        task.wait(0.01)
+
         task.spawn(function()
             while _G.AutoWinDragon6 do
                 for i = 1, 10 do
@@ -91,15 +113,14 @@ Tab1Section1:CreateToggle("Generate Crystals (Lazyfish)", function(value)
                         "Dragon6",
                         "Chaos"
                     }
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
+                    Events:WaitForChild("WinMegaBossEvent"):FireServer(unpack(args))
                     task.wait()
                 end
             end
         end)
+    else
+        -- On disable, fire RemoveC with 0 once
+        fireRemoveC(0)
     end
 end)
 
