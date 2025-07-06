@@ -80,18 +80,18 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
     end
 end)
 
-Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
-    local num = tonumber(text)
-    if num and num > 0 then
-        fireDelay = num
-    end
-end)
-
 Tab1Section1:CreateButton("Generate anywhere", function()
     local args = {
     1
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+end)
+
+Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
+    local num = tonumber(text)
+    if num and num > 0 then
+        fireDelay = num
+    end
 end)
 
 Tab1Section1:CreateTextbox("Set HipHeight", function(text)
