@@ -57,59 +57,7 @@ Tab1Section1:CreateToggle("Auto Click Event", function(value)
     end
 end)
 
--- ✅ NEW TOGGLE: TP to Enemies
-local tpToEnemyEnabled = false
-
-Tab1Section1:CreateToggle("TP to Enemies", function(value)
-    tpToEnemyEnabled = value
-    if tpToEnemyEnabled then
-        task.spawn(function()
-            while tpToEnemyEnabled do
-                local radius = 20
-                local targetName = "Elite Soldier"
-                local player = game.Players.LocalPlayer
-                local character = player.Character or player.CharacterAdded:Wait()
-
-                local function getRoot(model)
-                    return model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
-                end
-
-                local nearestModel = nil
-                local shortestDistance = math.huge
-
-                for _, v in pairs(workspace:GetDescendants()) do
-                    if v:IsA("Model") and v.Name:lower() == targetName:lower() then
-                        local root = getRoot(v)
-                        local charRoot = getRoot(character)
-                        if root and charRoot then
-                            local dist = (charRoot.Position - root.Position).Magnitude
-                            if dist <= radius and dist < shortestDistance then
-                                shortestDistance = dist
-                                nearestModel = v
-                            end
-                        end
-                    end
-                end
-
-                if nearestModel then
-                    local humanoid = character:FindFirstChildOfClass("Humanoid")
-                    if humanoid and humanoid.SeatPart then
-                        humanoid.Sit = false
-                        task.wait(0.1)
-                    end
-                    local targetRoot = getRoot(nearestModel)
-                    if targetRoot then
-                        getRoot(character).CFrame = targetRoot.CFrame
-                    end
-                end
-
-                task.wait(0.5)
-            end
-        end)
-    end
-end)
-
--- Continue with your other toggles/buttons
+-- NEW TOGGLE: Dragon6
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
     _G.AutoWinDragon6 = value
     if _G.AutoWinDragon6 then
@@ -134,9 +82,9 @@ end)
 
 Tab1Section1:CreateButton("Generate anywhere", function()
     local args = {
-        1
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+    1
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
@@ -169,9 +117,11 @@ Tab1Section1:CreateTextbox("Set HipHeight", function(text)
     end
 end)
 
+
 Tab1Section1:CreateButton("Load Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
+
 
 Tab1Section1:CreateButton("Antilag", function()
     local Lighting = game:GetService("Lighting")
