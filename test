@@ -65,5 +65,11 @@ local args = {
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("WinMegaBossEvent"):FireServer(unpack(args))
 end)
+Tab1Section1:CreateButton("Title Boss DarkStar", function()
+local args = {
+    "Boss10"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("WinBossEvent"):FireServer(unpack(args))
+end)
 
 
