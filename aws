@@ -11,7 +11,7 @@ Tab1Section1:CreateToggle("Auto Fight Guard", function(value)
         _G.Loop = true
         task.spawn(function()
             while _G.Loop and autoFightGuardEnabled and task.wait() do
-                for i = 1, 5 do
+                for i = 1, 2 do
                     local args = { "MegaGuard" }
                     local armWrestleService = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ArmWrestleService"):WaitForChild("RF")
                     
