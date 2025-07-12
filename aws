@@ -1,0 +1,81 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local Tab1 = Library:NewWindow("Pull A Sword")
+local Tab1Section1 = Tab1:NewSection("Tab1")
+
+local autoFightGuardEnabled = false
+
+Tab1Section1:CreateToggle("Auto Fight Guard", function(value)
+    autoFightGuardEnabled = value
+    if autoFightGuardEnabled then
+        _G.Loop = true
+        task.spawn(function()
+            while _G.Loop and autoFightGuardEnabled and task.wait() do
+                for i = 1, 5 do
+                    local args = { "MegaGuard" }
+                    local armWrestleService = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ArmWrestleService"):WaitForChild("RF")
+                    
+                    armWrestleService:WaitForChild("RequestStartFight"):InvokeServer(unpack(args))
+                    armWrestleService:WaitForChild("RequestCritHit"):InvokeServer()
+                    task.wait() -- small delay between iterations to avoid spamming too fast
+                end
+            end
+        end)
+    else
+        _G.Loop = false
+    end
+end)
+
+Tab1Section1:CreateButton("Teleport to Position", function()
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-11271, 11, 6111))
+    end
+end)
+
+Tab1Section1:CreateButton("Antilag", function()
+    local Lighting = game:GetService("Lighting")
+    local RunService = game:GetService("RunService")
+    local Terrain = workspace:FindFirstChildOfClass('Terrain')
+    if Terrain then
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 0
+    end
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    settings().Rendering.QualityLevel = 1
+    for i, v in pairs(game:GetDescendants()) do
+        if v:IsA("Part") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+            v.Material = "Plastic"
+            v.Reflectance = 0
+        elseif v:IsA("Decal") then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        elseif v:IsA("Explosion") then
+            v.BlastPressure = 1
+            v.BlastRadius = 1
+        end
+    end
+    for i, v in pairs(Lighting:GetDescendants()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+    workspace.DescendantAdded:Connect(function(child)
+        task.spawn(function()
+            if child:IsA('ForceField') then
+                RunService.Heartbeat:Wait()
+                child:Destroy()
+            elseif child:IsA('Sparkles') then
+                RunService.Heartbeat:Wait()
+                child:Destroy()
+            elseif child:IsA('Smoke') or child:IsA('Fire') then
+                RunService.Heartbeat:Wait()
+                child:Destroy()
+            end
+        end)
+    end)
+end)
