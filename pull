@@ -1,54 +1,5 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
-local Tab1 = Library:NewWindow("Pull A Sword")
-local Tab1Section1 = Tab1:NewSection("Main Game")
-local Tab2Section2 = Tab1:NewSection("Squid Minigames")
-
-local RS, Players, WS = game:GetService("ReplicatedStorage"), game:GetService("Players"), workspace
-local Events = RS:WaitForChild("Remotes"):WaitForChild("Events")
-
-local fireDelay = 0.001
-local generateEnabled = false
-local autoSquidGameEnabled = false
-
-local function createToggle(name, eventPath, fireCount)
-    local enabled = false
-    Tab1Section1:CreateToggle(name, function(val)
-        enabled = val
-        if not val then return end
-        task.spawn(function()
-            local target = Events
-            for _, part in ipairs(eventPath) do target = target:WaitForChild(part) end
-            while enabled do
-                for _ = 1, fireCount or 1 do target:FireServer() end
-                task.wait(fireDelay)
-            end
-        end)
-    end)
-end
-
-createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
-createToggle("Auto Click Event", {"ClickEvent"})
-
-Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
-    generateEnabled = val
-    if val then
-        Events.RemoveC:FireServer(1)
-        task.wait(0.5)
-        task.spawn(function()
-            while generateEnabled do
-                local event = Events:WaitForChild("WinMegaBossEvent")
-                for _=1,10 do event:FireServer("Dragon6", "Chaos") task.wait() end
-            end
-        end)
-    else
-        Events.RemoveC:FireServer(0)
-    end
-end)
-
-Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
-    local n = tonumber(text)
-    if n and n > 0 then fireDelay = n end
-end)
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     autoSquidGameEnabled = val
@@ -59,7 +10,7 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
 
     if val then
-        if h then h.JumpHeight = 0.001 end
+        if h then h.JumpPower = 0.001 end
         for _, part in ipairs(c:GetChildren()) do if part:IsA("BasePart") then part.CanCollide = false end end
 
         local squidParts = {}
@@ -88,18 +39,50 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
             end
         end)
 
-        task.spawn(function()
-            while autoSquidGameEnabled do
-                if h then
-                    h.Jump = true
-                    task.wait(0.1)
-                    h.Jump = false
+        local HumanModCons = {}
+
+        local function autoJump()
+            if not autoSquidGameEnabled then
+                if HumanModCons.ajLoop then
+                    HumanModCons.ajLoop:Disconnect()
+                    HumanModCons.ajLoop = nil
                 end
-                task.wait(1)
+                if HumanModCons.ajCA then
+                    HumanModCons.ajCA:Disconnect()
+                    HumanModCons.ajCA = nil
+                end
+                return
             end
+
+            if c and h and h.RootPart then
+                local pos = h.RootPart.Position
+                local lookVector = h.RootPart.CFrame.LookVector
+
+                local check1 = workspace:FindPartOnRay(Ray.new(pos - Vector3.new(0,1.5,0), lookVector * 3), h.Parent)
+                local check2 = workspace:FindPartOnRay(Ray.new(pos + Vector3.new(0,1.5,0), lookVector * 3), h.Parent)
+                if check1 or check2 then
+                    h.Jump = true
+                end
+            end
+        end
+
+        HumanModCons.ajLoop = RunService.RenderStepped:Connect(autoJump)
+        HumanModCons.ajCA = p.CharacterAdded:Connect(function(newChar)
+            c = newChar
+            h = newChar:WaitForChild("Humanoid")
+            if h then h.JumpPower = 0.001 end
+            autoJump()
+            if HumanModCons.ajLoop then HumanModCons.ajLoop:Disconnect() end
+            HumanModCons.ajLoop = RunService.RenderStepped:Connect(autoJump)
         end)
 
     else
-        task.delay(3, function() rem:FireServer("LeaveWaitingRoom") end)
+        task.delay(1, function() rem:FireServer("LeaveWaitingRoom") end)
+        -- Disconnect jump listeners when toggled off
+        if HumanModCons then
+            if HumanModCons.ajLoop then HumanModCons.ajLoop:Disconnect() end
+            if HumanModCons.ajCA then HumanModCons.ajCA:Disconnect() end
+            HumanModCons = nil
+        end
     end
 end)
