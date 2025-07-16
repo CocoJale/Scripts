@@ -9,8 +9,7 @@ local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
 local running = false
-
-
+local teleportTask, eventTask, noclipTask
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
@@ -124,90 +123,59 @@ end)
 
 Tab2Section2:CreateToggle("Win Minigames", function(value)
     running = value
-    if running then
-        task.spawn(function()
-            local p = game.Players.LocalPlayer
-            if not p then return end
-            local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
-            local function getRoot(c) return c and c:FindFirstChild("HumanoidRootPart") end
+    
+    -- If toggled off, cancel all tasks by setting running false
+    if not running then
+        teleportTask = nil
+        eventTask = nil
+        noclipTask = nil
+        return
+    end
 
-            while running do
-                local root = getRoot(p.Character)
-                if root then
-                    for _, part in pairs(workspace:GetDescendants()) do
-                        if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
-                            part.CFrame = root.CFrame * CFrame.new(0, 200, 0)
-                            task.wait(0.1)
-                            part.CFrame = root.CFrame
+    local p = game.Players.LocalPlayer
+    if not p then return end
+    local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
+    local function getRoot(c) return c and c:FindFirstChild("HumanoidRootPart") end
+
+    teleportTask = task.spawn(function()
+        while running do
+            local root = getRoot(p.Character)
+            if root then
+                for _, part in pairs(workspace:GetDescendants()) do
+                    if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
+                        part.CFrame = root.CFrame * CFrame.new(0, 200, 0)
+                        task.wait(0.1)
+                        part.CFrame = root.CFrame
+                        part.CanCollide = true
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+
+    eventTask = task.spawn(function()
+        while running do
+            rs:FireServer("Accepted")
+            task.wait(2)
+        end
+    end)
+
+    noclipTask = task.spawn(function()
+        while running do
+            local character = p.Character
+            if character then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        if part.Name == "WinHitbox" or part.Name == "Wall" then
+                            part.CanCollide = true
+                        else
+                            part.CanCollide = false
                         end
                     end
                 end
-                task.wait(0.1)
             end
-        end)
-
-        task.spawn(function()
-            local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
-            while running do
-                rs:FireServer("Accepted")
-                task.wait(2)
-            end
-        end)
-    end
-end)
-
-
-
-
-
-Tab1Section1:CreateButton("Load Infinite Yield", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-end)
-
-
-Tab1Section1:CreateButton("Antilag", function()
-    local Lighting = game:GetService("Lighting")
-    local RunService = game:GetService("RunService")
-    local Terrain = workspace:FindFirstChildOfClass('Terrain')
-    if Terrain then
-        Terrain.WaterWaveSize = 0
-        Terrain.WaterWaveSpeed = 0
-        Terrain.WaterReflectance = 0
-        Terrain.WaterTransparency = 0
-    end
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 9e9
-    settings().Rendering.QualityLevel = 1
-    for i, v in pairs(game:GetDescendants()) do
-        if v:IsA("Part") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
-            v.Material = "Plastic"
-            v.Reflectance = 0
-        elseif v:IsA("Decal") then
-            v.Transparency = 1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Lifetime = NumberRange.new(0)
-        elseif v:IsA("Explosion") then
-            v.BlastPressure = 1
-            v.BlastRadius = 1
+            task.wait(0.1)
         end
-    end
-    for i, v in pairs(Lighting:GetDescendants()) do
-        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
-            v.Enabled = false
-        end
-    end
-    workspace.DescendantAdded:Connect(function(child)
-        task.spawn(function()
-            if child:IsA('ForceField') then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            elseif child:IsA('Sparkles') then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            elseif child:IsA('Smoke') or child:IsA('Fire') then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            end
-        end)
     end)
 end)
