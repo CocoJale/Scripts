@@ -8,6 +8,9 @@ local Tab2Section2 = Tab1:NewSection("Squid Minigames")
 local autoDungeonClickEnabled = false
 local autoClickEventEnabled = false
 local fireDelay = 0.001
+local running = false
+
+
 
 Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
     autoDungeonClickEnabled = value
@@ -120,7 +123,7 @@ Tab1Section1:CreateTextbox("Set HipHeight", function(text)
 end)
 
 Tab2Section2:CreateToggle("Win Minigames", function(value)
-    local running = value
+    running = value
     if running then
         task.spawn(function()
             local p = game.Players.LocalPlayer
@@ -128,31 +131,31 @@ Tab2Section2:CreateToggle("Win Minigames", function(value)
             local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
             local function getRoot(c) return c and c:FindFirstChild("HumanoidRootPart") end
 
-            task.spawn(function()
-                while running do
-                    local root = getRoot(p.Character)
-                    if root then
-                        for _, part in pairs(workspace:GetDescendants()) do
-                            if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
-                                part.CFrame = root.CFrame * CFrame.new(0,200,0)
-                                task.wait(0.1)
-                                part.CFrame = root.CFrame
-                            end
+            while running do
+                local root = getRoot(p.Character)
+                if root then
+                    for _, part in pairs(workspace:GetDescendants()) do
+                        if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
+                            part.CFrame = root.CFrame * CFrame.new(0, 200, 0)
+                            task.wait(0.1)
+                            part.CFrame = root.CFrame
                         end
                     end
-                    task.wait(0.1)
                 end
-            end)
+                task.wait(0.1)
+            end
+        end)
 
-            task.spawn(function()
-                while running do
-                    rs:FireServer("Accepted")
-                    task.wait(2)
-                end
-            end)
+        task.spawn(function()
+            local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
+            while running do
+                rs:FireServer("Accepted")
+                task.wait(2)
+            end
         end)
     end
 end)
+
 
 
 
