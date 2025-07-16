@@ -24,7 +24,7 @@ local function createToggle(name, eventPath, fireCount)
 end
 
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
-createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
+-- Dungeon Click V2 removed
 createToggle("Auto Click Event", {"ClickEvent"})
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
@@ -51,23 +51,6 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     if n and n > 0 then fireDelay = n end
 end)
 
-local function setHumanoidProperty(prop, val)
-    local p = Players.LocalPlayer
-    local c = p.Character or p.CharacterAdded:Wait()
-    local h = c:FindFirstChildOfClass("Humanoid")
-    if h then h[prop] = val end
-end
-
-Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
-    local n = tonumber(text)
-    if n then setHumanoidProperty("WalkSpeed", n) end
-end)
-
-Tab1Section1:CreateTextbox("Set HipHeight", function(text)
-    local n = tonumber(text)
-    if n then setHumanoidProperty("HipHeight", n) end
-end)
-
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     if not val then return end
     local p = Players.LocalPlayer
@@ -86,10 +69,12 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         end
     end
 
-while autoSquidGameEnabled do
-    rem:FireServer("Accepted")
-    task.wait(5)
-end
+    task.spawn(function()
+        while val do
+            rem:FireServer("Accepted")
+            task.wait(5)
+        end
+    end)
 
     task.spawn(function()
         while val do
