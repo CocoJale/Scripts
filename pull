@@ -1,7 +1,7 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Main Game")
-local Tab2Section2 = Tab2:NewSection("Squid Minigames")
+local Tab1Section2 = Tab1:NewSection("Events") -- This is your renamed second section
 
 local RS = game:GetService("ReplicatedStorage")
 local Remotes = RS:WaitForChild("Remotes")
@@ -29,6 +29,7 @@ local function createToggle(name, eventPath, fireCount)
     end)
 end
 
+-- Main Game Section Toggles
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
 createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
 createToggle("Auto Click Event", {"ClickEvent"})
@@ -38,9 +39,8 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     if not val then return end
     task.spawn(function()
         while _G.AutoWinDragon6 do
-            local event = Events:WaitForChild("WinMegaBossEvent")
-            for i=1,10 do
-                event:FireServer("Dragon6","Chaos")
+            for i = 1, 10 do
+                Events:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
                 task.wait()
             end
         end
@@ -73,11 +73,11 @@ Tab1Section1:CreateTextbox("Set HipHeight", function(text)
     if n then setHumanoidProperty("HipHeight", n) end
 end)
 
--- Auto SquidGame toggle on Tab2Section2
+-- Events Section: Auto SquidGame
 local autoSquidGameEnabled = false
-Tab2Section2:CreateToggle("Auto SquidGame", function(val)
-    autoSquidGameEnabled = val
 
+Tab1Section2:CreateToggle("Auto SquidGame", function(val)
+    autoSquidGameEnabled = val
     if not val then return end
 
     local p = game.Players.LocalPlayer
@@ -91,6 +91,7 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         if part:IsA("BasePart") then part.CanCollide = false end
     end
 
+    -- Fire "Accepted" every 2s
     task.spawn(function()
         while autoSquidGameEnabled do
             rem:FireServer("Accepted")
@@ -98,18 +99,20 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         end
     end)
 
+    -- Teleport WinHitbox/Wall parts to you + jump
     task.spawn(function()
         while autoSquidGameEnabled do
             local t = {}
             for _, v in pairs(workspace:GetDescendants()) do
                 if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
                     v.CanCollide = false
-                    t[#t + 1] = v
+                    table.insert(t, v)
                 end
             end
+
             for _, v in ipairs(t) do v.CFrame = r.CFrame end
             if h then h.Jump = true end
-            task.wait(1)  -- jump every 1 second here
+            task.wait(1)
             for _, v in ipairs(t) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
             task.wait(1)
             for _, v in ipairs(t) do v.CFrame = r.CFrame end
