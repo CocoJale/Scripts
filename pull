@@ -1,6 +1,7 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Main Game")
+local Tab2Section2 = Tab1:NewSection("Squid Minigames")
 
 local RS = game:GetService("ReplicatedStorage")
 local Remotes = RS:WaitForChild("Remotes")
@@ -28,7 +29,6 @@ local function createToggle(name, eventPath, fireCount)
     end)
 end
 
--- Toggles
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
 createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
 createToggle("Auto Click Event", {"ClickEvent"})
@@ -73,8 +73,11 @@ Tab1Section1:CreateTextbox("Set HipHeight", function(text)
     if n then setHumanoidProperty("HipHeight", n) end
 end)
 
--- Auto SquidGame Toggle
+-- Auto SquidGame toggle on Tab2Section2
+local autoSquidGameEnabled = false
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
+    autoSquidGameEnabled = val
+
     if not val then return end
 
     local p = game.Players.LocalPlayer
@@ -88,16 +91,15 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         if part:IsA("BasePart") then part.CanCollide = false end
     end
 
-    local running = true
     task.spawn(function()
-        while val and running do
+        while autoSquidGameEnabled do
             rem:FireServer("Accepted")
             task.wait(2)
         end
-        running = false
     end)
+
     task.spawn(function()
-        while val and running do
+        while autoSquidGameEnabled do
             local t = {}
             for _, v in pairs(workspace:GetDescendants()) do
                 if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
@@ -107,12 +109,11 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
             end
             for _, v in ipairs(t) do v.CFrame = r.CFrame end
             if h then h.Jump = true end
-            task.wait(1)
+            task.wait(1)  -- jump every 1 second here
             for _, v in ipairs(t) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
             task.wait(1)
             for _, v in ipairs(t) do v.CFrame = r.CFrame end
             task.wait(1)
         end
-        running = false
     end)
 end)
