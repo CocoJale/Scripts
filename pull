@@ -46,8 +46,6 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     end
 end)
 
-
-
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     local n = tonumber(text)
     if n and n > 0 then fireDelay = n end
@@ -88,12 +86,10 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         end
     end
 
-    task.spawn(function()
-        while val do
-            rem:FireServer("Accepted")
-            task.wait(2)
-        end
-    end)
+while autoSquidGameEnabled do
+    rem:FireServer("Accepted")
+    task.wait(5)
+end
 
     task.spawn(function()
         while val do
