@@ -5,21 +5,22 @@ local Tab2Section2 = Tab1:NewSection("Squid Minigames")
 
 local RS, Players, WS = game:GetService("ReplicatedStorage"), game:GetService("Players"), workspace
 local Remotes, Events = RS:WaitForChild("Remotes"), RS.Remotes:WaitForChild("Events")
-local fireDelay = 0.001
 
 local generateEnabled = false
 
-local function createToggle(name, eventPath, fireCount)
+local function createToggle(name, eventPath)
     local enabled = false
     Tab1Section1:CreateToggle(name, function(val)
         enabled = val
         if not val then return end
         task.spawn(function()
             local target = Events
-            for _, part in ipairs(eventPath) do target = target:WaitForChild(part) end
+            for _, part in ipairs(eventPath) do
+                target = target:WaitForChild(part)
+            end
             while enabled do
-                for _ = 1, (fireCount or 1) do target:FireServer() end
-                task.wait(fireDelay)
+                target:FireServer()
+                task.wait()
             end
         end)
     end)
@@ -47,11 +48,6 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     end
 end)
 
-Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
-    local n = tonumber(text)
-    if n and n > 0 then fireDelay = n end
-end)
-
 local autoSquidGameEnabled = false
 
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
@@ -62,8 +58,14 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     local r, h = c:WaitForChild("HumanoidRootPart"), c:FindFirstChildOfClass("Humanoid")
     local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
 
-    if h then h.JumpHeight = 0.001 end
-    for _, part in ipairs(c:GetChildren()) do if part:IsA("BasePart") then part.CanCollide = false end end
+    if h then
+        h.JumpHeight = 0.001
+    end
+    for _, part in ipairs(c:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
 
     local squidParts = {}
     for _, v in ipairs(WS:GetDescendants()) do
@@ -82,7 +84,9 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
 
     task.spawn(function()
         while autoSquidGameEnabled do
-            for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
+            for _, v in ipairs(squidParts) do
+                v.CFrame = r.CFrame
+            end
 
             if h then
                 h.Jump = true
@@ -92,10 +96,14 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
 
             task.wait(1)
 
-            for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
+            for _, v in ipairs(squidParts) do
+                v.CFrame = r.CFrame * CFrame.new(0, 1000, 0)
+            end
             task.wait(1)
 
-            for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
+            for _, v in ipairs(squidParts) do
+                v.CFrame = r.CFrame
+            end
             task.wait(1)
         end
     end)
