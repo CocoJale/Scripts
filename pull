@@ -119,47 +119,41 @@ Tab1Section1:CreateTextbox("Set HipHeight", function(text)
     end
 end)
 
--- Toggle 1: Win Minigames
 Tab2Section2:CreateToggle("Win Minigames", function(value)
     local running = value
     if running then
         task.spawn(function()
-            local Players = game:GetService("Players")
-            local Workspace = game:GetService("Workspace")
+            local p = game.Players.LocalPlayer
+            if not p then return end
+            local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
+            local function getRoot(c) return c and c:FindFirstChild("HumanoidRootPart") end
 
-            local player = Players.LocalPlayer
-            local winHitbox = Workspace:FindFirstChild("WinHitbox")
-
-            while running do
-                if winHitbox and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    winHitbox.CFrame = player.Character.HumanoidRootPart.CFrame
+            task.spawn(function()
+                while running do
+                    local root = getRoot(p.Character)
+                    if root then
+                        for _, part in pairs(workspace:GetDescendants()) do
+                            if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
+                                part.CFrame = root.CFrame * CFrame.new(0,200,0)
+                                task.wait(0.1)
+                                part.CFrame = root.CFrame
+                            end
+                        end
+                    end
+                    task.wait(0.1)
                 end
-                task.wait(1)
-            end
+            end)
+
+            task.spawn(function()
+                while running do
+                    rs:FireServer("Accepted")
+                    task.wait(2)
+                end
+            end)
         end)
     end
 end)
 
--- Toggle 2: Auto Join Games
-Tab2Section2:CreateToggle("Auto Join Games", function(value)
-    local running = value
-    if running then
-        task.spawn(function()
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-            local RemoteEvent = ReplicatedStorage:WaitForChild("Remotes")
-                :WaitForChild("Events")
-                :WaitForChild("SquidGame")
-                :WaitForChild("RemoteEvent")
-
-            local args = { "Accepted" }
-
-            while running do
-                RemoteEvent:FireServer(unpack(args))
-                task.wait(1)
-            end
-        end)
-    end
-end)
 
 
 
