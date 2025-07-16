@@ -1,181 +1,118 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
-
 local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Main Game")
-local Tab2Section2 = Tab1:NewSection("Squid Minigames")
 
+local RS = game:GetService("ReplicatedStorage")
+local Remotes = RS:WaitForChild("Remotes")
+local Events = Remotes:WaitForChild("Events")
 
-local autoDungeonClickEnabled = false
-local autoClickEventEnabled = false
 local fireDelay = 0.001
-local running = false
-local teleportTask, eventTask, noclipTask
 
-Tab1Section1:CreateToggle("Auto Dungeon Click", function(value)
-    autoDungeonClickEnabled = value
-    if autoDungeonClickEnabled then
+local function createToggle(name, eventPath, fireCount)
+    local enabled = false
+    Tab1Section1:CreateToggle(name, function(val)
+        enabled = val
+        if not val then return end
         task.spawn(function()
-            while autoDungeonClickEnabled do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
-
-                Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+            while enabled do
+                local target = Events
+                for _, part in ipairs(eventPath) do
+                    target = target:WaitForChild(part)
+                end
+                for i = 1, (fireCount or 1) do
+                    target:FireServer()
+                end
                 task.wait(fireDelay)
             end
         end)
-    end
-end)
+    end)
+end
 
-Tab1Section1:CreateToggle("Dungeon Click V2", function(value)
-    local running = value
-    if running then
-        task.spawn(function()
-            while running do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
+-- Toggles
+createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
+createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
+createToggle("Auto Click Event", {"ClickEvent"})
 
-                for i = 1, 5 do
-                    Events:WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-                end
+Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
+    _G.AutoWinDragon6 = val
+    if not val then return end
+    task.spawn(function()
+        while _G.AutoWinDragon6 do
+            local event = Events:WaitForChild("WinMegaBossEvent")
+            for i=1,10 do
+                event:FireServer("Dragon6","Chaos")
                 task.wait()
             end
-        end)
-    end
-end)
-
-Tab1Section1:CreateToggle("Auto Click Event", function(value)
-    autoClickEventEnabled = value
-    if autoClickEventEnabled then
-        task.spawn(function()
-            while autoClickEventEnabled do
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Remotes = ReplicatedStorage:WaitForChild("Remotes")
-                local Events = Remotes:WaitForChild("Events")
-
-                Events:WaitForChild("ClickEvent"):FireServer()
-                task.wait()
-            end
-        end)
-    end
-end)
-
--- NEW TOGGLE: Dragon6
-Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(value)
-    _G.AutoWinDragon6 = value
-    if _G.AutoWinDragon6 then
-        task.spawn(function()
-            while _G.AutoWinDragon6 do
-                for i = 1, 10 do
-                    local args = {
-                        "Dragon6",
-                        "Chaos"
-                    }
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("WinMegaBossEvent")
-                        :FireServer(unpack(args))
-                    task.wait()
-                end
-            end
-        end)
-    end
+        end
+    end)
 end)
 
 Tab1Section1:CreateButton("Generate anywhere", function()
-    local args = {
-    1
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("RemoveC"):FireServer(unpack(args))
+    Events:WaitForChild("RemoveC"):FireServer(1)
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
-    local num = tonumber(text)
-    if num and num > 0 then
-        fireDelay = num
-    end
+    local n = tonumber(text)
+    if n and n > 0 then fireDelay = n end
 end)
 
+local function setHumanoidProperty(prop, val)
+    local p = game.Players.LocalPlayer
+    local c = p.Character or p.CharacterAdded:Wait()
+    local h = c:FindFirstChildOfClass("Humanoid")
+    if h then h[prop] = val end
+end
+
 Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
-    local num = tonumber(text)
-    if num then
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = num
-        end
-    end
+    local n = tonumber(text)
+    if n then setHumanoidProperty("WalkSpeed", n) end
 end)
 
 Tab1Section1:CreateTextbox("Set HipHeight", function(text)
-    local num = tonumber(text)
-    if num then
-        local player = game.Players.LocalPlayer
-        local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
-        if humanoid then
-            humanoid.HipHeight = num
-        end
-    end
+    local n = tonumber(text)
+    if n then setHumanoidProperty("HipHeight", n) end
 end)
 
-Tab2Section2:CreateToggle("Win Minigames", function(value)
-    running = value
-    
-    -- If toggled off, cancel all tasks by setting running false
-    if not running then
-        teleportTask = nil
-        eventTask = nil
-        noclipTask = nil
-        return
-    end
+-- Auto SquidGame Toggle
+Tab1Section1:CreateToggle("Auto SquidGame", function(val)
+    if not val then return end
 
     local p = game.Players.LocalPlayer
-    if not p then return end
-    local rs = game.ReplicatedStorage.Remotes.Events.SquidGame.RemoteEvent
-    local function getRoot(c) return c and c:FindFirstChild("HumanoidRootPart") end
+    local c = p.Character or p.CharacterAdded:Wait()
+    local r = c:WaitForChild("HumanoidRootPart")
+    local h = c:FindFirstChildOfClass("Humanoid")
+    local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
 
-    teleportTask = task.spawn(function()
-        while running do
-            local root = getRoot(p.Character)
-            if root then
-                for _, part in pairs(workspace:GetDescendants()) do
-                    if part:IsA("BasePart") and (part.Name == "WinHitbox" or part.Name == "Wall") then
-                        part.CFrame = root.CFrame * CFrame.new(0, 200, 0)
-                        task.wait(0.1)
-                        part.CFrame = root.CFrame
-                        part.CanCollide = true
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
+    if h then h.JumpHeight = 0.001 end
+    for _, part in pairs(c:GetChildren()) do
+        if part:IsA("BasePart") then part.CanCollide = false end
+    end
 
-    eventTask = task.spawn(function()
-        while running do
-            rs:FireServer("Accepted")
+    local running = true
+    task.spawn(function()
+        while val and running do
+            rem:FireServer("Accepted")
             task.wait(2)
         end
+        running = false
     end)
-
-    noclipTask = task.spawn(function()
-        while running do
-            local character = p.Character
-            if character then
-                for _, part in pairs(character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        if part.Name == "WinHitbox" or part.Name == "Wall" then
-                            part.CanCollide = true
-                        else
-                            part.CanCollide = false
-                        end
-                    end
+    task.spawn(function()
+        while val and running do
+            local t = {}
+            for _, v in pairs(workspace:GetDescendants()) do
+                if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
+                    v.CanCollide = false
+                    t[#t + 1] = v
                 end
             end
-            task.wait(0.1)
+            for _, v in ipairs(t) do v.CFrame = r.CFrame end
+            if h then h.Jump = true end
+            task.wait(1)
+            for _, v in ipairs(t) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
+            task.wait(1)
+            for _, v in ipairs(t) do v.CFrame = r.CFrame end
+            task.wait(1)
         end
+        running = false
     end)
 end)
