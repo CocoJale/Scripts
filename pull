@@ -49,62 +49,86 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
 end)
 
 local autoSquidGameEnabled = false
+local originalPositions = {}
 
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     autoSquidGameEnabled = val
-    if not val then return end
+
     local p = Players.LocalPlayer
     local c = p.Character or p.CharacterAdded:Wait()
     local r, h = c:WaitForChild("HumanoidRootPart"), c:FindFirstChildOfClass("Humanoid")
     local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
 
-    if h then
-        h.JumpHeight = 0.001
-    end
-    for _, part in ipairs(c:GetChildren()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = false
+    if val then
+        if h then h.JumpHeight = 0.001 end
+        for _, part in ipairs(c:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+
+        -- Clear old saved positions just in case
+        originalPositions = {}
+
+        local squidParts = {}
+        for _, v in ipairs(WS:GetDescendants()) do
+            if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
+                v.CanCollide = false
+                table.insert(squidParts, v)
+                originalPositions[v] = v.CFrame -- save original position
+            end
+        end
+
+        task.spawn(function()
+            while autoSquidGameEnabled do
+                rem:FireServer("Accepted")
+                task.wait(5)
+            end
+        end)
+
+        task.spawn(function()
+            while autoSquidGameEnabled do
+                for _, v in ipairs(squidParts) do
+                    if v and v:IsA("BasePart") then
+                        v.CFrame = r.CFrame
+                    end
+                end
+
+                if h then
+                    h.Jump = true
+                    task.wait(0.1)
+                    h.Jump = false
+                end
+
+                task.wait(1)
+
+                for _, v in ipairs(squidParts) do
+                    if v and v:IsA("BasePart") then
+                        v.CFrame = r.CFrame * CFrame.new(0, 1000, 0)
+                    end
+                end
+                task.wait(1)
+
+                for _, v in ipairs(squidParts) do
+                    if v and v:IsA("BasePart") then
+                        v.CFrame = r.CFrame
+                    end
+                end
+                task.wait(1)
+            end
+        end)
+    else
+        -- On disable: restore parts and reset properties
+        for part, origCFrame in pairs(originalPositions) do
+            if part and part:IsA("BasePart") then
+                part.CFrame = origCFrame
+                part.CanCollide = true
+            end
+        end
+        originalPositions = {}
+
+        if h then
+            h.JumpHeight = 7.2 -- Default jump height; adjust if different
         end
     end
-
-    local squidParts = {}
-    for _, v in ipairs(WS:GetDescendants()) do
-        if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
-            v.CanCollide = false
-            table.insert(squidParts, v)
-        end
-    end
-
-    task.spawn(function()
-        while autoSquidGameEnabled do
-            rem:FireServer("Accepted")
-            task.wait(5)
-        end
-    end)
-
-    task.spawn(function()
-        while autoSquidGameEnabled do
-            for _, v in ipairs(squidParts) do
-                v.CFrame = r.CFrame
-            end
-
-            if h then
-                h.Jump = true
-                task.wait(0.1)
-                h.Jump = false
-            end
-
-            task.wait(1)
-
-            for _, v in ipairs(squidParts) do
-                v.CFrame = r.CFrame * CFrame.new(0, 1000, 0)
-            end
-            task.wait(1)
-
-            for _, v in ipairs(squidParts) do
-                v.CFrame = r.CFrame
-            end
-            task.wait(1)
-        end
-    end)
 end)
