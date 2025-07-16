@@ -7,6 +7,8 @@ local RS, Players, WS = game:GetService("ReplicatedStorage"), game:GetService("P
 local Remotes, Events = RS:WaitForChild("Remotes"), RS.Remotes:WaitForChild("Events")
 local fireDelay = 0.001
 
+local generateEnabled = false
+
 local function createToggle(name, eventPath, fireCount)
     local enabled = false
     Tab1Section1:CreateToggle(name, function(val)
@@ -24,16 +26,15 @@ local function createToggle(name, eventPath, fireCount)
 end
 
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
-createToggle("Dungeon", {"OnDungeonClick"}, 5)
 createToggle("Auto Click Event", {"ClickEvent"})
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
-    _G.AutoWinDragon6 = val
+    generateEnabled = val
     if val then
         Events:WaitForChild("RemoveC"):FireServer(1)
         task.wait(0.5)
         task.spawn(function()
-            while _G.AutoWinDragon6 do
+            while generateEnabled do
                 local event = Events:WaitForChild("WinMegaBossEvent")
                 for i = 1, 10 do
                     event:FireServer("Dragon6", "Chaos")
@@ -51,7 +52,10 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     if n and n > 0 then fireDelay = n end
 end)
 
+local autoSquidGameEnabled = false
+
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
+    autoSquidGameEnabled = val
     if not val then return end
     local p = Players.LocalPlayer
     local c = p.Character or p.CharacterAdded:Wait()
@@ -69,18 +73,28 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         end
     end
 
-while autoSquidGameEnabled do
-    rem:FireServer("Accepted")
-    task.wait(5)
-end
+    task.spawn(function()
+        while autoSquidGameEnabled do
+            rem:FireServer("Accepted")
+            task.wait(5)
+        end
+    end)
 
     task.spawn(function()
-        while val do
+        while autoSquidGameEnabled do
             for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-            if h then h.Jump = true end
+
+            if h then
+                h.Jump = true
+                task.wait(0.1)
+                h.Jump = false
+            end
+
             task.wait(1)
+
             for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
             task.wait(1)
+
             for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
             task.wait(1)
         end
