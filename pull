@@ -24,7 +24,7 @@ local function createToggle(name, eventPath, fireCount)
 end
 
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
--- Dungeon Click V2 removed
+createToggle("Dungeon", {"OnDungeonClick"}, 5)
 createToggle("Auto Click Event", {"ClickEvent"})
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
@@ -69,12 +69,10 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         end
     end
 
-    task.spawn(function()
-        while val do
-            rem:FireServer("Accepted")
-            task.wait(5)
-        end
-    end)
+while autoSquidGameEnabled do
+    rem:FireServer("Accepted")
+    task.wait(5)
+end
 
     task.spawn(function()
         while val do
