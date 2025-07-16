@@ -80,7 +80,6 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         task.spawn(function()
             while autoSquidGameEnabled do
                 for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-                if h then h.Jump = true task.wait(0.1) h.Jump = false end
                 task.wait(1)
                 for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
                 task.wait(1)
@@ -88,6 +87,18 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
                 task.wait(1)
             end
         end)
+
+        task.spawn(function()
+            while autoSquidGameEnabled do
+                if h then
+                    h.Jump = true
+                    task.wait(0.1)
+                    h.Jump = false
+                end
+                task.wait(1)
+            end
+        end)
+
     else
         task.delay(1, function() rem:FireServer("LeaveWaitingRoom") end)
     end
