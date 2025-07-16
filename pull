@@ -29,21 +29,23 @@ createToggle("Auto Click Event", {"ClickEvent"})
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     _G.AutoWinDragon6 = val
-    if not val then return end
-    
-Events:WaitForChild("RemoveC"):FireServer(1)
-    task.wait(0.5)
-
-    task.spawn(function()
-        while _G.AutoWinDragon6 do
-            local event = Events:WaitForChild("WinMegaBossEvent")
-            for i = 1, 10 do
-                event:FireServer("Dragon6", "Chaos")
-                task.wait()
+    if val then
+        Events:WaitForChild("RemoveC"):FireServer(1)
+        task.wait(0.5)
+        task.spawn(function()
+            while _G.AutoWinDragon6 do
+                local event = Events:WaitForChild("WinMegaBossEvent")
+                for i = 1, 10 do
+                    event:FireServer("Dragon6", "Chaos")
+                    task.wait()
+                end
             end
-        end
-    end)
+        end)
+    else
+        Events:WaitForChild("RemoveC"):FireServer(0)
+    end
 end)
+
 
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
