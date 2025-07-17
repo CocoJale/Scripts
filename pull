@@ -51,6 +51,25 @@ MainGameSection:CreateToggle("Generate Crystals", function(value)
     end
 end)
 
+local spinCrystalWheelsEnabled = false
+MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
+    spinCrystalWheelsEnabled = value
+    if spinCrystalWheelsEnabled then
+        task.spawn(function()
+            while spinCrystalWheelsEnabled do
+                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+                
+                remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
+                remotes:WaitForChild("SpinWheelSecret"):FireServer("-8", "563")
+                remotes:WaitForChild("WorldWheelEvent"):FireServer("6")
+                
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+
 MainGameSection:CreateButton("AntiAFK", function()
     game:GetService("Players").LocalPlayer.Idled:Connect(function()
         game:GetService("VirtualUser"):CaptureController()
