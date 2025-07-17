@@ -1,72 +1,123 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
 local Tab1 = Library:NewWindow("Pull A Sword")
-local Tab1Section1 = Tab1:NewSection("Main Game")
-local Tab2Section2 = Tab1:NewSection("Squid Minigames")
+local Tab2 = Library:NewWindow("Events")
 
-local RS = game:GetService("ReplicatedStorage")
-local Remotes = RS:WaitForChild("Remotes")
-local Events = Remotes:WaitForChild("Events")
+local MainGameSection = Tab1:NewSection("Main Game")
+local SquidEventSection = Tab2:NewSection("Squid Event")
 
--- Manual remote toggles (0.01s fixed)
-local function createToggle(name, eventPath)
-    local enabled = false
-    Tab1Section1:CreateToggle(name, function(val)
-        enabled = val
-        if not val then return end
+local autoClickEnabled = false
+MainGameSection:CreateToggle("Auto Click", function(value)
+    autoClickEnabled = value
+    if autoClickEnabled then
         task.spawn(function()
-            while enabled do
-                local target = Events
-                for _, part in ipairs(eventPath) do
-                    target = target:WaitForChild(part)
-                end
-                target:FireServer()
+            while autoClickEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("ClickEvent"):FireServer()
                 task.wait(0.01)
             end
         end)
+    end
+end)
+
+local autoAttackEnabled = false
+MainGameSection:CreateToggle("Auto Attack", function(value)
+    autoAttackEnabled = value
+    if autoAttackEnabled then
+        task.spawn(function()
+            while autoAttackEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
+end)
+
+local generateCrystalsEnabled = false
+MainGameSection:CreateToggle("Generate Crystals", function(value)
+    generateCrystalsEnabled = value
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+    if generateCrystalsEnabled then
+        remotes:WaitForChild("RemoveC"):FireServer(1)
+        task.spawn(function()
+            while generateCrystalsEnabled do
+                for i = 1, 5 do
+                    remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
+                end
+                task.wait(0.01)
+            end
+        end)
+    else
+        remotes:WaitForChild("RemoveC"):FireServer(0)
+    end
+end)
+
+local autoJoinMiniGameEnabled = false
+SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
+    autoJoinMiniGameEnabled = value
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
+    if autoJoinMiniGameEnabled then
+        task.spawn(function()
+            while autoJoinMiniGameEnabled do
+                remotes:FireServer("Accepted")
+                task.wait(5)
+            end
+        end)
+    end
+end)
+
+local function enableFloating()
+    local RunService = game:GetService("RunService")
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
+    bodyVelocity.Name = "FloatVelocity"
+    bodyVelocity.Parent = hrp
+
+    RunService.Heartbeat:Connect(function()
+        if hrp and hrp:FindFirstChild("FloatVelocity") then
+            hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+        end
     end)
 end
 
--- Main Toggles
-createToggle("Auto Attack", {"Dungeon", "OnDungeonClick"})
-createToggle("Auto Click", {"ClickEvent"})
+enableFloating()
 
-Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
-    _G.AutoWinDragon6 = val
-    if not val then return end
+local autoWinSquidEnabled = false
+SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
+    autoWinSquidEnabled = value
     task.spawn(function()
-        while _G.AutoWinDragon6 do
-            local event = Events:WaitForChild("WinMegaBossEvent")
-            for i = 1, 10 do
-                event:FireServer("Dragon6", "Chaos")
-                task.wait()
+        while autoWinSquidEnabled do
+            local player = game.Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+
+            local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
+            local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
+
+            local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
+            local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
+
+            if redTarget then
+                local basePos = redTarget.Position
+                hrp.CFrame = CFrame.new(basePos)
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
+                hrp.CFrame = CFrame.new(basePos)
             end
+
+            if glassTarget then
+                local wallPos = glassTarget.Position
+                hrp.CFrame = CFrame.new(wallPos)
+                task.wait(0.1)
+                hrp.CFrame = CFrame.new(wallPos + Vector3.new(0, 100, 0))
+                task.wait(0.1)
+                hrp.CFrame = CFrame.new(wallPos)
+            end
+
+            task.wait(0.1)
         end
     end)
-end)
-
-Tab2Section2:CreateToggle("Join Minigame",function(v)
- if v then task.spawn(function()
-  local r=Events.SquidGame.RemoteEvent
-  while v do r:FireServer("Accepted") task.wait(5) end
- end) end
-end)
-
-Tab2Section2:CreateButton("Win GlassBridge", function()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart", 2)
-    local target = game:GetService("Workspace").MiniGameFolder.GlassBridge.End:FindFirstChild("Wall")
-    if root and target then
-        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
-    end
-end)
-
-Tab2Section2:CreateButton("Win RedLight", function()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart", 2)
-    local target = game:GetService("Workspace").MiniGameFolder.GreenLight:FindFirstChild("WinHitbox")
-    if root and target then
-        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
-    end
 end)
