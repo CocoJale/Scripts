@@ -65,20 +65,31 @@ SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     end
 end)
 
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
+local autoWinSquidEnabled = false
+SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
+    autoWinSquidEnabled = value
+    task.spawn(function()
+        while autoWinSquidEnabled do
+            local player = game.Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
 
-SquidEventSection:CreateButton("Win RedLight", function()
-    local target = game:GetService("Workspace").MiniGameFolder.GreenLight:FindFirstChild("WinHitbox")
-    if target then
-        hrp.CFrame = target.CFrame
-    end
-end)
+            local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
+            local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
 
-SquidEventSection:CreateButton("Win GlassBridge", function()
-    local target = game:GetService("Workspace").MiniGameFolder.GlassBridge:FindFirstChild("End"):FindFirstChild("Wall")
-    if target then
-        hrp.CFrame = target.CFrame
-    end
+            local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
+            local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
+
+            if redTarget then
+                hrp.CFrame = redTarget.CFrame + Vector3.new(0, 5, 0)
+                task.wait(0.5)
+            end
+
+            if glassTarget then
+                hrp.CFrame = glassTarget.CFrame + Vector3.new(0, 5, 0)
+            end
+
+            task.wait(5)
+        end
+    end)
 end)
