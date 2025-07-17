@@ -110,13 +110,14 @@ SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
             end
 
             if glassTarget then
-                local wallPos = glassTarget.Position
-                hrp.CFrame = CFrame.new(wallPos)
-                task.wait(0.1)
-                hrp.CFrame = CFrame.new(wallPos + Vector3.new(0, 100, 0))
-                task.wait(0.1)
-                hrp.CFrame = CFrame.new(wallPos)
+               local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
+               hrp.CFrame = CFrame.new(basePos)
+               task.wait(0.1)
+               hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+               task.wait(0.1)
+               hrp.CFrame = CFrame.new(basePos)
             end
+
 
             task.wait(0.1)
         end
