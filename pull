@@ -60,7 +60,9 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
 
     if val then
         if h then h.JumpHeight = 0.001 end
-        for _, part in ipairs(c:GetChildren()) do if part:IsA("BasePart") then part.CanCollide = false end end
+        for _, part in ipairs(c:GetChildren()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
 
         local squidParts = {}
         for _, v in ipairs(WS:GetDescendants()) do
@@ -80,15 +82,16 @@ Tab2Section2:CreateToggle("Auto SquidGame", function(val)
         task.spawn(function()
             while autoSquidGameEnabled do
                 for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-                if h then h.Jump = true task.wait(0.1) h.Jump = false end
                 task.wait(1)
-                for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
+                for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0,100,0) end
                 task.wait(1)
                 for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-                task.wait(1)
+                task.wait(5)
             end
         end)
     else
-        task.delay(1, function() rem:FireServer("LeaveWaitingRoom") end)
+        task.delay(1, function()
+            rem:FireServer("LeaveWaitingRoom")
+        end)
     end
 end)
