@@ -65,6 +65,28 @@ SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     end
 end)
 
+-- Floating script to keep the player in the air
+local function enableFloating()
+    local RunService = game:GetService("RunService")
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
+    bodyVelocity.Name = "FloatVelocity"
+    bodyVelocity.Parent = hrp
+
+    RunService.Heartbeat:Connect(function()
+        if hrp and hrp:FindFirstChild("FloatVelocity") then
+            hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+        end
+    end)
+end
+
+enableFloating()
+
 local autoWinSquidEnabled = false
 SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
     autoWinSquidEnabled = value
@@ -81,15 +103,20 @@ SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
             local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
 
             if redTarget then
-                hrp.CFrame = redTarget.CFrame + Vector3.new(0, 0, 0)
-                task.wait(0.5)
+                local basePos = redTarget.Position + Vector3.new(0, 5, 0)
+                hrp.CFrame = CFrame.new(basePos)
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                hrp.CFrame = CFrame.new(basePos)
             end
 
             if glassTarget then
-                hrp.CFrame = glassTarget.CFrame + Vector3.new(0, 0, 0)
+                local basePos = glassTarget.Position + Vector3.new(0, 5, 0)
+                hrp.CFrame = CFrame.new(basePos)
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                hrp.CFrame = CFrame.new(basePos)
             end
 
-            task.wait(5)
+            task.wait(0.1)
         end
     end)
 end)
