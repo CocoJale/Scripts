@@ -51,6 +51,13 @@ MainGameSection:CreateToggle("Generate Crystals", function(value)
     end
 end)
 
+MainGameSection:CreateButton("AntiAFK", function()
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        game:GetService("VirtualUser"):CaptureController()
+        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+    end)
+end)
+
 local autoJoinMiniGameEnabled = false
 SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     autoJoinMiniGameEnabled = value
@@ -65,7 +72,6 @@ SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     end
 end)
 
--- Floating script to keep the player in the air
 local function enableFloating()
     local RunService = game:GetService("RunService")
     local player = game.Players.LocalPlayer
@@ -110,14 +116,13 @@ SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
             end
 
             if glassTarget then
-               local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
-               hrp.CFrame = CFrame.new(basePos)
-               task.wait(0.1)
-               hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
-               task.wait(0.1)
-               hrp.CFrame = CFrame.new(basePos)
+                local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
+                hrp.CFrame = CFrame.new(basePos)
+                task.wait(0.1)
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                task.wait(0.1)
+                hrp.CFrame = CFrame.new(basePos)
             end
-
 
             task.wait(0.1)
         end
