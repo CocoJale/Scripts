@@ -65,6 +65,7 @@ SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     end
 end)
 
+-- Floating script to keep the player in the air
 local function enableFloating()
     local RunService = game:GetService("RunService")
     local player = game.Players.LocalPlayer
