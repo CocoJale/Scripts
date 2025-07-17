@@ -1,79 +1,60 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
-local Tab1 = Library:NewWindow("Pull A Sword")
-local Tab1Section1 = Tab1:NewSection("Main Game")
-local Tab2Section2 = Tab1:NewSection("Squid Minigames")
+local L=loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local T1=T1S1=nil
+local Tab1,T1S1= L:NewWindow("Pull A Sword"),nil
+local T1S1=Tab1:NewSection("Main Game")
+local T2S2=Tab1:NewSection("Squid Minigames")
 
-local RS = game:GetService("ReplicatedStorage")
-local Remotes = RS:WaitForChild("Remotes")
-local Events = Remotes:WaitForChild("Events")
+local E=game:GetService("ReplicatedStorage").Remotes.Events
 
-local fireDelay = 0.001
-
-local function createToggle(name, eventPath, fireCount, customDelay)
-    local enabled = false
-    Tab1Section1:CreateToggle(name, function(val)
-        enabled = val
-        if not val then return end
-        task.spawn(function()
-            while enabled do
-                local target = Events
-                for _, part in ipairs(eventPath) do
-                    target = target:WaitForChild(part)
-                end
-                for i = 1, (fireCount or 1) do
-                    target:FireServer()
-                end
-                task.wait(customDelay or fireDelay)
-            end
-        end)
-    end)
+local function cT(n,p)
+ local e=false
+ T1S1:CreateToggle(n,function(v)
+  e=v
+  if not v then return end
+  task.spawn(function()
+   while e do
+    local t=E
+    for _,x in ipairs(p) do t=t:WaitForChild(x) end
+    t:FireServer()
+    task.wait(.01)
+   end
+  end)
+ end)
 end
 
--- Updated toggles
-createToggle("Auto Attack", {"Dungeon", "OnDungeonClick"}, 1, 0.01)
-createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
-createToggle("Auto Click", {"ClickEvent"}, 1, 0.01)
+cT("Auto Attack",{"Dungeon","OnDungeonClick"})
+cT("Auto Click",{"ClickEvent"})
 
-Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
-    _G.AutoWinDragon6 = val
-    if not val then return end
-    task.spawn(function()
-        while _G.AutoWinDragon6 do
-            local event = Events:WaitForChild("WinMegaBossEvent")
-            for i = 1, 10 do
-                event:FireServer("Dragon6", "Chaos")
-                task.wait()
-            end
-        end
-    end)
+T1S1:CreateToggle("Generate (LazyFish/BossBot)",function(v)
+ _G.AutoWinDragon6=v
+ if not v then return end
+ task.spawn(function()
+  while _G.AutoWinDragon6 do
+   local ev=E:WaitForChild("WinMegaBossEvent")
+   for i=1,10 do ev:FireServer("Dragon6","Chaos") task.wait() end
+  end
+ end)
 end)
 
-Tab1Section1:CreateButton("Generate anywhere", function()
-    Events:WaitForChild("RemoveC"):FireServer(1)
+local pl=game.Players.LocalPlayer
+
+T2S2:CreateToggle("Join Minigame",function(v)
+ if v then task.spawn(function()
+  local r=E.SquidGame.RemoteEvent
+  while v do r:FireServer("Accepted") task.wait(5) end
+ end) end
 end)
 
-Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
-    local n = tonumber(text)
-    if n and n > 0 then fireDelay = n end
+T2S2:CreateButton("Win GlassBridge",function()
+ local c=pl.Character or pl.CharacterAdded:Wait()
+ local r=c:WaitForChild("HumanoidRootPart",2)
+ local t=workspace.MiniGameFolder.GlassBridge.End.Wall
+ if r and t then r.CFrame=t.CFrame+Vector3.new(0,5,0) end
 end)
 
--- Squid Minigame buttons
-Tab2Section2:CreateButton("Win Glass Bridge", function()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart", 2)
-    local target = game:GetService("Workspace").MiniGameFolder.GlassBridge.End:FindFirstChild("Wall")
-    if root and target then
-        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
-    end
-end)
-
-Tab2Section2:CreateButton("Win RedLight", function()
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart", 2)
-    local target = game:GetService("Workspace").MiniGameFolder.GreenLight:FindFirstChild("WinHitbox")
-    if root and target then
-        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
-    end
+T2S2:CreateButton("Win RedLight",function()
+ local c=pl.Character or pl.CharacterAdded:Wait()
+ local r=c:WaitForChild("HumanoidRootPart",2)
+ local t=workspace.MiniGameFolder.GreenLight.WinHitbox
+ if r and t then r.CFrame=t.CFrame+Vector3.new(0,5,0) end
 end)
