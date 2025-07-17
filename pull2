@@ -81,12 +81,12 @@ SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
             local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
 
             if redTarget then
-                hrp.CFrame = redTarget.CFrame + Vector3.new(0, 5, 0)
+                hrp.CFrame = redTarget.CFrame + Vector3.new(0, 0, 0)
                 task.wait(0.5)
             end
 
             if glassTarget then
-                hrp.CFrame = glassTarget.CFrame + Vector3.new(0, 5, 0)
+                hrp.CFrame = glassTarget.CFrame + Vector3.new(0, 0, 0)
             end
 
             task.wait(5)
