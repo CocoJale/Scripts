@@ -1,9 +1,10 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Pull A Sword")
+local Tab1 = Library:NewWindow("Pull A Sword")
+local Tab2 = Library:NewWindow("Events")
 
-local MainGameSection = Window:NewTab("Main Game"):NewSection("Main Game")
-local SquidEventSection = Window:NewTab("Squid Event"):NewSection("Squid Event")
+local MainGameSection = Tab1:NewSection("Main Game")
+local SquidEventSection = Tab2:NewSection("Squid Event")
 
 local autoClickEnabled = false
 MainGameSection:CreateToggle("Auto Click", function(value)
@@ -39,12 +40,28 @@ MainGameSection:CreateToggle("Generate Crystals", function(value)
         remotes:WaitForChild("RemoveC"):FireServer(1)
         task.spawn(function()
             while generateCrystalsEnabled do
-                remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
-                task.wait(0.1)
+                for i = 1, 5 do
+                    remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
+                end
+                task.wait(0.01)
             end
         end)
     else
         remotes:WaitForChild("RemoveC"):FireServer(0)
+    end
+end)
+
+local autoJoinMiniGameEnabled = false
+SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
+    autoJoinMiniGameEnabled = value
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
+    if autoJoinMiniGameEnabled then
+        task.spawn(function()
+            while autoJoinMiniGameEnabled do
+                remotes:FireServer("Accepted")
+                task.wait(5)
+            end
+        end)
     end
 end)
 
