@@ -103,16 +103,16 @@ SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
             local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
 
             if redTarget then
-                local basePos = redTarget.Position + Vector3.new(0, 5, 0)
+                local basePos = redTarget.Position + Vector3.new(0, 0, 0)
                 hrp.CFrame = CFrame.new(basePos)
-                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
                 hrp.CFrame = CFrame.new(basePos)
             end
 
             if glassTarget then
-                local basePos = glassTarget.Position + Vector3.new(0, 5, 0)
+                local basePos = glassTarget.Position + Vector3.new(0, 0, 0)
                 hrp.CFrame = CFrame.new(basePos)
-                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
                 hrp.CFrame = CFrame.new(basePos)
             end
 
