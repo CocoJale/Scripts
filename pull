@@ -3,12 +3,11 @@ local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab1Section1 = Tab1:NewSection("Main Game")
 local Tab2Section2 = Tab1:NewSection("Squid Minigames")
 
-local RS, Players, WS = game:GetService("ReplicatedStorage"), game:GetService("Players"), workspace
-local Events = RS:WaitForChild("Remotes"):WaitForChild("Events")
+local RS = game:GetService("ReplicatedStorage")
+local Remotes = RS:WaitForChild("Remotes")
+local Events = Remotes:WaitForChild("Events")
 
 local fireDelay = 0.001
-local generateEnabled = false
-local autoSquidGameEnabled = false
 
 local function createToggle(name, eventPath, fireCount)
     local enabled = false
@@ -16,10 +15,14 @@ local function createToggle(name, eventPath, fireCount)
         enabled = val
         if not val then return end
         task.spawn(function()
-            local target = Events
-            for _, part in ipairs(eventPath) do target = target:WaitForChild(part) end
             while enabled do
-                for _ = 1, fireCount or 1 do target:FireServer() end
+                local target = Events
+                for _, part in ipairs(eventPath) do
+                    target = target:WaitForChild(part)
+                end
+                for i = 1, (fireCount or 1) do
+                    target:FireServer()
+                end
                 task.wait(fireDelay)
             end
         end)
@@ -27,22 +30,25 @@ local function createToggle(name, eventPath, fireCount)
 end
 
 createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
+createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
 createToggle("Auto Click Event", {"ClickEvent"})
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
-    generateEnabled = val
-    if val then
-        Events.RemoveC:FireServer(1)
-        task.wait(0.5)
-        task.spawn(function()
-            while generateEnabled do
-                local event = Events:WaitForChild("WinMegaBossEvent")
-                for _=1,10 do event:FireServer("Dragon6", "Chaos") task.wait() end
+    _G.AutoWinDragon6 = val
+    if not val then return end
+    task.spawn(function()
+        while _G.AutoWinDragon6 do
+            local event = Events:WaitForChild("WinMegaBossEvent")
+            for i=1,10 do
+                event:FireServer("Dragon6","Chaos")
+                task.wait()
             end
-        end)
-    else
-        Events.RemoveC:FireServer(0)
-    end
+        end
+    end)
+end)
+
+Tab1Section1:CreateButton("Generate anywhere", function()
+    Events:WaitForChild("RemoveC"):FireServer(1)
 end)
 
 Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
@@ -50,48 +56,64 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     if n and n > 0 then fireDelay = n end
 end)
 
+local function setHumanoidProperty(prop, val)
+    local p = game.Players.LocalPlayer
+    local c = p.Character or p.CharacterAdded:Wait()
+    local h = c:FindFirstChildOfClass("Humanoid")
+    if h then h[prop] = val end
+end
+
+Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
+    local n = tonumber(text)
+    if n then setHumanoidProperty("WalkSpeed", n) end
+end)
+
+Tab1Section1:CreateTextbox("Set HipHeight", function(text)
+    local n = tonumber(text)
+    if n then setHumanoidProperty("HipHeight", n) end
+end)
+
+-- Auto SquidGame toggle on Tab2Section2
+local autoSquidGameEnabled = false
 Tab2Section2:CreateToggle("Auto SquidGame", function(val)
     autoSquidGameEnabled = val
-    local p = Players.LocalPlayer
+
+    if not val then return end
+
+    local p = game.Players.LocalPlayer
     local c = p.Character or p.CharacterAdded:Wait()
     local r = c:WaitForChild("HumanoidRootPart")
     local h = c:FindFirstChildOfClass("Humanoid")
     local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
 
-    if val then
-        if h then h.JumpHeight = 0.001 end
-        for _, part in ipairs(c:GetChildren()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
-        end
-
-        local squidParts = {}
-        for _, v in ipairs(WS:GetDescendants()) do
-            if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
-                v.CanCollide = false
-                table.insert(squidParts, v)
-            end
-        end
-
-        task.spawn(function()
-            while autoSquidGameEnabled do
-                rem:FireServer("Accepted")
-                task.wait(5)
-            end
-        end)
-
-        task.spawn(function()
-            while autoSquidGameEnabled do
-                for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-                task.wait(1)
-                for _, v in ipairs(squidParts) do v.CFrame = r.CFrame * CFrame.new(0,100,0) end
-                task.wait(1)
-                for _, v in ipairs(squidParts) do v.CFrame = r.CFrame end
-                task.wait(5)
-            end
-        end)
-    else
-        task.delay(1, function()
-            rem:FireServer("LeaveWaitingRoom")
-        end)
+    if h then h.JumpHeight = 0.001 end
+    for _, part in pairs(c:GetChildren()) do
+        if part:IsA("BasePart") then part.CanCollide = false end
     end
+
+    task.spawn(function()
+        while autoSquidGameEnabled do
+            rem:FireServer("Accepted")
+            task.wait(2)
+        end
+    end)
+
+    task.spawn(function()
+        while autoSquidGameEnabled do
+            local t = {}
+            for _, v in pairs(workspace:GetDescendants()) do
+                if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
+                    v.CanCollide = false
+                    t[#t + 1] = v
+                end
+            end
+            for _, v in ipairs(t) do v.CFrame = r.CFrame end
+            if h then h.Jump = true end
+            task.wait(1)  -- jump every 1 second here
+            for _, v in ipairs(t) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
+            task.wait(1)
+            for _, v in ipairs(t) do v.CFrame = r.CFrame end
+            task.wait(1)
+        end
+    end)
 end)
