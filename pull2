@@ -79,6 +79,6 @@ end)
 SquidEventSection:CreateButton("Win GlassBridge", function()
     local target = game:GetService("Workspace").MiniGameFolder.GlassBridge:FindFirstChild("End"):FindFirstChild("Wall")
     if target then
-        hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 5, 0))
+        hrp.CFrame = target.CFrame
     end
 end)
