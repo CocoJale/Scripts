@@ -9,7 +9,7 @@ local Events = Remotes:WaitForChild("Events")
 
 local fireDelay = 0.001
 
-local function createToggle(name, eventPath, fireCount)
+local function createToggle(name, eventPath, fireCount, customDelay)
     local enabled = false
     Tab1Section1:CreateToggle(name, function(val)
         enabled = val
@@ -23,15 +23,16 @@ local function createToggle(name, eventPath, fireCount)
                 for i = 1, (fireCount or 1) do
                     target:FireServer()
                 end
-                task.wait(fireDelay)
+                task.wait(customDelay or fireDelay)
             end
         end)
     end)
 end
 
-createToggle("Auto Dungeon Click", {"Dungeon", "OnDungeonClick"})
+-- Updated toggles
+createToggle("Auto Attack", {"Dungeon", "OnDungeonClick"}, 1, 0.01)
 createToggle("Dungeon Click V2", {"Dungeon", "OnDungeonClick"}, 5)
-createToggle("Auto Click Event", {"ClickEvent"})
+createToggle("Auto Click", {"ClickEvent"}, 1, 0.01)
 
 Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     _G.AutoWinDragon6 = val
@@ -39,8 +40,8 @@ Tab1Section1:CreateToggle("Generate (LazyFish/BossBot)", function(val)
     task.spawn(function()
         while _G.AutoWinDragon6 do
             local event = Events:WaitForChild("WinMegaBossEvent")
-            for i=1,10 do
-                event:FireServer("Dragon6","Chaos")
+            for i = 1, 10 do
+                event:FireServer("Dragon6", "Chaos")
                 task.wait()
             end
         end
@@ -56,64 +57,23 @@ Tab1Section1:CreateTextbox("Train/Attack Delay", function(text)
     if n and n > 0 then fireDelay = n end
 end)
 
-local function setHumanoidProperty(prop, val)
-    local p = game.Players.LocalPlayer
-    local c = p.Character or p.CharacterAdded:Wait()
-    local h = c:FindFirstChildOfClass("Humanoid")
-    if h then h[prop] = val end
-end
-
-Tab1Section1:CreateTextbox("Set WalkSpeed", function(text)
-    local n = tonumber(text)
-    if n then setHumanoidProperty("WalkSpeed", n) end
-end)
-
-Tab1Section1:CreateTextbox("Set HipHeight", function(text)
-    local n = tonumber(text)
-    if n then setHumanoidProperty("HipHeight", n) end
-end)
-
--- Auto SquidGame toggle on Tab2Section2
-local autoSquidGameEnabled = false
-Tab2Section2:CreateToggle("Auto SquidGame", function(val)
-    autoSquidGameEnabled = val
-
-    if not val then return end
-
-    local p = game.Players.LocalPlayer
-    local c = p.Character or p.CharacterAdded:Wait()
-    local r = c:WaitForChild("HumanoidRootPart")
-    local h = c:FindFirstChildOfClass("Humanoid")
-    local rem = Events:WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
-
-    if h then h.JumpHeight = 0.001 end
-    for _, part in pairs(c:GetChildren()) do
-        if part:IsA("BasePart") then part.CanCollide = false end
+-- Squid Minigame buttons
+Tab2Section2:CreateButton("Win Glass Bridge", function()
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart", 2)
+    local target = game:GetService("Workspace").MiniGameFolder.GlassBridge.End:FindFirstChild("Wall")
+    if root and target then
+        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
     end
+end)
 
-    task.spawn(function()
-        while autoSquidGameEnabled do
-            rem:FireServer("Accepted")
-            task.wait(2)
-        end
-    end)
-
-    task.spawn(function()
-        while autoSquidGameEnabled do
-            local t = {}
-            for _, v in pairs(workspace:GetDescendants()) do
-                if (v.Name == "Wall" or v.Name == "WinHitbox") and v:IsA("BasePart") then
-                    v.CanCollide = false
-                    t[#t + 1] = v
-                end
-            end
-            for _, v in ipairs(t) do v.CFrame = r.CFrame end
-            if h then h.Jump = true end
-            task.wait(1)  -- jump every 1 second here
-            for _, v in ipairs(t) do v.CFrame = r.CFrame * CFrame.new(0, 1000, 0) end
-            task.wait(1)
-            for _, v in ipairs(t) do v.CFrame = r.CFrame end
-            task.wait(1)
-        end
-    end)
+Tab2Section2:CreateButton("Win RedLight", function()
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart", 2)
+    local target = game:GetService("Workspace").MiniGameFolder.GreenLight:FindFirstChild("WinHitbox")
+    if root and target then
+        root.CFrame = target.CFrame + Vector3.new(0, 5, 0)
+    end
 end)
