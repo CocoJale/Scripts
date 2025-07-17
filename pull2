@@ -1,10 +1,9 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Tab1 = Library:NewWindow("Pull A Sword")
-local Tab2 = Library:NewWindow("Events")
+local Window = Library:NewWindow("Pull A Sword")
 
-local MainGameSection = Tab1:NewSection("Main Game")
-local SquidEventSection = Tab2:NewSection("Squid Event")
+local MainGameSection = Window:NewTab("Main Game"):NewSection("Main Game")
+local SquidEventSection = Window:NewTab("Squid Event"):NewSection("Squid Event")
 
 local autoClickEnabled = false
 MainGameSection:CreateToggle("Auto Click", function(value)
@@ -56,13 +55,13 @@ local hrp = char:WaitForChild("HumanoidRootPart")
 SquidEventSection:CreateButton("Win RedLight", function()
     local target = game:GetService("Workspace").MiniGameFolder.GreenLight:FindFirstChild("WinHitbox")
     if target then
-        hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
+        hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 5, 0))
     end
 end)
 
 SquidEventSection:CreateButton("Win GlassBridge", function()
     local target = game:GetService("Workspace").MiniGameFolder.GlassBridge:FindFirstChild("End"):FindFirstChild("Wall")
     if target then
-        hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
+        hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 5, 0))
     end
 end)
