@@ -79,7 +79,7 @@ MainGameSection:CreateToggle("Auto PvP", function(value)
                 elseif selectedPvPTarget == "Akira" then
                     remotes:WaitForChild("WinEvent_PVP"):FireServer("Rip_AkiraToriyama55", true, true)
                 end
-                task.wait(10800)
+                task.wait(10820)
             end
         end)
     end
