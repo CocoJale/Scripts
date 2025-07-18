@@ -123,7 +123,7 @@ MainGameSection:CreateButton("AntiAFK", function()
 end)
 
 local autoJoinMiniGameEnabled = false
-SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
+SquidEventSection:CreateToggle("Join MiniGame", function(value)
     autoJoinMiniGameEnabled = value
     local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
     if autoJoinMiniGameEnabled then
@@ -136,59 +136,64 @@ SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
     end
 end)
 
-local function enableFloating()
+local autoWinSquidEnabled = false
+
+SquidEventSection:CreateToggle("Win SquidGames", function(value)
+    autoWinSquidEnabled = value
     local RunService = game:GetService("RunService")
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local hrp = character:WaitForChild("HumanoidRootPart")
 
-    local bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-    bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
-    bodyVelocity.Name = "FloatVelocity"
-    bodyVelocity.Parent = hrp
-
-    RunService.Heartbeat:Connect(function()
-        if hrp and hrp:FindFirstChild("FloatVelocity") then
-            hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+    if value then
+        -- Enable floating
+        if not hrp:FindFirstChild("FloatVelocity") then
+            local bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+            bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
+            bodyVelocity.Name = "FloatVelocity"
+            bodyVelocity.Parent = hrp
         end
-    end)
-end
 
-enableFloating()
+        task.spawn(function()
+            while autoWinSquidEnabled do
+                local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
+                local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
 
-local autoWinSquidEnabled = false
-SquidEventSection:CreateToggle("Auto Win Squid Games", function(value)
-    autoWinSquidEnabled = value
-    task.spawn(function()
-        while autoWinSquidEnabled do
-            local player = game.Players.LocalPlayer
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:WaitForChild("HumanoidRootPart")
+                local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
+                local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
 
-            local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
-            local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
+                if redTarget then
+                    local basePos = redTarget.Position
+                    hrp.CFrame = CFrame.new(basePos)
+                    hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
+                    hrp.CFrame = CFrame.new(basePos)
+                end
 
-            local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
-            local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
+                if glassTarget then
+                    local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
+                    hrp.CFrame = CFrame.new(basePos)
+                    task.wait(0.1)
+                    hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
+                    task.wait(0.1)
+                    hrp.CFrame = CFrame.new(basePos)
+                end
 
-            if redTarget then
-                local basePos = redTarget.Position
-                hrp.CFrame = CFrame.new(basePos)
-                hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
-                hrp.CFrame = CFrame.new(basePos)
-            end
-
-            if glassTarget then
-                local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
-                hrp.CFrame = CFrame.new(basePos)
                 task.wait(0.1)
-                hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
-                task.wait(0.1)
-                hrp.CFrame = CFrame.new(basePos)
             end
+        end)
 
-            task.wait(0.1)
+        -- Maintain float velocity
+        RunService.Heartbeat:Connect(function()
+            if hrp:FindFirstChild("FloatVelocity") then
+                hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+            end
+        end)
+    else
+        -- Disable floating
+        local float = hrp:FindFirstChild("FloatVelocity")
+        if float then
+            float:Destroy()
         end
-    end)
+    end
 end)
