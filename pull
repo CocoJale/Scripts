@@ -58,17 +58,36 @@ MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
         task.spawn(function()
             while spinCrystalWheelsEnabled do
                 local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
-                
                 remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
                 remotes:WaitForChild("SpinWheelSecret"):FireServer("-8", "563")
                 remotes:WaitForChild("WorldWheelEvent"):FireServer("6")
-                
                 task.wait(1)
             end
         end)
     end
 end)
 
+local selectedPvPTarget = "Coco"
+MainGameSection:CreateToggle("Auto PvP", function(value)
+    autoPvPEnabled = value
+    if autoPvPEnabled then
+        task.spawn(function()
+            while autoPvPEnabled do
+                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+                if selectedPvPTarget == "Coco" then
+                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Cocojale", true, true)
+                elseif selectedPvPTarget == "Akira" then
+                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Rip_AkiraToriyama55", true, true)
+                end
+                task.wait(5)
+            end
+        end)
+    end
+end)
+
+MainGameSection:CreateDropdown("Select PvP Target", {"Coco", "Akira"}, 1, function(option)
+    selectedPvPTarget = option
+end)
 
 MainGameSection:CreateButton("AntiAFK", function()
     game:GetService("Players").LocalPlayer.Idled:Connect(function()
