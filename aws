@@ -10,15 +10,17 @@ Tab1Section1:CreateToggle("Auto Crit Hit", function(value)
     if autoCritHit then
         task.spawn(function()
             while autoCritHit do
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Packages")
-                    :WaitForChild("Knit")
-                    :WaitForChild("Services")
-                    :WaitForChild("ArmWrestleService")
-                    :WaitForChild("RF")
-                    :WaitForChild("RequestCritHit")
-                    :InvokeServer()
-                task.wait(0.001)
+                for i = 1, 2 do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Packages")
+                        :WaitForChild("Knit")
+                        :WaitForChild("Services")
+                        :WaitForChild("ArmWrestleService")
+                        :WaitForChild("RF")
+                        :WaitForChild("RequestCritHit")
+                        :InvokeServer()
+                end
+                task.wait()
             end
         end)
     end
@@ -63,7 +65,7 @@ Tab1Section1:CreateToggle("Auto Roll Aura", function(value)
                     :WaitForChild("RF")
                     :WaitForChild("Roll")
                     :InvokeServer()
-                task.wait(0.01)
+                task.wait()
             end
         end)
     end
