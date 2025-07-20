@@ -1,199 +1,25 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local Tab1 = Library:NewWindow("Pull A Sword")
-local Tab2 = Library:NewWindow("Events")
-
 local MainGameSection = Tab1:NewSection("Main Game")
-local SquidEventSection = Tab2:NewSection("Squid Event")
 
-local autoClickEnabled = false
-MainGameSection:CreateToggle("Auto Click", function(value)
-    autoClickEnabled = value
-    if autoClickEnabled then
-        task.spawn(function()
-            while autoClickEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("ClickEvent"):FireServer()
-                task.wait(0.01)
-            end
-        end)
-    end
-end)
-
-local autoAttackEnabled = false
-MainGameSection:CreateToggle("Auto Attack", function(value)
-    autoAttackEnabled = value
-    if autoAttackEnabled then
-        task.spawn(function()
-            while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-                task.wait(0.01)
-            end
-        end)
-    end
-end)
-
-local generateCrystalsEnabled = false
-MainGameSection:CreateToggle("Generate Crystals", function(value)
-    generateCrystalsEnabled = value
+MainGameSection:CreateToggle("Generate Crystals (x100)", function(value)
+    _G.GenerateCrystals = value
     local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
-    if generateCrystalsEnabled then
+
+    if _G.GenerateCrystals then
         remotes:WaitForChild("RemoveC"):FireServer(1)
         task.spawn(function()
-            while generateCrystalsEnabled do
-                for i = 1, 5 do
+            for i = 1, 100 do
+                if not _G.GenerateCrystals then break end
+                for j = 1, 5 do
                     remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
                 end
                 task.wait(0.01)
             end
+            remotes:WaitForChild("RemoveC"):FireServer(0)
         end)
     else
         remotes:WaitForChild("RemoveC"):FireServer(0)
-    end
-end)
-
-local spinCrystalWheelsEnabled = false
-MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
-    spinCrystalWheelsEnabled = value
-    if spinCrystalWheelsEnabled then
-        task.spawn(function()
-            while spinCrystalWheelsEnabled do
-                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
-                remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
-                remotes:WaitForChild("SpinWheelSecret"):FireServer("-8", "563")
-                remotes:WaitForChild("WorldWheelEvent"):FireServer("6")
-                task.wait(1)
-            end
-        end)
-    end
-end)
-
-local hatchNearestEnabled = false
-
-MainGameSection:CreateToggle("Hatch Nearest", function(value)
-    hatchNearestEnabled = value
-    local eggs = {
-        "W1E1", "W2E1", "W3E1", "W4E1", "W5E1", "W6E1", "W7E1", "W8E1", "W9E1", "W10E1",
-        "W11E1", "W12E1", "W13E1", "W14E1", "W15E1", "W16E1", "W17E1", "W18E1", "W19E1", "W20E1",
-        "W21E1", "W22E1", "W23E1", "W24E1", "W25E1", "W26E1", "W27E1", "W28E1", "W29E1", "W30E1",
-        "W31E1", "W32E1", "W33E1", "W34E1", "W35E1", "Common Egg"
-    }
-
-    if hatchNearestEnabled then
-        task.spawn(function()
-            while hatchNearestEnabled do
-                for _, eggName in ipairs(eggs) do
-                    task.spawn(function()
-                        game:GetService("ReplicatedStorage").GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(eggName, "Buy1")
-                    end)
-                end
-                task.wait(0.3)
-            end
-        end)
-    end
-end)
-
-
-local selectedPvPTarget = "Coco"
-MainGameSection:CreateToggle("Auto PvP", function(value)
-    autoPvPEnabled = value
-    if autoPvPEnabled then
-        task.spawn(function()
-            while autoPvPEnabled do
-                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
-                if selectedPvPTarget == "Coco" then
-                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Cocojale", true, true)
-                elseif selectedPvPTarget == "Akira" then
-                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Rip_AkiraToriyama55", true, true)
-                end
-                task.wait(10820)
-            end
-        end)
-    end
-end)
-
-MainGameSection:CreateDropdown("Select PvP Target", {"Coco", "Akira"}, 1, function(option)
-    selectedPvPTarget = option
-end)
-
-MainGameSection:CreateButton("AntiAFK", function()
-    game:GetService("Players").LocalPlayer.Idled:Connect(function()
-        game:GetService("VirtualUser"):CaptureController()
-        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
-    end)
-end)
-
-local autoJoinMiniGameEnabled = false
-SquidEventSection:CreateToggle("Auto Join MiniGame", function(value)
-    autoJoinMiniGameEnabled = value
-    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
-    if autoJoinMiniGameEnabled then
-        task.spawn(function()
-            while autoJoinMiniGameEnabled do
-                remotes:FireServer("Accepted")
-                task.wait(5)
-            end
-        end)
-    end
-end)
-
-local autoWinSquidEnabled = false
-
-SquidEventSection:CreateToggle("SQUID GAMES TEST", function(value)
-    autoWinSquidEnabled = value
-    local RunService = game:GetService("RunService")
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local hrp = character:WaitForChild("HumanoidRootPart")
-
-    if value then
-        -- Enable floating
-        if not hrp:FindFirstChild("FloatVelocity") then
-            local bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-            bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
-            bodyVelocity.Name = "FloatVelocity"
-            bodyVelocity.Parent = hrp
-        end
-
-        task.spawn(function()
-            while autoWinSquidEnabled do
-                local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
-                local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
-
-                local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
-                local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
-
-                if redTarget then
-                    local basePos = redTarget.Position
-                    hrp.CFrame = CFrame.new(basePos)
-                    hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
-                    hrp.CFrame = CFrame.new(basePos)
-                end
-
-                if glassTarget then
-                    local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
-                    hrp.CFrame = CFrame.new(basePos)
-                    task.wait(0.1)
-                    hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
-                    task.wait(0.1)
-                    hrp.CFrame = CFrame.new(basePos)
-                end
-
-                task.wait(0.1)
-            end
-        end)
-
-        -- Maintain float velocity
-        RunService.Heartbeat:Connect(function()
-            if hrp:FindFirstChild("FloatVelocity") then
-                hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
-            end
-        end)
-    else
-        -- Disable floating
-        local float = hrp:FindFirstChild("FloatVelocity")
-        if float then
-            float:Destroy()
-        end
     end
 end)
