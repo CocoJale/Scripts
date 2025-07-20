@@ -102,7 +102,7 @@ MainGameSection:CreateDropdown("Select PvP Target", {"Coco", "Akira"}, 1, functi
     selectedPvPTarget = option
 end)
 
-MainGameSection:CreateButton("Performance Boost", function()
+MainGameSection:CreateButton("Antilag", function()
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
     local Terrain = workspace:FindFirstChildOfClass('Terrain')
