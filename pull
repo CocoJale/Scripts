@@ -19,19 +19,6 @@ MainGameSection:CreateToggle("Auto Click", function(value)
     end
 end)
 
-local autoAttackEnabled = false
-MainGameSection:CreateToggle("Auto Attack", function(value)
-    autoAttackEnabled = value
-    if autoAttackEnabled then
-        task.spawn(function()
-            while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-                task.wait(0.01)
-            end
-        end)
-    end
-end)
-
 local generateCrystalsEnabled = false
 MainGameSection:CreateToggle("Generate Crystals", function(value)
     generateCrystalsEnabled = value
@@ -120,6 +107,19 @@ MainGameSection:CreateButton("AntiAFK", function()
         game:GetService("VirtualUser"):CaptureController()
         game:GetService("VirtualUser"):ClickButton2(Vector2.new())
     end)
+end)
+
+local autoAttackEnabled = false
+SquidEventSection:CreateToggle("Auto Attack", function(value)
+    autoAttackEnabled = value
+    if autoAttackEnabled then
+        task.spawn(function()
+            while autoAttackEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
 end)
 
 local autoJoinMiniGameEnabled = false
