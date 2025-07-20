@@ -30,7 +30,7 @@ MainGameSection:CreateToggle("Generate Crystals", function(value)
                 for i = 1, 50 do
                     remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
                 end
-                task.wait(0.01)
+                task.wait()
             end
         end)
     else
