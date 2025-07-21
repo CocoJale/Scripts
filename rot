@@ -1,0 +1,27 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local Tab1 = Library:NewWindow("AWS")
+local Tab1Section1 = Tab1:NewSection("Tab1")
+
+-- Attack Nearest Toggle
+local attackNearest = false
+Tab1Section1:CreateToggle("Attack Nearest", function(value)
+	attackNearest = value
+	if attackNearest then
+		local p = game:GetService("Players").LocalPlayer
+		local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
+
+		task.spawn(function()
+			while attackNearest do
+				local char = p.Character or p.CharacterAdded:Wait()
+				local hrp = char:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					local pos = hrp.Position
+					local dir = hrp.CFrame.LookVector
+					rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
+				end
+				task.wait(0.03)
+			end
+		end)
+	end
+end)
