@@ -12,7 +12,7 @@ local function getRoot(character)
 	return character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChildWhichIsA("BasePart"))
 end
 
--- Floating Function (Your new version)
+-- Floating Function
 local function enableFloating()
 	local character = speaker.Character or speaker.CharacterAdded:Wait()
 	local hrp = character:WaitForChild("HumanoidRootPart")
@@ -35,23 +35,27 @@ end
 -- Start Floating
 enableFloating()
 
--- Main Teleport Loop
+-- Main Teleport Loop (Searches all of workspace)
 task.spawn(function()
 	while true do
 		local char = speaker.Character or speaker.CharacterAdded:Wait()
 		local hrp = getRoot(char)
-		if hrp then
-			local targetModel = workspace:FindFirstChild(modelName)
-			if targetModel and targetModel:IsA("Model") and targetModel:FindFirstChild("ZoneHitbox") then
-				local humanoid = char:FindFirstChildOfClass("Humanoid")
-				if humanoid and humanoid.SeatPart then
-					humanoid.Sit = false
-					task.wait(0.1)
-				end
 
-				hrp.CFrame = targetModel:GetModelCFrame()
+		if hrp then
+			for _, obj in ipairs(workspace:GetDescendants()) do
+				if obj:IsA("Model") and obj.Name == modelName and obj:FindFirstChild("ZoneHitbox") then
+					local humanoid = char:FindFirstChildOfClass("Humanoid")
+					if humanoid and humanoid.SeatPart then
+						humanoid.Sit = false
+						task.wait(0.1)
+					end
+
+					hrp.CFrame = obj:GetModelCFrame()
+					break -- Stop searching after teleport
+				end
 			end
 		end
+
 		task.wait(teleportDelay)
 	end
 end)
