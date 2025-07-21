@@ -1,18 +1,56 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local tpAttack = false
+Tab1Section1:CreateToggle("TP & Attack", function(value)
+	tpAttack = value
+	local p = game:GetService("Players").LocalPlayer
+	local w = workspace
+	local c = p.Character or p.CharacterAdded:Wait()
+	local RunService = game:GetService("RunService")
+	local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
 
-local Tab1 = Library:NewWindow("AWS")
-local Tab1Section1 = Tab1:NewSection("Tab1")
+	local function getRoot(m)
+		return m:FindFirstChild("HumanoidRootPart") or m:FindFirstChildWhichIsA("BasePart")
+	end
 
--- Attack Nearest Toggle
-local attackNearest = false
-Tab1Section1:CreateToggle("Attack Nearest", function(value)
-	attackNearest = value
-	if attackNearest then
-		local p = game:GetService("Players").LocalPlayer
-		local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
+	local function enableFloating()
+		local hrp = getRoot(c)
+		if not hrp or hrp:FindFirstChild("FloatVelocity") then return end
+		local bv = Instance.new("BodyVelocity")
+		bv.Velocity = Vector3.new(0, 0, 0)
+		bv.MaxForce = Vector3.new(0, math.huge, 0)
+		bv.Name = "FloatVelocity"
+		bv.Parent = hrp
+		RunService.Heartbeat:Connect(function()
+			if hrp and hrp:FindFirstChild("FloatVelocity") then
+				hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+			end
+		end)
+	end
 
+	local function teleportToModels(namePart)
+		local hrp = getRoot(c)
+		if not hrp then return end
+		for _, model in ipairs(w:GetDescendants()) do
+			if model:IsA("Model") and model.Name:lower():find(namePart:lower()) then
+				local modelRoot = getRoot(model)
+				if modelRoot then
+					local humanoid = c:FindFirstChildOfClass("Humanoid")
+					if humanoid and humanoid.SeatPart then
+						humanoid.Sit = false
+						task.wait(0.1)
+					end
+					hrp.CFrame = modelRoot.CFrame
+					task.wait(1)
+					if not tpAttack then break end
+				end
+			end
+		end
+	end
+
+	if tpAttack then
+		enableFloating()
 		task.spawn(function()
-			while attackNearest do
+			while tpAttack do
+				-- Attack nonstop while teleporting
 				local char = p.Character or p.CharacterAdded:Wait()
 				local hrp = char:FindFirstChild("HumanoidRootPart")
 				if hrp then
@@ -21,6 +59,16 @@ Tab1Section1:CreateToggle("Attack Nearest", function(value)
 					rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
 				end
 				task.wait(0.03)
+			end
+		end)
+
+		task.spawn(function()
+			while tpAttack do
+				teleportToModels("Pakrahmatmat")
+				teleportToModels("Rhino Rhino Toasterinoo")
+				teleportToModels("Ecco CavaIlo Virtuoso")
+				teleportToModels("Bisonte Giuppitur Giuppitercito")
+				task.wait(1)
 			end
 		end)
 	end
