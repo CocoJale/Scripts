@@ -1,75 +1,100 @@
-local tpAttack = false
-Tab1Section1:CreateToggle("TP & Attack", function(value)
-	tpAttack = value
-	local p = game:GetService("Players").LocalPlayer
-	local w = workspace
-	local c = p.Character or p.CharacterAdded:Wait()
-	local RunService = game:GetService("RunService")
-	local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local Tab1 = Library:NewWindow("AWS")
+local Tab1Section1 = Tab1:NewSection("Tab1")
 
-	local function getRoot(m)
-		return m:FindFirstChild("HumanoidRootPart") or m:FindFirstChildWhichIsA("BasePart")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local workspace = workspace
+
+local p = Players.LocalPlayer
+local rfAttack = ReplicatedStorage.Packages.Knit.Services.MonsterService.RF.RequestAttack
+local partyService = ReplicatedStorage.Packages.Knit.Services.PartyService.RF
+
+-- Automatically Attack Nearest
+task.spawn(function()
+	while true do
+		local char = p.Character or p.CharacterAdded:Wait()
+		local hrp = char:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			local pos = hrp.Position
+			local dir = hrp.CFrame.LookVector
+			rfAttack:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
+		end
+		task.wait(0.03)
 	end
+end)
 
-	local function enableFloating()
-		local hrp = getRoot(c)
-		if not hrp or hrp:FindFirstChild("FloatVelocity") then return end
-		local bv = Instance.new("BodyVelocity")
-		bv.Velocity = Vector3.new(0, 0, 0)
-		bv.MaxForce = Vector3.new(0, math.huge, 0)
-		bv.Name = "FloatVelocity"
-		bv.Parent = hrp
-		RunService.Heartbeat:Connect(function()
-			if hrp and hrp:FindFirstChild("FloatVelocity") then
-				hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
-			end
-		end)
-	end
+-- Automatically Join Dungeon
+task.spawn(function()
+	-- Create Party
+	partyService.CreateParty:InvokeServer({
+		Difficulty = "Easy",
+		Name = "GolfCatKi1082's Party",
+		PartyType = "Solo",
+		MapSelected = "Vault of Jupiter",
+		MaxCount = 4,
+		Ready = false
+	}, "Vault of Jupiter")
 
-	local function teleportToModels(namePart)
-		local hrp = getRoot(c)
-		if not hrp then return end
-		for _, model in ipairs(w:GetDescendants()) do
-			if model:IsA("Model") and model.Name:lower():find(namePart:lower()) then
-				local modelRoot = getRoot(model)
-				if modelRoot then
-					local humanoid = c:FindFirstChildOfClass("Humanoid")
-					if humanoid and humanoid.SeatPart then
-						humanoid.Sit = false
-						task.wait(0.1)
-					end
-					hrp.CFrame = modelRoot.CFrame
-					task.wait(1)
-					if not tpAttack then break end
+	-- Update Party
+	partyService.UpdateParty:InvokeServer({
+		Difficulty = "Easy",
+		Name = "GolfCatKi1082's Party",
+		PartyType = "Public",
+		MapSelected = "Vault of Jupiter",
+		MaxCount = 4,
+		Ready = true
+	})
+end)
+
+-- Automatically TP Brainrots
+local function getRoot(model)
+	return model:FindFirstChild("HumanoidRootPart") or model:FindFirstChildWhichIsA("BasePart")
+end
+
+local function enableFloating(char)
+	local hrp = getRoot(char)
+	if not hrp or hrp:FindFirstChild("FloatVelocity") then return end
+	local bv = Instance.new("BodyVelocity")
+	bv.Velocity = Vector3.new(0, 0, 0)
+	bv.MaxForce = Vector3.new(0, math.huge, 0)
+	bv.Name = "FloatVelocity"
+	bv.Parent = hrp
+	RunService.Heartbeat:Connect(function()
+		if hrp and hrp:FindFirstChild("FloatVelocity") then
+			hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+		end
+	end)
+end
+
+local function teleportToModels(namePart, char)
+	local hrp = getRoot(char)
+	if not hrp then return end
+	for _, model in ipairs(workspace:GetDescendants()) do
+		if model:IsA("Model") and model.Name:lower():find(namePart:lower()) then
+			local modelRoot = getRoot(model)
+			if modelRoot then
+				local humanoid = char:FindFirstChildOfClass("Humanoid")
+				if humanoid and humanoid.Sit then
+					humanoid.Sit = false
+					task.wait(0.1)
 				end
+				hrp.CFrame = modelRoot.CFrame
+				task.wait(1)
 			end
 		end
 	end
+end
 
-	if tpAttack then
-		enableFloating()
-		task.spawn(function()
-			while tpAttack do
-				-- Attack nonstop while teleporting
-				local char = p.Character or p.CharacterAdded:Wait()
-				local hrp = char:FindFirstChild("HumanoidRootPart")
-				if hrp then
-					local pos = hrp.Position
-					local dir = hrp.CFrame.LookVector
-					rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
-				end
-				task.wait(0.03)
-			end
-		end)
-
-		task.spawn(function()
-			while tpAttack do
-				teleportToModels("Pakrahmatmat")
-				teleportToModels("Rhino Rhino Toasterinoo")
-				teleportToModels("Ecco CavaIlo Virtuoso")
-				teleportToModels("Bisonte Giuppitur Giuppitercito")
-				task.wait(1)
-			end
-		end)
+task.spawn(function()
+	local char = p.Character or p.CharacterAdded:Wait()
+	enableFloating(char)
+	while true do
+		teleportToModels("Pakrahmatmat", char)
+		teleportToModels("Rhino Rhino Toasterinoo", char)
+		teleportToModels("Ecco CavaIlo Virtuoso", char)
+		teleportToModels("Bisonte Giuppitur Giuppitercito", char)
+		task.wait(1)
 	end
 end)
