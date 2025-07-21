@@ -1,61 +1,66 @@
--- Settings
 local modelName = "Te Te Te Te Te Te Te Te Te Te Sahur"
-local teleportDelay = 0.1
+local teleportDelay = 1
 
--- Services
+local knownWorldPositions = {
+    Vector3.new(-462, 194, 660),
+    Vector3.new(327, 155, 744),
+    Vector3.new(571, 102, 0),
+    Vector3.new(-643, 105, -867),
+    Vector3.new(-1821, 144, 417),
+    Vector3.new(-2588, 110, -835),
+    Vector3.new(-2225, 288, -3616),
+    Vector3.new(-3581, 81, 1002),
+}
+
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local speaker = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Helper: get HumanoidRootPart or fallback BasePart
-local function getRoot(character)
-	return character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChildWhichIsA("BasePart"))
+local p = Players.LocalPlayer
+local rf = ReplicatedStorage.Packages.Knit.Services.MonsterService.RF.RequestAttack
+
+local function getRoot(char)
+    return char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChildWhichIsA("BasePart"))
 end
 
--- Floating Function
-local function enableFloating()
-	local character = speaker.Character or speaker.CharacterAdded:Wait()
-	local hrp = character:WaitForChild("HumanoidRootPart")
-
-	if hrp:FindFirstChild("FloatVelocity") then return end
-
-	local bodyVelocity = Instance.new("BodyVelocity")
-	bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-	bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
-	bodyVelocity.Name = "FloatVelocity"
-	bodyVelocity.Parent = hrp
-
-	RunService.Heartbeat:Connect(function()
-		if hrp and hrp:FindFirstChild("FloatVelocity") then
-			hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
-		end
-	end)
-end
-
--- Start Floating
-enableFloating()
-
--- Main Teleport Loop (Searches all of workspace)
 task.spawn(function()
-	while true do
-		local char = speaker.Character or speaker.CharacterAdded:Wait()
-		local hrp = getRoot(char)
+    local index = 1
+    while true do
+        local char = p.Character or p.CharacterAdded:Wait()
+        local hrp = getRoot(char)
+        if hrp then
+            local foundModel = nil
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("Model") and v.Name == modelName and v:FindFirstChild("ZoneHitbox") then
+                    foundModel = v
+                    break
+                end
+            end
 
-		if hrp then
-			for _, obj in ipairs(workspace:GetDescendants()) do
-				if obj:IsA("Model") and obj.Name == modelName and obj:FindFirstChild("ZoneHitbox") then
-					local humanoid = char:FindFirstChildOfClass("Humanoid")
-					if humanoid and humanoid.SeatPart then
-						humanoid.Sit = false
-						task.wait(0.1)
-					end
+            if foundModel then
+                hrp.CFrame = foundModel:GetModelCFrame()
+                index = 1
+            else
+                local pos = knownWorldPositions[index]
+                hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0))
+                index = index + 1
+                if index > #knownWorldPositions then
+                    index = 1
+                end
+            end
+        end
+        task.wait(teleportDelay)
+    end
+end)
 
-					hrp.CFrame = obj:GetModelCFrame()
-					break -- Stop searching after teleport
-				end
-			end
-		end
-
-		task.wait(teleportDelay)
-	end
+task.spawn(function()
+    while true do
+        local char = p.Character or p.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local pos = hrp.Position
+            local dir = hrp.CFrame.LookVector
+            rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
+        end
+        task.wait(0.03)
+    end
 end)
