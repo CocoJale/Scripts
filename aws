@@ -1,72 +1,113 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
-
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
--- Auto Crit Hit Toggle
-local autoCritHit = false
-Tab1Section1:CreateToggle("Auto Crit Hit", function(value)
-    autoCritHit = value
-    if autoCritHit then
-        task.spawn(function()
-            while autoCritHit do
-                for i = 1, 2 do
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Packages")
-                        :WaitForChild("Knit")
-                        :WaitForChild("Services")
-                        :WaitForChild("ArmWrestleService")
-                        :WaitForChild("RF")
-                        :WaitForChild("RequestCritHit")
-                        :InvokeServer()
-                end
-                task.wait()
-            end
-        end)
-    end
+-- Attack Nearest Toggle
+local attackNearest = false
+Tab1Section1:CreateToggle("Attack Nearest", function(value)
+	attackNearest = value
+	if attackNearest then
+		local p = game:GetService("Players").LocalPlayer
+		local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
+		task.spawn(function()
+			while attackNearest do
+				local char = p.Character or p.CharacterAdded:Wait()
+				local hrp = char:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					local pos = hrp.Position
+					local dir = hrp.CFrame.LookVector
+					rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
+				end
+				task.wait(0.03)
+			end
+		end)
+	end
 end)
 
--- Auto Buy Merchant Toggle
-local autoBuyMerchant = false
-Tab1Section1:CreateToggle("Auto Buy Merchant", function(value)
-    autoBuyMerchant = value
-    if autoBuyMerchant then
-        task.spawn(function()
-            while autoBuyMerchant do
-                for i = 1, 5 do
-                    local args = { "Hidden Merchant", i }
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Packages")
-                        :WaitForChild("Knit")
-                        :WaitForChild("Services")
-                        :WaitForChild("LimitedMerchantService")
-                        :WaitForChild("RF")
-                        :WaitForChild("BuyItem")
-                        :InvokeServer(unpack(args))
-                end
-                task.wait(10)
-            end
-        end)
-    end
+-- Join Dungeon Button
+Tab1Section1:CreateButton("Join Dungeon", function()
+	local rs = game:GetService("ReplicatedStorage")
+	local partyService = rs:WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("PartyService"):WaitForChild("RF")
+
+	-- Create Party
+	partyService:WaitForChild("CreateParty"):InvokeServer({
+		Difficulty = "Easy",
+		Name = "GolfCatKi1082's Party",
+		PartyType = "Solo",
+		MapSelected = "Vault of Jupiter",
+		MaxCount = 4,
+		Ready = false
+	}, "Vault of Jupiter")
+
+	-- Update Party
+	partyService:WaitForChild("UpdateParty"):InvokeServer({
+		Difficulty = "Easy",
+		Name = "GolfCatKi1082's Party",
+		PartyType = "Public",
+		MapSelected = "Vault of Jupiter",
+		MaxCount = 4,
+		Ready = true
+	})
 end)
 
--- Auto Roll Aura Toggle
-local autoRollAura = false
-Tab1Section1:CreateToggle("Auto Roll Aura", function(value)
-    autoRollAura = value
-    if autoRollAura then
-        task.spawn(function()
-            while autoRollAura do
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Packages")
-                    :WaitForChild("Knit")
-                    :WaitForChild("Services")
-                    :WaitForChild("AuraService")
-                    :WaitForChild("RF")
-                    :WaitForChild("Roll")
-                    :InvokeServer()
-                task.wait()
-            end
-        end)
-    end
+-- TP Brainrots Toggle
+local tpBrainrots = false
+Tab1Section1:CreateToggle("TP Brainrots", function(value)
+	tpBrainrots = value
+	local p = game:GetService("Players").LocalPlayer
+	local w = workspace
+	local c = p.Character or p.CharacterAdded:Wait()
+	local RunService = game:GetService("RunService")
+
+	local function getRoot(m)
+		return m:FindFirstChild("HumanoidRootPart") or m:FindFirstChildWhichIsA("BasePart")
+	end
+
+	local function enableFloating()
+		local hrp = getRoot(c)
+		if not hrp or hrp:FindFirstChild("FloatVelocity") then return end
+		local bv = Instance.new("BodyVelocity")
+		bv.Velocity = Vector3.new(0, 0, 0)
+		bv.MaxForce = Vector3.new(0, math.huge, 0)
+		bv.Name = "FloatVelocity"
+		bv.Parent = hrp
+		RunService.Heartbeat:Connect(function()
+			if hrp and hrp:FindFirstChild("FloatVelocity") then
+				hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+			end
+		end)
+	end
+
+	local function teleportToModels(namePart)
+		local hrp = getRoot(c)
+		if not hrp then return end
+		for _, model in ipairs(w:GetDescendants()) do
+			if model:IsA("Model") and model.Name:lower():find(namePart:lower()) then
+				local modelRoot = getRoot(model)
+				if modelRoot then
+					local humanoid = c:FindFirstChildOfClass("Humanoid")
+					if humanoid and humanoid.SeatPart then
+						humanoid.Sit = false
+						task.wait(0.1)
+					end
+					hrp.CFrame = modelRoot.CFrame
+					task.wait(1)
+					if not tpBrainrots then break end -- stop if toggle turned off
+				end
+			end
+		end
+	end
+
+	if tpBrainrots then
+		enableFloating()
+		task.spawn(function()
+			while tpBrainrots do
+				teleportToModels("Pakrahmatmat")
+				teleportToModels("Rhino Rhino Toasterinoo")
+				teleportToModels("Ecco CavaIlo Virtuoso")
+				teleportToModels("Bisonte Giuppitur Giuppitercito")
+				task.wait(1)
+			end
+		end)
+	end
 end)
