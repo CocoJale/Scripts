@@ -1,37 +1,15 @@
-local p = game.Players.LocalPlayer
-local rs, ws = game:GetService("RunService"), workspace
-local name = "Te Te Te Te Te Te Te Te Te Te Sahur"
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local modelName = "Te Te Te Te Te Te Te Te Te Te Sahur"
 
--- Float
-task.spawn(function()
-	local c = p.Character or p.CharacterAdded:Wait()
-	local hrp = c:WaitForChild("HumanoidRootPart")
-	if not hrp:FindFirstChild("FloatVelocity") then
-		local bv = Instance.new("BodyVelocity", hrp)
-		bv.Name = "FloatVelocity"
-		bv.Velocity = Vector3.new()
-		bv.MaxForce = Vector3.new(0, math.huge, 0)
-		rs.Heartbeat:Connect(function()
-			if hrp:FindFirstChild("FloatVelocity") then
-				hrp.FloatVelocity.Velocity = Vector3.new()
-			end
-		end)
-	end
-end)
-
--- TP Loop
-task.spawn(function()
-	while true do
-		local c = p.Character or p.CharacterAdded:Wait()
-		local hrp = c:FindFirstChild("HumanoidRootPart")
-		if hrp then
-			local m = ws:FindFirstChild(name)
-			if m and m:IsA("Model") and m:FindFirstChild("ZoneHitbox") then
-				local h = c:FindFirstChildOfClass("Humanoid")
-				if h and h.SeatPart then h.Sit = false task.wait(0.1) end
-				hrp.CFrame = m:GetModelCFrame()
-			end
+-- Wait for it to be added
+workspace.ChildAdded:Connect(function(child)
+	if child:IsA("Model") and child.Name == modelName then
+		local zone = child:FindFirstChild("ZoneHitbox")
+		if zone then
+			hrp.CFrame = child:GetModelCFrame()
 		end
-		task.wait(0.1)
 	end
 end)
