@@ -1,139 +1,37 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
-local Tab1 = Library:NewWindow("AWS")
-local Tab1Section1 = Tab1:NewSection("Tab1")
+local p = game.Players.LocalPlayer
+local rs, ws = game:GetService("RunService"), workspace
+local name = "Te Te Te Te Te Te Te Te Te Te Sahur"
 
--- Attack Nearest Toggle
-local attackNearest = false
-Tab1Section1:CreateToggle("Attack Nearest", function(value)
-	attackNearest = value
-	if attackNearest then
-		local p = game:GetService("Players").LocalPlayer
-		local rf = game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack
-		task.spawn(function()
-			while attackNearest do
-				local char = p.Character or p.CharacterAdded:Wait()
-				local hrp = char:FindFirstChild("HumanoidRootPart")
-				if hrp then
-					local pos = hrp.Position
-					local dir = hrp.CFrame.LookVector
-					rf:InvokeServer(CFrame.new(pos + dir * 5, pos + dir * 6))
-				end
-				task.wait(0.03)
-			end
-		end)
-	end
-end)
-
--- Join Dungeon Button
-Tab1Section1:CreateButton("Join Dungeon", function()
-	local rs = game:GetService("ReplicatedStorage")
-	local partyService = rs:WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("PartyService"):WaitForChild("RF")
-
-	-- Create Party
-	partyService:WaitForChild("CreateParty"):InvokeServer({
-		Difficulty = "Easy",
-		Name = "GolfCatKi1082's Party",
-		PartyType = "Solo",
-		MapSelected = "Vault of Jupiter",
-		MaxCount = 4,
-		Ready = false
-	}, "Vault of Jupiter")
-
-	-- Update Party
-	partyService:WaitForChild("UpdateParty"):InvokeServer({
-		Difficulty = "Easy",
-		Name = "GolfCatKi1082's Party",
-		PartyType = "Public",
-		MapSelected = "Vault of Jupiter",
-		MaxCount = 4,
-		Ready = true
-	})
-end)
-
--- TP Brainrots Toggle
-local tpBrainrots = false
-Tab1Section1:CreateToggle("TP Brainrots", function(value)
-	tpBrainrots = value
-	local p = game:GetService("Players").LocalPlayer
-	local w = workspace
+-- Float
+task.spawn(function()
 	local c = p.Character or p.CharacterAdded:Wait()
-	local RunService = game:GetService("RunService")
-
-	local function getRoot(m)
-		return m:FindFirstChild("HumanoidRootPart") or m:FindFirstChildWhichIsA("BasePart")
-	end
-
-	local function enableFloating()
-		local hrp = getRoot(c)
-		if not hrp or hrp:FindFirstChild("FloatVelocity") then return end
-		local bv = Instance.new("BodyVelocity")
-		bv.Velocity = Vector3.new(0, 0, 0)
-		bv.MaxForce = Vector3.new(0, math.huge, 0)
+	local hrp = c:WaitForChild("HumanoidRootPart")
+	if not hrp:FindFirstChild("FloatVelocity") then
+		local bv = Instance.new("BodyVelocity", hrp)
 		bv.Name = "FloatVelocity"
-		bv.Parent = hrp
-		RunService.Heartbeat:Connect(function()
-			if hrp and hrp:FindFirstChild("FloatVelocity") then
-				hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
+		bv.Velocity = Vector3.new()
+		bv.MaxForce = Vector3.new(0, math.huge, 0)
+		rs.Heartbeat:Connect(function()
+			if hrp:FindFirstChild("FloatVelocity") then
+				hrp.FloatVelocity.Velocity = Vector3.new()
 			end
 		end)
 	end
+end)
 
-	local function findNearestModel(namePart, originPos, maxDistance)
-		local nearestModel = nil
-		local nearestDist = maxDistance
-		for _, model in ipairs(w:GetDescendants()) do
-			if model:IsA("Model") and model.Name:lower():find(namePart:lower()) then
-				local modelRoot = getRoot(model)
-				if modelRoot then
-					local dist = (modelRoot.Position - originPos).Magnitude
-					if dist <= nearestDist then
-						nearestDist = dist
-						nearestModel = modelRoot
-					end
-				end
+-- TP Loop
+task.spawn(function()
+	while true do
+		local c = p.Character or p.CharacterAdded:Wait()
+		local hrp = c:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			local m = ws:FindFirstChild(name)
+			if m and m:IsA("Model") and m:FindFirstChild("ZoneHitbox") then
+				local h = c:FindFirstChildOfClass("Humanoid")
+				if h and h.SeatPart then h.Sit = false task.wait(0.1) end
+				hrp.CFrame = m:GetModelCFrame()
 			end
 		end
-		return nearestModel
-	end
-
-	local function teleportBehind(modelRoot, hrp, distanceBehind)
-		local behindPosition = modelRoot.CFrame.Position - modelRoot.CFrame.LookVector * distanceBehind
-		hrp.CFrame = CFrame.new(behindPosition, modelRoot.CFrame.Position)
-	end
-
-	local function teleportToNearestModels()
-		local hrp = getRoot(c)
-		if not hrp then return end
-
-		local nameParts = {
-			"Pakrahmatmat",
-			"Rhino Rhino Toasterinoo",
-			"Ecco CavaIlo Virtuoso",
-			"Bisonte Giuppitur Giuppitercito"
-		}
-
-		for _, namePart in ipairs(nameParts) do
-			local nearestModelRoot = findNearestModel(namePart, hrp.Position, 100)
-			if nearestModelRoot then
-				local humanoid = c:FindFirstChildOfClass("Humanoid")
-				if humanoid and humanoid.SeatPart then
-					humanoid.Sit = false
-					task.wait(0.1)
-				end
-				teleportBehind(nearestModelRoot, hrp, 5)
-				task.wait(0.8)
-				if not tpBrainrots then break end
-			end
-		end
-	end
-
-	if tpBrainrots then
-		enableFloating()
-		task.spawn(function()
-			while tpBrainrots do
-				teleportToNearestModels()
-				task.wait(0.8)
-			end
-		end)
+		task.wait(0.1)
 	end
 end)
