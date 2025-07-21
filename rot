@@ -1,15 +1,57 @@
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
+-- Settings
 local modelName = "Te Te Te Te Te Te Te Te Te Te Sahur"
+local teleportDelay = 0.1
 
--- Wait for it to be added
-workspace.ChildAdded:Connect(function(child)
-	if child:IsA("Model") and child.Name == modelName then
-		local zone = child:FindFirstChild("ZoneHitbox")
-		if zone then
-			hrp.CFrame = child:GetModelCFrame()
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local speaker = Players.LocalPlayer
+
+-- Helper: get HumanoidRootPart or fallback BasePart
+local function getRoot(character)
+	return character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChildWhichIsA("BasePart"))
+end
+
+-- Floating Function (Your new version)
+local function enableFloating()
+	local character = speaker.Character or speaker.CharacterAdded:Wait()
+	local hrp = character:WaitForChild("HumanoidRootPart")
+
+	if hrp:FindFirstChild("FloatVelocity") then return end
+
+	local bodyVelocity = Instance.new("BodyVelocity")
+	bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+	bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
+	bodyVelocity.Name = "FloatVelocity"
+	bodyVelocity.Parent = hrp
+
+	RunService.Heartbeat:Connect(function()
+		if hrp and hrp:FindFirstChild("FloatVelocity") then
+			hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
 		end
+	end)
+end
+
+-- Start Floating
+enableFloating()
+
+-- Main Teleport Loop
+task.spawn(function()
+	while true do
+		local char = speaker.Character or speaker.CharacterAdded:Wait()
+		local hrp = getRoot(char)
+		if hrp then
+			local targetModel = workspace:FindFirstChild(modelName)
+			if targetModel and targetModel:IsA("Model") and targetModel:FindFirstChild("ZoneHitbox") then
+				local humanoid = char:FindFirstChildOfClass("Humanoid")
+				if humanoid and humanoid.SeatPart then
+					humanoid.Sit = false
+					task.wait(0.1)
+				end
+
+				hrp.CFrame = targetModel:GetModelCFrame()
+			end
+		end
+		task.wait(teleportDelay)
 	end
 end)
