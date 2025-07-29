@@ -2,81 +2,85 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/blood
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
--- Required services and globals
+-- Globals
 local ArmwrestleServiceRF = game:GetService("ReplicatedStorage").Packages.Knit.Services.ArmwrestleService.RF
 local autoClickThreads = {}
 local cleanupConnections = {}
 
--- Helper cleanup function
+-- Optional cleanup logic
 local function cleanupRequests()
-	-- Your custom cleanup logic here, or leave empty if none
+    -- You can place actual cleanup code here if needed
 end
 
 -- Spam Crit Hits Toggle
-Tab1Section1:CreateToggle("Spam Crit Hits", function(value)
-	if value then
-		-- Stop existing threads and cleanup
-		for _, thread in pairs(autoClickThreads) do
-			if typeof(thread) == "thread" then
-				task.cancel(thread)
-			elseif typeof(thread) == "table" then
-				thread.active = false
-			end
-		end
-		autoClickThreads = {}
+local spamCritHits = false
+Tab1Section1:CreateToggle("Spam Crit Hitss", function(value)
+    spamCritHits = value
 
-		-- Stop any existing cleanup connections
-		if cleanupConnections.autoClick then
-			cleanupConnections.autoClick:Disconnect()
-		end
+    if spamCritHits then
+        -- Stop existing threads and cleanup
+        for _, thread in pairs(autoClickThreads) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            elseif typeof(thread) == "table" then
+                thread.active = false
+            end
+        end
+        autoClickThreads = {}
 
-		-- Spawn new click threads
-		task.spawn(function()
-			for i = 1, 500 do
-				local threadData = { active = true }
-				table.insert(autoClickThreads, threadData)
+        -- Stop any existing cleanup connections
+        if cleanupConnections.autoClick then
+            task.cancel(cleanupConnections.autoClick)
+            cleanupConnections.autoClick = nil
+        end
 
-				task.spawn(function()
-					while threadData.active and value do
-						pcall(function()
-							ArmwrestleServiceRF:WaitForChild("RequestClick"):InvokeServer()
-							ArmwrestleServiceRF:WaitForChild("RequestCritHit"):InvokeServer()
-						end)
-						task.wait()
-					end
-				end)
+        -- Spawn new click threads
+        task.spawn(function()
+            for i = 1, 500 do
+                local threadData = { active = true }
+                table.insert(autoClickThreads, threadData)
 
-				task.wait(0.001)
-			end
-		end)
+                task.spawn(function()
+                    while threadData.active and spamCritHits do
+                        pcall(function()
+                            ArmwrestleServiceRF:WaitForChild("RequestClick"):InvokeServer()
+                            ArmwrestleServiceRF:WaitForChild("RequestCritHit"):InvokeServer()
+                        end)
+                        task.wait()
+                    end
+                end)
 
-		-- Start cleanup timer
-		cleanupConnections.autoClick = task.spawn(function()
-			while value do
-				task.wait(5)
-				if value then
-					cleanupRequests()
-				end
-			end
-		end)
-	else
-		-- Disable all click threads
-		for _, thread in pairs(autoClickThreads) do
-			if typeof(thread) == "thread" then
-				task.cancel(thread)
-			elseif typeof(thread) == "table" then
-				thread.active = false
-			end
-		end
-		autoClickThreads = {}
+                task.wait(0.001)
+            end
+        end)
 
-		-- Stop cleanup timer
-		if cleanupConnections.autoClick then
-			task.cancel(cleanupConnections.autoClick)
-			cleanupConnections.autoClick = nil
-		end
+        -- Start cleanup timer
+        cleanupConnections.autoClick = task.spawn(function()
+            while spamCritHits do
+                task.wait(5)
+                if spamCritHits then
+                    cleanupRequests()
+                end
+            end
+        end)
+    else
+        -- Disable all click threads
+        for _, thread in pairs(autoClickThreads) do
+            if typeof(thread) == "thread" then
+                task.cancel(thread)
+            elseif typeof(thread) == "table" then
+                thread.active = false
+            end
+        end
+        autoClickThreads = {}
 
-		-- Final cleanup
-		cleanupRequests()
-	end
+        -- Stop cleanup timer
+        if cleanupConnections.autoClick then
+            task.cancel(cleanupConnections.autoClick)
+            cleanupConnections.autoClick = nil
+        end
+
+        -- Final cleanup
+        cleanupRequests()
+    end
 end)
