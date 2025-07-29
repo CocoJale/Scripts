@@ -2,85 +2,33 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/blood
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
--- Globals
-local ArmwrestleServiceRF = game:GetService("ReplicatedStorage").Packages.Knit.Services.ArmwrestleService.RF
-local autoClickThreads = {}
-local cleanupConnections = {}
-
--- Optional cleanup logic
-local function cleanupRequests()
-    -- You can place actual cleanup code here if needed
-end
-
--- Spam Crit Hits Toggle
-local spamCritHits = false
-Tab1Section1:CreateToggle("Spam Crit Hitss", function(value)
-    spamCritHits = value
-
-    if spamCritHits then
-        -- Stop existing threads and cleanup
-        for _, thread in pairs(autoClickThreads) do
-            if typeof(thread) == "thread" then
-                task.cancel(thread)
-            elseif typeof(thread) == "table" then
-                thread.active = false
-            end
+Tab1Section1:CreateToggle("Fight Wealthy Orc", function(value)
+    if value then
+        for _ = 1, 3 do
+            local args = { "WealthyOrc" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit")
+                :WaitForChild("Services"):WaitForChild("ArmWrestleService")
+                :WaitForChild("RF"):WaitForChild("RequestStartFight"):InvokeServer(unpack(args))
         end
-        autoClickThreads = {}
+    end
+end)
 
-        -- Stop any existing cleanup connections
-        if cleanupConnections.autoClick then
-            task.cancel(cleanupConnections.autoClick)
-            cleanupConnections.autoClick = nil
-        end
+Tab1Section1:CreateToggle("Crit Hit", function(value)
+    if value then
+        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit")
+            :WaitForChild("Services"):WaitForChild("ArmWrestleService")
+            :WaitForChild("RF"):WaitForChild("RequestClick"):InvokeServer()
 
-        -- Spawn new click threads
-        task.spawn(function()
-            for i = 1, 500 do
-                local threadData = { active = true }
-                table.insert(autoClickThreads, threadData)
+        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit")
+            :WaitForChild("Services"):WaitForChild("ArmWrestleService")
+            :WaitForChild("RF"):WaitForChild("RequestCritHit"):InvokeServer()
 
-                task.spawn(function()
-                    while threadData.active and spamCritHits do
-                        pcall(function()
-                            ArmwrestleServiceRF:WaitForChild("RequestClick"):InvokeServer()
-                            ArmwrestleServiceRF:WaitForChild("RequestCritHit"):InvokeServer()
-                        end)
-                        task.wait()
-                    end
-                end)
+        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit")
+            :WaitForChild("Services"):WaitForChild("ArmWrestleService")
+            :WaitForChild("RF"):WaitForChild("RequestClick"):InvokeServer()
 
-                task.wait(0.001)
-            end
-        end)
-
-        -- Start cleanup timer
-        cleanupConnections.autoClick = task.spawn(function()
-            while spamCritHits do
-                task.wait(5)
-                if spamCritHits then
-                    cleanupRequests()
-                end
-            end
-        end)
-    else
-        -- Disable all click threads
-        for _, thread in pairs(autoClickThreads) do
-            if typeof(thread) == "thread" then
-                task.cancel(thread)
-            elseif typeof(thread) == "table" then
-                thread.active = false
-            end
-        end
-        autoClickThreads = {}
-
-        -- Stop cleanup timer
-        if cleanupConnections.autoClick then
-            task.cancel(cleanupConnections.autoClick)
-            cleanupConnections.autoClick = nil
-        end
-
-        -- Final cleanup
-        cleanupRequests()
+        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit")
+            :WaitForChild("Services"):WaitForChild("ArmWrestleService")
+            :WaitForChild("RF"):WaitForChild("RequestCritHit"):InvokeServer()
     end
 end)
