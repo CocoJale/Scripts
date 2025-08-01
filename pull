@@ -102,6 +102,44 @@ MainGameSection:CreateDropdown("Select PvP Target", {"Coco", "Akira"}, 1, functi
     selectedPvPTarget = option
 end)
 
+MainGameSection:CreateButton("Complete Quests", function()
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+    remotes:WaitForChild("RemoveC"):FireServer(1)
+    task.wait(1)
+
+    remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
+    remotes:WaitForChild("OnStandartShopRequest"):FireServer("Buy", 2, 3)
+    remotes:WaitForChild("OnStandartShopRequest"):FireServer("Buy", 2, 1)
+    task.wait(2)
+
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(3)
+
+    for i = 1, 10 do
+        remotes:WaitForChild("WinEvent"):FireServer("5")
+        task.wait(2)
+    end
+
+    task.wait(2)
+
+    for i = 1, 20 do
+        remotes:WaitForChild("WinBossEvent"):FireServer("Boss1")
+        task.wait(0.1)
+    end
+
+    remotes:WaitForChild("RemoveC"):FireServer(0)
+end)
+
+
 MainGameSection:CreateButton("Antilag", function()
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
