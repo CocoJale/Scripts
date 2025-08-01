@@ -177,7 +177,6 @@ MainGameSection:CreateButton("Redeem All Codes", function()
     end
 end)
 
-
 MainGameSection:CreateButton("Antiafk & Antilag", function()
     -- Antilag part
     local RunService = game:GetService("RunService")
@@ -236,6 +235,18 @@ MainGameSection:CreateButton("Antiafk & Antilag", function()
     end)
 end)
 
+local autoAttackEnabled = false
+SquidEventSection:CreateToggle("Auto Attack", function(value)
+    autoAttackEnabled = value
+    if autoAttackEnabled then
+        task.spawn(function()
+            while autoAttackEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
+end)
 
 local autoJoinMiniGameEnabled = false
 SquidEventSection:CreateToggle("Join MiniGame", function(value)
