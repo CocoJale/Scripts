@@ -2,9 +2,9 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/blood
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
-local merchantLoop, champLoop, tpLoop
+local champLoop, tpLoop
 
-Tab1Section1:CreateToggle("Trial/Coal", function(value)
+Tab1Section1:CreateToggle("Trial W13", function(value)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
     local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
@@ -21,27 +21,16 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
             end
         end)
 
-        merchantLoop = task.spawn(function()
-            local remote = Knit:WaitForChild("Services"):WaitForChild("LimitedMerchantService")
-                :WaitForChild("RF"):WaitForChild("BuyItem")
-            local args = { "Orc Merchant", 4 }
-            while true do
-                remote:InvokeServer(unpack(args))
-                task.wait(60)
-            end
-        end)
-
         champLoop = task.spawn(function()
             local remote = Knit:WaitForChild("Services"):WaitForChild("ChampionshipService")
                 :WaitForChild("RF"):WaitForChild("RequestJoin")
             local args = { "Medieval" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait(1.6)
+                task.wait(1.7)
             end
         end)
     else
-        if merchantLoop then task.cancel(merchantLoop) end
         if champLoop then task.cancel(champLoop) end
         if tpLoop then task.cancel(tpLoop) end
     end
