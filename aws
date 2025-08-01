@@ -26,7 +26,7 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
             local args = { "Medieval" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait(1)
+                task.wait(1.6)
             end
         end)
 
@@ -37,7 +37,7 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
                 if char and char:FindFirstChild("HumanoidRootPart") then
                     char.HumanoidRootPart.CFrame = CFrame.new(2925, 11, 536)
                 end
-                task.wait(1)
+                task.wait()
             end
         end)
     else
