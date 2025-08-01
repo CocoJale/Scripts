@@ -10,6 +10,17 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
     local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
 
     if value then
+        tpLoop = task.spawn(function()
+            local player = Players.LocalPlayer
+            while true do
+                local char = player.Character
+                if char and char:FindFirstChild("HumanoidRootPart") then
+                    char.HumanoidRootPart.CFrame = CFrame.new(2925, 11.5, 536)
+                end
+                task.wait()
+            end
+        end)
+
         merchantLoop = task.spawn(function()
             local remote = Knit:WaitForChild("Services"):WaitForChild("LimitedMerchantService")
                 :WaitForChild("RF"):WaitForChild("BuyItem")
@@ -27,17 +38,6 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
             while true do
                 remote:InvokeServer(unpack(args))
                 task.wait(1.6)
-            end
-        end)
-
-        tpLoop = task.spawn(function()
-            local player = Players.LocalPlayer
-            while true do
-                local char = player.Character
-                if char and char:FindFirstChild("HumanoidRootPart") then
-                    char.HumanoidRootPart.CFrame = CFrame.new(2925, 11.5, 536)
-                end
-                task.wait()
             end
         end)
     else
