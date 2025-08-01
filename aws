@@ -27,12 +27,12 @@ Tab1Section1:CreateToggle("Trial W13", function(value)
             local args = { "Medieval" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait(1.1)
+                task.wait(1.6)
             end
         end)
     else
-        if champLoop then task.cancel(champLoop) end
         if tpLoop then task.cancel(tpLoop) end
+        if champLoop then task.cancel(champLoop) end
     end
 end)
 
@@ -54,8 +54,7 @@ Tab1Section1:CreateToggle("Aura Roll", function(value)
     end
 end)
 
-Tab1Section1:CreateButton("Antiafk & Antilag", function(value)
-    -- Antilag part
+Tab1Section1:CreateButton("Antiafk & Antilag", function()
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
     local Terrain = workspace:FindFirstChildOfClass('Terrain')
@@ -104,7 +103,6 @@ Tab1Section1:CreateButton("Antiafk & Antilag", function(value)
         end)
     end)
 
-    -- AntiAFK part
     game:GetService("Players").LocalPlayer.Idled:Connect(function()
         local VirtualUser = game:GetService("VirtualUser")
         VirtualUser:CaptureController()
