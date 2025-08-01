@@ -36,7 +36,7 @@ Tab1Section1:CreateToggle("Trial W13", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Antiafk & Antilag", function(value)
+Tab1Section1:CreateButton("Antiafk & Antilag", function(value)
     -- Antilag part
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
