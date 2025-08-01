@@ -139,8 +139,8 @@ MainGameSection:CreateButton("Complete Quests", function()
     remotes:WaitForChild("RemoveC"):FireServer(0)
 end)
 
-
-MainGameSection:CreateButton("Antilag", function()
+MainGameSection:CreateButton("Antiafk & Antilag", function()
+    -- Antilag part
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
     local Terrain = workspace:FindFirstChildOfClass('Terrain')
@@ -188,28 +188,15 @@ MainGameSection:CreateButton("Antilag", function()
             end
         end)
     end)
-end)
 
-
-MainGameSection:CreateButton("AntiAFK", function()
+    -- AntiAFK part
     game:GetService("Players").LocalPlayer.Idled:Connect(function()
-        game:GetService("VirtualUser"):CaptureController()
-        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+        local VirtualUser = game:GetService("VirtualUser")
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
     end)
 end)
 
-local autoAttackEnabled = false
-SquidEventSection:CreateToggle("Auto Attack", function(value)
-    autoAttackEnabled = value
-    if autoAttackEnabled then
-        task.spawn(function()
-            while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
-                task.wait(0.01)
-            end
-        end)
-    end
-end)
 
 local autoJoinMiniGameEnabled = false
 SquidEventSection:CreateToggle("Join MiniGame", function(value)
