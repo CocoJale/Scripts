@@ -2,7 +2,6 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/blood
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
--- Trial/Coal Toggle
 local merchantLoop, champLoop, tpLoop
 
 Tab1Section1:CreateToggle("Trial/Coal", function(value)
@@ -27,7 +26,7 @@ Tab1Section1:CreateToggle("Trial/Coal", function(value)
             local args = { "Medieval" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait(8)
+                task.wait(1)
             end
         end)
 
