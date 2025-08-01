@@ -54,7 +54,7 @@ Tab1Section1:CreateToggle("Aura Roll", function(value)
     end
 end)
 
-MainGameSection:CreateButton("Antiafk & Antilag", function()
+Tab1Section1:CreateButton("Antiafk & Antilag", function()
     -- Antilag part
     local RunService = game:GetService("RunService")
     local Lighting = game:GetService("Lighting")
