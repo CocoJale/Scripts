@@ -173,7 +173,7 @@ MainGameSection:CreateButton("Redeem All Codes", function()
     for _, code in ipairs(codes) do
         local args = { code, "YT_Arawrd" }
         remote:InvokeServer(unpack(args))
-        task.wait(3)
+        task.wait(6)
     end
 end)
 
