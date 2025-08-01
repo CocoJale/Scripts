@@ -139,6 +139,45 @@ MainGameSection:CreateButton("Complete Quests", function()
     remotes:WaitForChild("RemoveC"):FireServer(0)
 end)
 
+MainGameSection:CreateButton("Redeem All Codes", function()
+    local codes = {
+        "GAMESTARTS",
+        "FIRSTROUND",
+        "ARISE",
+        "ARISE2",
+        "ARISE3",
+        "sorrydelayraid",
+        "ARISE4",
+        "FIRSTPASLEAGUE",
+        "WEEKPOWER",
+        "ELITECODE",
+        "DAILYQUESTS",
+        "GROWASWORD",
+        "CRAFTUPD",
+        "BESTCODE333",
+        "MASTERCODE",
+        "SORRYDELAY",
+        "UDINDINDIN",
+        "DELAYASWORD1",
+        "LUNACODE33",
+        "WHEELFIX3",
+        "SORRYPAW",
+        "REBIRTHFIX",
+        "TIMERBUG23",
+        "SEASONXIV",
+        "BESTCODE222"
+    }
+
+    local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("OnCodeRequest")
+
+    for _, code in ipairs(codes) do
+        local args = { code, "YT_Arawrd" }
+        remote:InvokeServer(unpack(args))
+        task.wait(0.5)
+    end
+end)
+
+
 MainGameSection:CreateButton("Antiafk & Antilag", function()
     -- Antilag part
     local RunService = game:GetService("RunService")
