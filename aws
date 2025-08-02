@@ -65,7 +65,7 @@ Tab1Section1:CreateToggle("Aura Roll", function(value)
                 :WaitForChild("RF"):WaitForChild("Roll")
             while true do
                 remote:InvokeServer()
-                task.wait0.7)
+                task.wait(0.7)
             end
         end)
     else
