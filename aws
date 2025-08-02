@@ -2,7 +2,7 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/blood
 local Tab1 = Library:NewWindow("AWS")
 local Tab1Section1 = Tab1:NewSection("Tab1")
 
-local champLoop, tpLoop, auraLoop
+local champLoop, tpLoop, auraLoop, chestLoop
 
 Tab1Section1:CreateToggle("Trial W13", function(value)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -27,12 +27,31 @@ Tab1Section1:CreateToggle("Trial W13", function(value)
             local args = { "Medieval" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait(1.6)
+                task.wait(1.1)
             end
         end)
     else
-        if tpLoop then task.cancel(tpLoop) end
         if champLoop then task.cancel(champLoop) end
+        if tpLoop then task.cancel(tpLoop) end
+    end
+end)
+
+Tab1Section1:CreateToggle("Open KingdomChest", function(value)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
+
+    if value then
+        chestLoop = task.spawn(function()
+            local remote = Knit:WaitForChild("Services"):WaitForChild("ChestService")
+                :WaitForChild("RF"):WaitForChild("Open")
+            local args = { "KingdomChest" }
+            while true do
+                remote:InvokeServer(unpack(args))
+                task.wait()
+            end
+        end)
+    else
+        if chestLoop then task.cancel(chestLoop) end
     end
 end)
 
