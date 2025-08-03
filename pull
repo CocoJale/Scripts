@@ -122,6 +122,8 @@ MainGameSection:CreateButton("Complete Quests", function()
     remotes:WaitForChild("PortalC"):FireServer("2", true)
     task.wait(2)
     remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
     task.wait(3)
 
     for i = 1, 10 do
