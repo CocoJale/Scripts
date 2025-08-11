@@ -54,6 +54,31 @@ MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
     end
 end)
 
+local killTitleBossesEnabled = false
+
+MainGameSection:CreateToggle("Kill Title Bosses", function(value)
+    killTitleBossesEnabled = value
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+    if killTitleBossesEnabled then
+        remotes:WaitForChild("RemoveC"):FireServer(1)
+        
+        task.spawn(function()
+            local b = 1
+            while killTitleBossesEnabled do
+                remotes:WaitForChild("WinBossEvent"):FireServer("Boss" .. b)
+                b = b + 1
+                if b > 10 then b = 1 end
+                task.wait(0.001)
+            end
+        end)
+    else
+        local args = {0}
+        remotes:WaitForChild("RemoveC"):FireServer(unpack(args))
+    end
+end)
+
+
 local hatchNearestEnabled = false
 
 MainGameSection:CreateToggle("Hatch Nearest", function(value)
