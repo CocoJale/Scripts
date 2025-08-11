@@ -61,24 +61,34 @@ MainGameSection:CreateToggle("Kill Title Bosses", function(value)
     local remotes = game:GetService("ReplicatedStorage").Remotes.Events
     local removeC = remotes.RemoveC
     local winBossEvent = remotes.WinBossEvent
+    local winMegaBossEvent = remotes.WinMegaBossEvent
 
     if killTitleBossesEnabled then
         removeC:FireServer(1)
 
         task.spawn(function()
             local b = 1
+            local d = 1
+            local difficulties = {"Normal", "Hard", "Chaos"}
             while killTitleBossesEnabled do
                 winBossEvent:FireServer("Boss" .. b)
                 b = b + 1
                 if b > 10 then b = 1 end
-                task.wait() -- essentially runs as fast as possible
+
+                for _, diff in ipairs(difficulties) do
+                    winMegaBossEvent:FireServer("Dragon" .. d, diff)
+                end
+                d = d + 1
+                if d > 10 then d = 1 end
+
+                task.wait()
             end
         end)
     else
-        local args = {0}
-        removeC:FireServer(unpack(args))
+        removeC:FireServer(0)
     end
 end)
+
 
 local hatchNearestEnabled = false
 
