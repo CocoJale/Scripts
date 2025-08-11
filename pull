@@ -55,6 +55,7 @@ MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
 end)
 
 local killTitleBossesEnabled = false
+
 MainGameSection:CreateToggle("Kill Title Bosses", function(value)
     killTitleBossesEnabled = value
 
@@ -70,24 +71,27 @@ MainGameSection:CreateToggle("Kill Title Bosses", function(value)
             local b = 1
             local d = 1
             local difficulties = {"Normal", "Hard", "Chaos"}
+
             while killTitleBossesEnabled do
-                winBossEvent:FireServer("Boss" .. b)
-                b = b + 1
-                if b > 10 then b = 1 end
+                for _ = 1, 5 do
+                    winBossEvent:FireServer("Boss" .. b)
+                    b = b + 1
+                    if b > 10 then b = 1 end
 
-                for _, diff in ipairs(difficulties) do
-                    winMegaBossEvent:FireServer("Dragon" .. d, diff)
+                    for _, diff in ipairs(difficulties) do
+                        winMegaBossEvent:FireServer("Dragon" .. d, diff)
+                    end
+                    d = d + 1
+                    if d > 10 then d = 1 end
                 end
-                d = d + 1
-                if d > 10 then d = 1 end
-
-                task.wait()
+                task.wait(0.001)
             end
         end)
     else
         removeC:FireServer(0)
     end
 end)
+
 
 
 local hatchNearestEnabled = false
