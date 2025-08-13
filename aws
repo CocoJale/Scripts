@@ -55,6 +55,28 @@ Tab1Section1:CreateToggle("Open KingdomChest", function(value)
     end
 end)
 
+Tab1Section1:CreateToggle("WealthyOrc", function(value)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
+    local remote = Knit:WaitForChild("Services")
+        :WaitForChild("ArmWrestleService")
+        :WaitForChild("RF")
+        :WaitForChild("RequestStartFight")
+    local args = { "WealthyOrc" }
+
+    if value then
+        WealthyOrcLoop = task.spawn(function()
+            while true do
+                remote:InvokeServer(unpack(args))
+                task.wait() -- minimal delay to avoid freezing
+            end
+        end)
+    else
+        if WealthyOrcLoop then task.cancel(WealthyOrcLoop) end
+    end
+end)
+
+
 Tab1Section1:CreateToggle("Aura Roll", function(value)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
