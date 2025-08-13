@@ -68,6 +68,7 @@ Tab1Section1:CreateToggle("WealthyOrc", function(value)
         WealthyOrcLoop = task.spawn(function()
             while true do
                 remote:InvokeServer(unpack(args))
+                remote:InvokeServer(unpack(args)) -- second trigger
                 task.wait() -- minimal delay to avoid freezing
             end
         end)
@@ -75,7 +76,6 @@ Tab1Section1:CreateToggle("WealthyOrc", function(value)
         if WealthyOrcLoop then task.cancel(WealthyOrcLoop) end
     end
 end)
-
 
 Tab1Section1:CreateToggle("Aura Roll", function(value)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
