@@ -68,8 +68,10 @@ Tab1Section1:CreateToggle("WealthyOrc", function(value)
         WealthyOrcLoop = task.spawn(function()
             while true do
                 remote:InvokeServer(unpack(args))
-                remote:InvokeServer(unpack(args)) -- second trigger
-                task.wait() -- minimal delay to avoid freezing
+                remote:InvokeServer(unpack(args))
+                remote:InvokeServer(unpack(args))
+                remote:InvokeServer(unpack(args))
+                task.wait()
             end
         end)
     else
