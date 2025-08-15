@@ -71,7 +71,7 @@ Tab1Section1:CreateToggle("Open OrcVault", function(value)
             local args = { "OrcVault" }
             while true do
                 remote:InvokeServer(unpack(args))
-                task.wait()
+                task.wait(1)
             end
         end)
     else
