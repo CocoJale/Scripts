@@ -36,25 +36,6 @@ Tab1Section1:CreateToggle("Trial W13", function(value)
     end
 end)
 
-Tab1Section1:CreateToggle("Open KingdomChest", function(value)
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
-
-    if value then
-        chestLoop = task.spawn(function()
-            local remote = Knit:WaitForChild("Services"):WaitForChild("ChestService")
-                :WaitForChild("RF"):WaitForChild("Open")
-            local args = { "KingdomChest" }
-            while true do
-                remote:InvokeServer(unpack(args))
-                task.wait()
-            end
-        end)
-    else
-        if chestLoop then task.cancel(chestLoop) end
-    end
-end)
-
 Tab1Section1:CreateToggle("WealthyOrc", function(value)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
@@ -76,6 +57,44 @@ Tab1Section1:CreateToggle("WealthyOrc", function(value)
         end)
     else
         if WealthyOrcLoop then task.cancel(WealthyOrcLoop) end
+    end
+end)
+
+Tab1Section1:CreateToggle("Open OrcVault", function(value)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
+
+    if value then
+        vaultLoop = task.spawn(function()
+            local remote = Knit:WaitForChild("Services"):WaitForChild("ChestService")
+                :WaitForChild("RF"):WaitForChild("Open")
+            local args = { "OrcVault" }
+            while true do
+                remote:InvokeServer(unpack(args))
+                task.wait()
+            end
+        end)
+    else
+        if vaultLoop then task.cancel(vaultLoop) end
+    end
+end)
+
+Tab1Section1:CreateToggle("Open KingdomChest", function(value)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Knit = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit")
+
+    if value then
+        chestLoop = task.spawn(function()
+            local remote = Knit:WaitForChild("Services"):WaitForChild("ChestService")
+                :WaitForChild("RF"):WaitForChild("Open")
+            local args = { "KingdomChest" }
+            while true do
+                remote:InvokeServer(unpack(args))
+                task.wait()
+            end
+        end)
+    else
+        if chestLoop then task.cancel(chestLoop) end
     end
 end)
 
