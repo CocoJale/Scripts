@@ -300,7 +300,7 @@ EventSection:CreateToggle("Attack Herald", function(value)
                         :WaitForChild("Herald")
                         :WaitForChild("AttackTheDummy")
                         :FireServer()
-                    task.wait(0.1)
+                    task.wait(0.15)
                 end
             end)
         end
