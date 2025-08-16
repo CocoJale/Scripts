@@ -270,7 +270,7 @@ EventSection:CreateToggle("Fast Attack Herald", function(value)
     if autoAttackEnabled then
         task.spawn(function()
             while autoAttackEnabled do
-                for i = 1, 5 do
+                for i = 1, 100 do
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
                         :WaitForChild("Herald")
