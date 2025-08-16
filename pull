@@ -71,7 +71,7 @@ MainGameSection:CreateToggle("Kill Title Bosses", function(value)
                 winBossEvent:FireServer("Boss" .. b)
                 b = b + 1
                 if b > 10 then b = 1 end
-                task.wait() -- essentially runs as fast as possible
+                task.wait()
             end
         end)
     else
@@ -297,7 +297,7 @@ EventSection:CreateToggle("TP Herald", function(value)
         task.spawn(function()
             while autoJoinMiniGameEnabled do
                 r:FireServer(unpack(a))
-                task.wait(10)
+                task.wait(20)
             end
         end)
     end
