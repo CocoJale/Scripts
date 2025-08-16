@@ -1,25 +1,298 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local Tab1 = Library:NewWindow("Pull A Sword")
+local Tab2 = Library:NewWindow("Events")
+
 local MainGameSection = Tab1:NewSection("Main Game")
+local EventSection = Tab2:NewSection("Herald Event")
 
-MainGameSection:CreateToggle("Generate Crystals (x100)", function(value)
-    _G.GenerateCrystals = value
+local autoClickEnabled = false
+MainGameSection:CreateToggle("Auto Click", function(value)
+    autoClickEnabled = value
+    if autoClickEnabled then
+        task.spawn(function()
+            while autoClickEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("ClickEvent"):FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
+end)
+
+local generateCrystalsEnabled = false
+MainGameSection:CreateToggle("Generate Crystals", function(value)
+    generateCrystalsEnabled = value
     local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
-
-    if _G.GenerateCrystals then
+    if generateCrystalsEnabled then
         remotes:WaitForChild("RemoveC"):FireServer(1)
         task.spawn(function()
-            for i = 1, 100 do
-                if not _G.GenerateCrystals then break end
-                for j = 1, 5 do
+            while generateCrystalsEnabled do
+                for i = 1, 5 do
                     remotes:WaitForChild("WinMegaBossEvent"):FireServer("Dragon6", "Chaos")
                 end
                 task.wait(0.01)
             end
-            remotes:WaitForChild("RemoveC"):FireServer(0)
         end)
     else
         remotes:WaitForChild("RemoveC"):FireServer(0)
+    end
+end)
+
+local spinCrystalWheelsEnabled = false
+MainGameSection:CreateToggle("Spin Crystal Wheels", function(value)
+    spinCrystalWheelsEnabled = value
+    if spinCrystalWheelsEnabled then
+        task.spawn(function()
+            while spinCrystalWheelsEnabled do
+                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+                remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
+                remotes:WaitForChild("SpinWheelSecret"):FireServer("-8", "563")
+                remotes:WaitForChild("WorldWheelEvent"):FireServer("6")
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+local killTitleBossesEnabled = false
+MainGameSection:CreateToggle("Kill Title Bosses", function(value)
+    killTitleBossesEnabled = value
+
+    local remotes = game:GetService("ReplicatedStorage").Remotes.Events
+    local removeC = remotes.RemoveC
+    local winBossEvent = remotes.WinBossEvent
+
+    if killTitleBossesEnabled then
+        removeC:FireServer(1)
+
+        task.spawn(function()
+            local b = 1
+            while killTitleBossesEnabled do
+                winBossEvent:FireServer("Boss" .. b)
+                b = b + 1
+                if b > 10 then b = 1 end
+                task.wait()
+            end
+        end)
+    else
+        local args = {0}
+        removeC:FireServer(unpack(args))
+    end
+end)
+
+
+local hatchNearestEnabled = false
+
+MainGameSection:CreateToggle("Hatch Nearest", function(value)
+    hatchNearestEnabled = value
+    local eggs = {
+        "W1E1", "W2E1", "W3E1", "W4E1", "W5E1", "W6E1", "W7E1", "W8E1", "W9E1", "W10E1",
+        "W11E1", "W12E1", "W13E1", "W14E1", "W15E1", "W16E1", "W17E1", "W18E1", "W19E1", "W20E1",
+        "W21E1", "W22E1", "W23E1", "W24E1", "W25E1", "W26E1", "W27E1", "W28E1", "W29E1", "W30E1",
+        "W31E1", "W32E1", "W33E1", "W34E1", "W35E1", "Common Egg"
+    }
+
+    if hatchNearestEnabled then
+        task.spawn(function()
+            while hatchNearestEnabled do
+                for _, eggName in ipairs(eggs) do
+                    task.spawn(function()
+                        game:GetService("ReplicatedStorage").GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(eggName, "Buy1")
+                    end)
+                end
+                task.wait(0.3)
+            end
+        end)
+    end
+end)
+
+
+local selectedPvPTarget = "Coco"
+MainGameSection:CreateToggle("Auto PvP", function(value)
+    autoPvPEnabled = value
+    if autoPvPEnabled then
+        task.spawn(function()
+            while autoPvPEnabled do
+                local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+                if selectedPvPTarget == "Coco" then
+                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Cocojale", true, true)
+                elseif selectedPvPTarget == "Akira" then
+                    remotes:WaitForChild("WinEvent_PVP"):FireServer("Rip_AkiraToriyama55", true, true)
+                end
+                task.wait(10820)
+            end
+        end)
+    end
+end)
+
+MainGameSection:CreateDropdown("Select PvP Target", {"Coco", "Akira"}, 1, function(option)
+    selectedPvPTarget = option
+end)
+
+MainGameSection:CreateButton("Complete Quests", function()
+    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+    remotes:WaitForChild("RemoveC"):FireServer(1)
+    task.wait(1)
+
+    remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
+    remotes:WaitForChild("OnStandartShopRequest"):FireServer("Buy", 2, 3)
+    remotes:WaitForChild("OnStandartShopRequest"):FireServer("Buy", 2, 1)
+    task.wait(2)
+
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("1", true)
+    task.wait(2)
+    remotes:WaitForChild("PortalC"):FireServer("2", true)
+    task.wait(3)
+
+    for i = 1, 10 do
+        remotes:WaitForChild("WinEvent"):FireServer("5")
+        task.wait(2)
+    end
+
+    task.wait(2)
+
+    for i = 1, 20 do
+        remotes:WaitForChild("WinBossEvent"):FireServer("Boss1")
+        task.wait(0.1)
+    end
+
+    remotes:WaitForChild("RemoveC"):FireServer(0)
+end)
+
+MainGameSection:CreateButton("Redeem All Codes", function()
+    local codes = {
+        "GAMESTARTS",
+        "FIRSTROUND",
+        "ARISE",
+        "ARISE2",
+        "ARISE3",
+        "sorrydelayraid",
+        "ARISE4",
+        "FIRSTPASLEAGUE",
+        "WEEKPOWER",
+        "ELITECODE",
+        "DAILYQUESTS",
+        "GROWASWORD",
+        "CRAFTUPD",
+        "BESTCODE333",
+        "MASTERCODE",
+        "SORRYDELAY",
+        "UDINDINDIN",
+        "DELAYASWORD1",
+        "LUNACODE33",
+        "WHEELFIX3",
+        "SORRYPAW",
+        "REBIRTHFIX",
+        "TIMERBUG23",
+        "SEASONXIV",
+        "BESTCODE222"
+    }
+
+    local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("OnCodeRequest")
+
+    for _, code in ipairs(codes) do
+        local args = { code, "YT_Arawrd" }
+        remote:InvokeServer(unpack(args))
+        task.wait(6)
+    end
+end)
+
+MainGameSection:CreateButton("Antiafk & Antilag", function()
+    -- Antilag part
+    local RunService = game:GetService("RunService")
+    local Lighting = game:GetService("Lighting")
+    local Terrain = workspace:FindFirstChildOfClass('Terrain')
+
+    if Terrain then
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 1
+    end
+
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.FogStart = 9e9
+    settings().Rendering.QualityLevel = 1
+
+    for i, v in pairs(game:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+            v.BackSurface = Enum.SurfaceType.SmoothNoOutlines
+            v.BottomSurface = Enum.SurfaceType.SmoothNoOutlines
+            v.FrontSurface = Enum.SurfaceType.SmoothNoOutlines
+            v.LeftSurface = Enum.SurfaceType.SmoothNoOutlines
+            v.RightSurface = Enum.SurfaceType.SmoothNoOutlines
+            v.TopSurface = Enum.SurfaceType.SmoothNoOutlines
+        elseif v:IsA("Decal") then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        end
+    end
+
+    for i, v in pairs(Lighting:GetDescendants()) do
+        if v:IsA("PostEffect") then
+            v.Enabled = false
+        end
+    end
+
+    workspace.DescendantAdded:Connect(function(child)
+        task.spawn(function()
+            if child:IsA('ForceField') or child:IsA('Sparkles') or child:IsA('Smoke') or child:IsA('Fire') or child:IsA('Beam') then
+                RunService.Heartbeat:Wait()
+                child:Destroy()
+            end
+        end)
+    end)
+
+    -- AntiAFK part
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        local VirtualUser = game:GetService("VirtualUser")
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
+end)
+
+local autoAttackEnabled = false
+EventSection:CreateToggle("Fast Attack Herald", function(value)
+    autoAttackEnabled = value
+    if autoAttackEnabled then
+        task.spawn(function()
+            while autoAttackEnabled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Herald"):WaitForChild("AttackTheDummy"):FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
+end)
+
+local autoJoinMiniGameEnabled = false
+EventSection:CreateToggle("TP Herald", function(value)
+    autoJoinMiniGameEnabled = value
+    local r=game:GetService("ReplicatedStorage").Remotes.Events.PortalC
+    local a={"2",true}
+    local p=game:GetService("Players").LocalPlayer
+    local h=(p.Character or p.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+    local t=Vector3.new(-724,4,-245)
+
+    if autoJoinMiniGameEnabled then
+        r:FireServer(unpack(a))
+        task.spawn(function()
+            while autoJoinMiniGameEnabled do
+                h.CFrame=CFrame.new(t)
+                task.wait()
+            end
+        end)
     end
 end)
