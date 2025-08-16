@@ -317,7 +317,7 @@ EventSection:CreateToggle("Attack Herald", function(value)
     end
 end)
 
-MainGameSection:CreateDropdown("Select Attack Mode", {"Slow Attack", "Fast Attack", "Faster Attack"}, 1, function(option)
+EventSection:CreateDropdown("Select Attack Mode", {"Slow Attack", "Fast Attack", "Faster Attack"}, 1, function(option)
     selectedMode = option
 end)
 
