@@ -264,19 +264,6 @@ MainGameSection:CreateButton("Antiafk & Antilag", function()
     end)
 end)
 
-local autoAttackEnabled = false
-EventSection:CreateToggle("Fast Attack Herald", function(value)
-    autoAttackEnabled = value
-    if autoAttackEnabled then
-        task.spawn(function()
-            while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Herald"):WaitForChild("AttackTheDummy"):FireServer()
-                task.wait(0.01)
-            end
-        end)
-    end
-end)
-
 local autoJoinMiniGameEnabled = false
 EventSection:CreateToggle("TP Herald", function(value)
     autoJoinMiniGameEnabled = value
@@ -295,4 +282,61 @@ EventSection:CreateToggle("TP Herald", function(value)
             end
         end)
     end
+end)
+
+local selectedMode = "Slow Attack"
+local slowAttackEnabled = false
+local fastAttackEnabled = false
+local fasterAttackEnabled = false
+
+EventSection:CreateToggle("Attack Herald", function(value)
+    if selectedMode == "Slow Attack" then
+        slowAttackEnabled = value
+        if slowAttackEnabled then
+            task.spawn(function()
+                while slowAttackEnabled do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Herald")
+                        :WaitForChild("AttackTheDummy")
+                        :FireServer()
+                    task.wait(0.15)
+                end
+            end)
+        end
+    elseif selectedMode == "Fast Attack" then
+        fastAttackEnabled = value
+        if fastAttackEnabled then
+            task.spawn(function()
+                while fastAttackEnabled do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Herald")
+                        :WaitForChild("AttackTheDummy")
+                        :FireServer()
+                    task.wait()
+                end
+            end)
+        end
+    elseif selectedMode == "Faster Attack" then
+        fasterAttackEnabled = value
+        if fasterAttackEnabled then
+            task.spawn(function()
+                while fasterAttackEnabled do
+                    for i = 1, 5 do
+                        game:GetService("ReplicatedStorage")
+                            :WaitForChild("Remotes")
+                            :WaitForChild("Herald")
+                            :WaitForChild("AttackTheDummy")
+                            :FireServer()
+                    end
+                    task.wait()
+                end
+            end)
+        end
+    end
+end)
+
+EventSection:CreateDropdown("Select Attack Mode", {"Slow Attack", "Fast Attack", "Faster Attack"}, 1, function(option)
+    selectedMode = option
 end)
