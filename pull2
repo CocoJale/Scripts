@@ -264,24 +264,48 @@ MainGameSection:CreateButton("Antiafk & Antilag", function()
     end)
 end)
 
+local selectedMode = "Fast Attack"
 local autoAttackEnabled = false
-EventSection:CreateToggle("Fast Attack Herald", function(value)
-    autoAttackEnabled = value
-    if autoAttackEnabled then
-        task.spawn(function()
-            while autoAttackEnabled do
-                for i = 1, 100 do
+local instaKillEnabled = false
+
+EventSection:CreateToggle("Attack Herald", function(value)
+    if selectedMode == "Fast Attack" then
+        autoAttackEnabled = value
+        if autoAttackEnabled then
+            task.spawn(function()
+                while autoAttackEnabled do
                     game:GetService("ReplicatedStorage")
                         :WaitForChild("Remotes")
                         :WaitForChild("Herald")
                         :WaitForChild("AttackTheDummy")
                         :FireServer()
+                    task.wait(0.01)
                 end
-                task.wait()
-            end
-        end)
+            end)
+        end
+    elseif selectedMode == "Instakill" then
+        instaKillEnabled = value
+        if instaKillEnabled then
+            task.spawn(function()
+                while instaKillEnabled do
+                    for i = 1, 10 do
+                        game:GetService("ReplicatedStorage")
+                            :WaitForChild("Remotes")
+                            :WaitForChild("Herald")
+                            :WaitForChild("AttackTheDummy")
+                            :FireServer()
+                    end
+                    task.wait()
+                end
+            end)
+        end
     end
 end)
+
+MainGameSection:CreateDropdown("Attack Mode", {"Fast Attack", "Instakill"}, 1, function(option)
+    selectedMode = option
+end)
+
 
 
 local autoJoinMiniGameEnabled = false
