@@ -271,7 +271,7 @@ EventSection:CreateToggle("Fast Attack Herald", function(value)
         task.spawn(function()
             while autoAttackEnabled do
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Herald"):WaitForChild("AttackTheDummy"):FireServer()
-                task.wait()
+                task.wait(0.01)
             end
         end)
     end
