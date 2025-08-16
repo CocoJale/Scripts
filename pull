@@ -278,7 +278,6 @@ EventSection:CreateToggle("Fast Attack Herald", function(value)
 end)
 
 local autoJoinMiniGameEnabled = false
-
 EventSection:CreateToggle("TP Herald", function(value)
     autoJoinMiniGameEnabled = value
     local r=game:GetService("ReplicatedStorage").Remotes.Events.PortalC
@@ -288,19 +287,12 @@ EventSection:CreateToggle("TP Herald", function(value)
     local t=Vector3.new(-724,14,-249)
 
     if autoJoinMiniGameEnabled then
+        r:FireServer(unpack(a))
         task.spawn(function()
             while autoJoinMiniGameEnabled do
                 h.CFrame=CFrame.new(t)
                 task.wait()
             end
         end)
-        task.spawn(function()
-            while autoJoinMiniGameEnabled do
-                r:FireServer(unpack(a))
-                task.wait(20)
-            end
-        end)
     end
 end)
-
-
