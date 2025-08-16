@@ -264,6 +264,26 @@ MainGameSection:CreateButton("Antiafk & Antilag", function()
     end)
 end)
 
+local autoJoinMiniGameEnabled = false
+EventSection:CreateToggle("TP Herald", function(value)
+    autoJoinMiniGameEnabled = value
+    local r=game:GetService("ReplicatedStorage").Remotes.Events.PortalC
+    local a={"2",true}
+    local p=game:GetService("Players").LocalPlayer
+    local h=(p.Character or p.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+    local t=Vector3.new(-724,14,-249)
+
+    if autoJoinMiniGameEnabled then
+        r:FireServer(unpack(a))
+        task.spawn(function()
+            while autoJoinMiniGameEnabled do
+                h.CFrame=CFrame.new(t)
+                task.wait()
+            end
+        end)
+    end
+end)
+
 local selectedMode = "Slow Attack"
 local slowAttackEnabled = false
 local fastAttackEnabled = false
@@ -319,24 +339,4 @@ end)
 
 EventSection:CreateDropdown("Select Attack Mode", {"Slow Attack", "Fast Attack", "Faster Attack"}, 1, function(option)
     selectedMode = option
-end)
-
-local autoJoinMiniGameEnabled = false
-EventSection:CreateToggle("TP Herald", function(value)
-    autoJoinMiniGameEnabled = value
-    local r=game:GetService("ReplicatedStorage").Remotes.Events.PortalC
-    local a={"2",true}
-    local p=game:GetService("Players").LocalPlayer
-    local h=(p.Character or p.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-    local t=Vector3.new(-724,14,-249)
-
-    if autoJoinMiniGameEnabled then
-        r:FireServer(unpack(a))
-        task.spawn(function()
-            while autoJoinMiniGameEnabled do
-                h.CFrame=CFrame.new(t)
-                task.wait()
-            end
-        end)
-    end
 end)
