@@ -4,7 +4,7 @@ local Tab1 = Library:NewWindow("Pull A Sword")
 local Tab2 = Library:NewWindow("Events")
 
 local MainGameSection = Tab1:NewSection("Main Game")
-local SquidEventSection = Tab2:NewSection("Squid Event")
+local EventSection = Tab2:NewSection("Herald Event")
 
 local autoClickEnabled = false
 MainGameSection:CreateToggle("Auto Click", function(value)
@@ -265,12 +265,12 @@ MainGameSection:CreateButton("Antiafk & Antilag", function()
 end)
 
 local autoAttackEnabled = false
-SquidEventSection:CreateToggle("Auto Attack", function(value)
+EventSection:CreateToggle("Fast Attack Herald", function(value)
     autoAttackEnabled = value
     if autoAttackEnabled then
         task.spawn(function()
             while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("Dungeon"):WaitForChild("OnDungeonClick"):FireServer()
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Herald"):WaitForChild("AttackTheDummy"):FireServer()
                 task.wait(0.01)
             end
         end)
@@ -278,77 +278,29 @@ SquidEventSection:CreateToggle("Auto Attack", function(value)
 end)
 
 local autoJoinMiniGameEnabled = false
-SquidEventSection:CreateToggle("Join MiniGame", function(value)
+
+EventSection:CreateToggle("TP Herald", function(value)
     autoJoinMiniGameEnabled = value
-    local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("SquidGame"):WaitForChild("RemoteEvent")
+    local r=game:GetService("ReplicatedStorage").Remotes.Events.PortalC
+    local a={"2",true}
+    local p=game:GetService("Players").LocalPlayer
+    local h=(p.Character or p.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+    local t=Vector3.new(-724,14,-249)
+
     if autoJoinMiniGameEnabled then
         task.spawn(function()
             while autoJoinMiniGameEnabled do
-                remotes:FireServer("Accepted")
-                task.wait(5)
+                h.CFrame=CFrame.new(t)
+                task.wait()
             end
         end)
-    end
-end)
-
-local autoWinSquidEnabled = false
-
-SquidEventSection:CreateToggle("Win SquidGames", function(value)
-    autoWinSquidEnabled = value
-    local RunService = game:GetService("RunService")
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local hrp = character:WaitForChild("HumanoidRootPart")
-
-    if value then
-        -- Enable floating
-        if not hrp:FindFirstChild("FloatVelocity") then
-            local bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-            bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)
-            bodyVelocity.Name = "FloatVelocity"
-            bodyVelocity.Parent = hrp
-        end
-
         task.spawn(function()
-            while autoWinSquidEnabled do
-                local greenLight = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GreenLight")
-                local redTarget = greenLight and greenLight:FindFirstChild("WinHitbox")
-
-                local glassBridge = game:GetService("Workspace").MiniGameFolder:FindFirstChild("GlassBridge")
-                local glassTarget = glassBridge and glassBridge:FindFirstChild("End") and glassBridge.End:FindFirstChild("Wall")
-
-                if redTarget then
-                    local basePos = redTarget.Position
-                    hrp.CFrame = CFrame.new(basePos)
-                    hrp.CFrame = CFrame.new(basePos + Vector3.new(100, 100, 0))
-                    hrp.CFrame = CFrame.new(basePos)
-                end
-
-                if glassTarget then
-                    local basePos = glassTarget.Position + Vector3.new(0, -12, 0)
-                    hrp.CFrame = CFrame.new(basePos)
-                    task.wait(0.1)
-                    hrp.CFrame = CFrame.new(basePos + Vector3.new(0, 100, 0))
-                    task.wait(0.1)
-                    hrp.CFrame = CFrame.new(basePos)
-                end
-
-                task.wait(0.1)
+            while autoJoinMiniGameEnabled do
+                r:FireServer(unpack(a))
+                task.wait(10)
             end
         end)
-
-        -- Maintain float velocity
-        RunService.Heartbeat:Connect(function()
-            if hrp:FindFirstChild("FloatVelocity") then
-                hrp.FloatVelocity.Velocity = Vector3.new(0, 0, 0)
-            end
-        end)
-    else
-        -- Disable floating
-        local float = hrp:FindFirstChild("FloatVelocity")
-        if float then
-            float:Destroy()
-        end
     end
 end)
+
+
