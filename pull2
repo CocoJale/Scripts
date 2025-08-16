@@ -291,7 +291,7 @@ EventSection:CreateToggle("TP Herald", function(value)
     local a={"2",true}
     local p=game:GetService("Players").LocalPlayer
     local h=(p.Character or p.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-    local t=Vector3.new(-724,14,-245)
+    local t=Vector3.new(-724,14,-249)
 
     if autoJoinMiniGameEnabled then
         r:FireServer(unpack(a))
