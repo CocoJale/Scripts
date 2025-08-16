@@ -270,12 +270,19 @@ EventSection:CreateToggle("Fast Attack Herald", function(value)
     if autoAttackEnabled then
         task.spawn(function()
             while autoAttackEnabled do
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Herald"):WaitForChild("AttackTheDummy"):FireServer()
-                task.wait(0.01)
+                for i = 1, 5 do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Herald")
+                        :WaitForChild("AttackTheDummy")
+                        :FireServer()
+                end
+                task.wait()
             end
         end)
     end
 end)
+
 
 local autoJoinMiniGameEnabled = false
 EventSection:CreateToggle("TP Herald", function(value)
