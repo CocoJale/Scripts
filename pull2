@@ -1,200 +1,280 @@
--- Load Dirt UI Library
-local Lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/dirt",true))()
-local flags = {}
+--// Load Tora UI
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew",true))()
 
--- Create windows
-local windowMain = Lib:CreateWindow("Pull A Sword")
-windowMain:Section("Main Game")
-local windowEvents = Lib:CreateWindow("Events")
-windowEvents:Section("Herald Event")
+--// Windows
+local mainTab = library:CreateWindow("Pull A Sword Hub")
 
--- Auto Click
-windowMain:Toggle("Auto Click",{location=flags,flag="AutoClick"},function()
-    if flags["AutoClick"] then
-        task.spawn(function()
-            while flags["AutoClick"] do
-                game.ReplicatedStorage.Remotes.Events.ClickEvent:FireServer()
-                task.wait()
-            end
-        end)
-    end
-end)
+--// Sections as folders
+local mainGame = mainTab:AddFolder("Main Game")
+local eventTab = mainTab:AddFolder("Events")
 
--- Generate Crystals
-windowMain:Toggle("Generate Crystals",{location=flags,flag="GenCrystals"},function()
-    local rem = game.ReplicatedStorage.Remotes.Events
-    if flags["GenCrystals"] then
-        rem.RemoveC:FireServer(1)
-        task.spawn(function()
-            while flags["GenCrystals"] do
-                for i=1,5 do
-                    rem.WinMegaBossEvent:FireServer("Dragon6","Chaos")
+--------------------------------------------------
+-- AUTO CLICK
+--------------------------------------------------
+mainGame:AddToggle({
+    text = "Auto Click",
+    flag = "AutoClick",
+    state = false,
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AutoClick"] do
+                    game.ReplicatedStorage.Remotes.Events.ClickEvent:FireServer()
+                    task.wait()
                 end
-                task.wait(0.01)
-            end
-        end)
-    else
-        rem.RemoveC:FireServer(0)
-    end
-end)
-
--- Spin Crystal Wheels
-windowMain:Toggle("Spin Crystal Wheels",{location=flags,flag="SpinWheel"},function()
-    if flags["SpinWheel"] then
-        task.spawn(function()
-            while flags["SpinWheel"] do
-                local rem=game.ReplicatedStorage.Remotes.Events
-                rem.WorldWheelEvent:FireServer("5")
-                rem.SpinWheelSecret:FireServer("-8","563")
-                rem.WorldWheelEvent:FireServer("6")
-                task.wait(1)
-            end
-        end)
-    end
-end)
-
--- Kill Title Bosses
-windowMain:Toggle("Kill Title Bosses",{location=flags,flag="KillBoss"},function()
-    local ev=game.ReplicatedStorage.Remotes.Events
-    if flags["KillBoss"] then
-        ev.RemoveC:FireServer(1)
-        task.spawn(function()
-            local b=1
-            while flags["KillBoss"] do
-                ev.WinBossEvent:FireServer("Boss"..b)
-                b=b+1;if b>10 then b=1 end
-                task.wait()
-            end
-        end)
-    else
-        ev.RemoveC:FireServer(0)
-    end
-end)
-
--- Hatch Nearest
-windowMain:Toggle("Hatch Nearest",{location=flags,flag="HatchNearest"},function()
-    local eggs={"W1E1","W2E1","W3E1","W4E1","W5E1","W6E1","W7E1","W8E1","W9E1","W10E1",
-    "W11E1","W12E1","W13E1","W14E1","W15E1","W16E1","W17E1","W18E1","W19E1","W20E1",
-    "W21E1","W22E1","W23E1","W24E1","W25E1","W26E1","W27E1","W28E1","W29E1","W30E1",
-    "W31E1","W32E1","W33E1","W34E1","W35E1","Common Egg"}
-    if flags["HatchNearest"] then
-        task.spawn(function()
-            while flags["HatchNearest"] do
-                for _,eggName in ipairs(eggs) do
-                    game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(eggName,"Buy1")
-                end
-                task.wait(0.3)
-            end
-        end)
-    end
-end)
-
--- Auto PvP
-flags["PvPTarget"]="Coco"
-windowMain:Toggle("Auto PvP",{location=flags,flag="AutoPvP"},function()
-    if flags["AutoPvP"] then
-        task.spawn(function()
-            while flags["AutoPvP"] do
-                local rem=game.ReplicatedStorage.Remotes.Events
-                if flags["PvPTarget"]=="Coco" then
-                    rem.WinEvent_PVP:FireServer("Cocojale",true,true)
-                else
-                    rem.WinEvent_PVP:FireServer("Rip_AkiraToriyama55",true,true)
-                end
-                task.wait(10820)
-            end
-        end)
-    end
-end)
-
-windowMain:Dropdown("Select PvP Target",{location=flags, flag="PvPTarget", list={"Coco","Akira"}},function()
-    -- nothing needed, value saved in flags["PvPTarget"]
-end)
-
--- Complete Quests
-windowMain:Button("Complete Quests",function()
-    local r=game.ReplicatedStorage.Remotes.Events
-    r.RemoveC:FireServer(1)
-    task.wait(1)
-    r.WorldWheelEvent:FireServer("5")
-    r.OnStandartShopRequest:FireServer("Buy",2,3)
-    r.OnStandartShopRequest:FireServer("Buy",2,1)
-    task.wait(2)
-    r.PortalC:FireServer("1",true)
-    task.wait(2)
-    r.PortalC:FireServer("2",true)
-    for i=1,10 do r.WinEvent:FireServer("5");task.wait(2) end
-    for i=1,20 do r.WinBossEvent:FireServer("Boss1");task.wait(0.1) end
-    r.RemoveC:FireServer(0)
-end)
-
--- Redeem All Codes
-windowMain:Button("Redeem All Codes",function()
-    local codes={"GAMESTARTS","FIRSTROUND","ARISE","ARISE2","ARISE3","sorrydelayraid",
-    "ARISE4","FIRSTPASLEAGUE","WEEKPOWER","ELITECODE","DAILYQUESTS","GROWASWORD","CRAFTUPD","BESTCODE333",
-    "MASTERCODE","SORRYDELAY","UDINDINDIN","DELAYASWORD1","LUNACODE33","WHEELFIX3",
-    "SORRYPAW","REBIRTHFIX","TIMERBUG23","SEASONXIV","BESTCODE222"}
-    local remote=game.ReplicatedStorage.Remotes.Functions.OnCodeRequest
-    for _,code in ipairs(codes) do
-        remote:InvokeServer(code,"YT_Arawrd")
-        task.wait(6)
-    end
-end)
-
--- Antiafk & Antilag
-windowMain:Button("Antiafk & Antilag",function()
-    local g,w,l,t=game,workspace,game.Lighting,workspace.Terrain
-    local decalsyeeted=true
-    t.WaterWaveSize,t.WaterWaveSpeed,t.WaterReflectance,t.WaterTransparency=0,0,0,0
-    l.GlobalShadows,l.FogEnd,l.Brightness=false,9e9,0
-    settings().Rendering.QualityLevel="Level01"
-    for _,v in ipairs(g:GetDescendants()) do
-        if v:IsA("BasePart") or v:IsA("MeshPart") then v.Material,v.Reflectance="Plastic",0
-        elseif decalsyeeted and (v:IsA("Decal") or v:IsA("Texture")) then v.Transparency=1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Lifetime=NumberRange.new(0)
-        elseif v:IsA("Explosion") then v.BlastPressure,v.BlastRadius=1,1
-        elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then v.Enabled=false end
-    end
-    for _,e in ipairs(l:GetChildren()) do
-        if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then e.Enabled=false end
-    end
-    game.Players.LocalPlayer.Idled:Connect(function()
-        local vu=game:GetService("VirtualUser") vu:CaptureController() vu:ClickButton2(Vector2.new())
-    end)
-end)
-
--- TP Herald
-windowEvents:Toggle("TP Herald",{location=flags,flag="TPHerald"},function()
-    local r=game.ReplicatedStorage.Remotes.Events.PortalC
-    if flags["TPHerald"] then
-        r:FireServer("2",true)
-        task.spawn(function()
-            local h=(game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-            local pos=Vector3.new(-724,14,-249)
-            while flags["TPHerald"] do h.CFrame=CFrame.new(pos) task.wait() end
-        end)
-    end
-end)
-
--- Attack Herald
-flags["AttackMode"]="Slow Attack"
-windowEvents:Toggle("Attack Herald",{location=flags,flag="AttackHerald"},function()
-    if not flags["AttackHerald"] then return end
-    task.spawn(function()
-        while flags["AttackHerald"] do
-            if flags["AttackMode"]=="Slow Attack" then
-                game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                task.wait(0.018)
-            elseif flags["AttackMode"]=="Fast Attack" then
-                game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                task.wait()
-            elseif flags["AttackMode"]=="Faster Attack" then
-                for i=1,5 do game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer() end
-                task.wait()
-            end
+            end)
         end
-    end)
-end)
+    end
+})
 
-windowEvents:Dropdown("Select Attack Mode",{location=flags,flag="AttackMode",list={"Slow Attack","Fast Attack","Faster Attack"}},function()
-end)
+--------------------------------------------------
+-- GENERATE CRYSTALS
+--------------------------------------------------
+mainGame:AddToggle({
+    text = "Generate Crystals",
+    flag = "GenCrystals",
+    callback = function(state)
+        local rem = game.ReplicatedStorage.Remotes.Events
+        if state then
+            rem.RemoveC:FireServer(1)
+            task.spawn(function()
+                while library.flags["GenCrystals"] do
+                    for i=1,5 do
+                        rem.WinMegaBossEvent:FireServer("Dragon6","Chaos")
+                    end
+                    task.wait(0.01)
+                end
+            end)
+        else
+            rem.RemoveC:FireServer(0)
+        end
+    end
+})
+
+--------------------------------------------------
+-- SPIN CRYSTAL WHEELS
+--------------------------------------------------
+mainGame:AddToggle({
+    text = "Spin Crystal Wheels",
+    flag = "SpinWheel",
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["SpinWheel"] do
+                    local r=game.ReplicatedStorage.Remotes.Events
+                    r.WorldWheelEvent:FireServer("5")
+                    r.SpinWheelSecret:FireServer("-8", "563")
+                    r.WorldWheelEvent:FireServer("6")
+                    task.wait(1)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------
+-- KILL TITLE BOSSES
+--------------------------------------------------
+mainGame:AddToggle({
+    text = "Kill Title Bosses",
+    flag = "KillBoss",
+    callback = function(state)
+        local r = game.ReplicatedStorage.Remotes.Events
+        if state then
+            r.RemoveC:FireServer(1)
+            task.spawn(function()
+                local b=1
+                while library.flags["KillBoss"] do
+                    r.WinBossEvent:FireServer("Boss"..b)
+                    b=b+1 if b>10 then b=1 end
+                    task.wait()
+                end
+            end)
+        else
+            r.RemoveC:FireServer(0)
+        end
+    end
+})
+
+--------------------------------------------------
+-- HATCH NEAREST EGGS
+--------------------------------------------------
+local eggList={
+"W1E1","W2E1","W3E1","W4E1","W5E1","W6E1","W7E1","W8E1","W9E1","W10E1",
+"W11E1","W12E1","W13E1","W14E1","W15E1","W16E1","W17E1","W18E1","W19E1","W20E1",
+"W21E1","W22E1","W23E1","W24E1","W25E1","W26E1","W27E1","W28E1","W29E1","W30E1",
+"W31E1","W32E1","W33E1","W34E1","W35E1","Common Egg"
+}
+mainGame:AddToggle({
+    text = "Hatch Nearest",
+    flag = "HatchNearest",
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["HatchNearest"] do
+                    for _,eggName in ipairs(eggList) do
+                        game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(eggName,"Buy1")
+                    end
+                    task.wait(0.3)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------
+-- AUTO PVP
+--------------------------------------------------
+mainGame:AddList({
+    text = "Select PvP Target",
+    values = {"Coco","Akira"},
+    flag = "PvPTarget",
+    value = "Coco",
+    callback = function(val) end
+})
+mainGame:AddToggle({
+    text = "Auto PvP",
+    flag = "AutoPvP",
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AutoPvP"] do
+                    local r=game.ReplicatedStorage.Remotes.Events
+                    if library.flags["PvPTarget"]=="Coco" then
+                        r.WinEvent_PVP:FireServer("Cocojale",true,true)
+                    else
+                        r.WinEvent_PVP:FireServer("Rip_AkiraToriyama55",true,true)
+                    end
+                    task.wait(10820)
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------
+-- COMPLETE QUESTS
+--------------------------------------------------
+mainGame:AddButton({
+    text = "Complete Quests",
+    callback = function()
+        local r=game.ReplicatedStorage.Remotes.Events
+        r.RemoveC:FireServer(1)
+        task.wait(1)
+        r.WorldWheelEvent:FireServer("5")
+        r.OnStandartShopRequest:FireServer("Buy",2,3)
+        r.OnStandartShopRequest:FireServer("Buy",2,1)
+        task.wait(2)
+        r.PortalC:FireServer("1",true)
+        task.wait(2)
+        r.PortalC:FireServer("2",true)
+        for i=1,10 do r.WinEvent:FireServer("5") task.wait(2) end
+        for i=1,20 do r.WinBossEvent:FireServer("Boss1") task.wait(0.1) end
+        r.RemoveC:FireServer(0)
+    end
+})
+
+--------------------------------------------------
+-- REDEEM ALL CODES
+--------------------------------------------------
+mainGame:AddButton({
+    text = "Redeem All Codes",
+    callback = function()
+        local codes={"GAMESTARTS","FIRSTROUND","ARISE","ARISE2","ARISE3","sorrydelayraid",
+            "ARISE4","FIRSTPASLEAGUE","WEEKPOWER","ELITECODE","DAILYQUESTS","GROWASWORD","CRAFTUPD","BESTCODE333",
+            "MASTERCODE","SORRYDELAY","UDINDINDIN","DELAYASWORD1","LUNACODE33","WHEELFIX3",
+            "SORRYPAW","REBIRTHFIX","TIMERBUG23","SEASONXIV","BESTCODE222"}
+        local r = game.ReplicatedStorage.Remotes.Functions.OnCodeRequest
+        for _,c in ipairs(codes) do
+            r:InvokeServer(c,"YT_Arawrd")
+            task.wait(6)
+        end
+    end
+})
+
+--------------------------------------------------
+-- ANTI AFK + LAG REDUCER
+--------------------------------------------------
+mainGame:AddButton({
+    text = "Antiafk & Antilag",
+    callback = function()
+        local g,w,l,t=game,workspace,game.Lighting,workspace.Terrain
+        local decalsyeeted=true
+        t.WaterWaveSize,t.WaterWaveSpeed,t.WaterReflectance,t.WaterTransparency=0,0,0,0
+        l.GlobalShadows,l.FogEnd,l.Brightness=false,9e9,0
+        settings().Rendering.QualityLevel="Level01"
+        for _,v in ipairs(g:GetDescendants()) do
+            if v:IsA("BasePart") or v:IsA("MeshPart") then v.Material,v.Reflectance="Plastic",0
+            elseif decalsyeeted and (v:IsA("Decal") or v:IsA("Texture")) then v.Transparency=1
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Lifetime=NumberRange.new(0)
+            elseif v:IsA("Explosion") then v.BlastPressure,v.BlastRadius=1,1
+            elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then v.Enabled=false end
+        end
+        for _,e in ipairs(l:GetChildren()) do
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then e.Enabled=false end
+        end
+    end
+})
+
+--------------------------------------------------
+-- HERALD EVENT: TP HERALD
+--------------------------------------------------
+eventTab:AddToggle({
+    text = "TP Herald",
+    flag = "TPHerald",
+    callback = function(state)
+        local r=game.ReplicatedStorage.Remotes.Events.PortalC
+        if state then
+            r:FireServer("2",true)
+            task.spawn(function()
+                local h=(game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+                local pos=Vector3.new(-724,14,-249)
+                while library.flags["TPHerald"] do
+                    h.CFrame=CFrame.new(pos)
+                    task.wait()
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------
+-- HERALD EVENT: ATTACK MODES
+--------------------------------------------------
+eventTab:AddList({
+    text = "Select Attack Mode",
+    values = {"Slow Attack","Fast Attack","Faster Attack"},
+    flag = "AttackMode",
+    value = "Slow Attack",
+    callback = function(val) end
+})
+eventTab:AddToggle({
+    text = "Attack Herald",
+    flag = "AttackHerald",
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AttackHerald"] do
+                    local mode = library.flags["AttackMode"]
+                    if mode=="Slow Attack" then
+                        game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
+                        task.wait(0.018)
+                    elseif mode=="Fast Attack" then
+                        game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
+                        task.wait()
+                    elseif mode=="Faster Attack" then
+                        for i=1,5 do
+                            game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
+                        end
+                        task.wait()
+                    end
+                end
+            end)
+        end
+    end
+})
+
+--------------------------------------------------
+-- INIT
+--------------------------------------------------
+library:Init()
