@@ -131,7 +131,7 @@ mainGame:AddButton({
 
 -- Info Label above Generate Crystals
 bossTab:AddLabel({
-    text = "TP to Lab/Ocean to get Crystals.",
+    text = "TP Lab/Ocean = Crystals.",
     type = "label"
 })
 
@@ -244,7 +244,7 @@ eventTab:AddToggle({
     end
 })
 
--- Attack Herald toggle ABOVE mode dropdown
+-- Attack Herald toggle ABOVE dropdown
 eventTab:AddToggle({
     text = "Attack Herald",
     flag = "AttackHerald",
