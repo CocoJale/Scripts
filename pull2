@@ -1,25 +1,21 @@
 --// Load Tora UI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew",true))()
 
---// Windows
-local tabMain   = library:CreateWindow("Pull A Sword - Main")
-local tabBosses = library:CreateWindow("Pull A Sword - Bosses")
-local tabEvents = library:CreateWindow("Pull A Sword - Events")
+--// One main window
+local mainTab = library:CreateWindow("Pull A Sword Hub")
 
---// Folders
-local mainGame = tabMain:AddFolder("Main Game")
-local bosses   = tabBosses:AddFolder("Boss Features")
-local events   = tabEvents:AddFolder("Herald Event")
+--// Three folders inside the same tab
+local mainGame = mainTab:AddFolder("Main Game")
+local eventTab = mainTab:AddFolder("Events")
+local bossTab  = mainTab:AddFolder("Bosses")
 
 --------------------------------------------------
 -- MAIN GAME
 --------------------------------------------------
 
--- Auto Click
 mainGame:AddToggle({
     text = "Auto Click",
     flag = "AutoClick",
-    state = false,
     callback = function(state)
         if state then
             task.spawn(function()
@@ -32,8 +28,7 @@ mainGame:AddToggle({
     end
 })
 
--- Hatch Nearest
-local eggList={
+local eggList = {
 "W1E1","W2E1","W3E1","W4E1","W5E1","W6E1","W7E1","W8E1","W9E1","W10E1",
 "W11E1","W12E1","W13E1","W14E1","W15E1","W16E1","W17E1","W18E1","W19E1","W20E1",
 "W21E1","W22E1","W23E1","W24E1","W25E1","W26E1","W27E1","W28E1","W29E1","W30E1",
@@ -46,8 +41,8 @@ mainGame:AddToggle({
         if state then
             task.spawn(function()
                 while library.flags["HatchNearest"] do
-                    for _,eggName in ipairs(eggList) do
-                        game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(eggName,"Buy1")
+                    for _,egg in ipairs(eggList) do
+                        game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(egg,"Buy1")
                     end
                     task.wait(0.3)
                 end
@@ -56,7 +51,6 @@ mainGame:AddToggle({
     end
 })
 
--- Auto PvP
 mainGame:AddList({
     text = "Select PvP Target",
     values = {"Coco","Akira"},
@@ -83,7 +77,6 @@ mainGame:AddToggle({
     end
 })
 
--- Complete Quests
 mainGame:AddButton({
     text = "Complete Quests",
     callback = function()
@@ -103,7 +96,6 @@ mainGame:AddButton({
     end
 })
 
--- Anti AFK / Antilag
 mainGame:AddButton({
     text = "Antiafk & Antilag",
     callback = function()
@@ -126,39 +118,37 @@ mainGame:AddButton({
 })
 
 --------------------------------------------------
--- BOSSES TAB
+-- BOSSES
 --------------------------------------------------
 
--- Generate Crystals
-bosses:AddToggle({
+bossTab:AddToggle({
     text = "Generate Crystals",
     flag = "GenCrystals",
     callback = function(state)
-        local rem = game.ReplicatedStorage.Remotes.Events
+        local r=game.ReplicatedStorage.Remotes.Events
         if state then
-            rem.RemoveC:FireServer(1)
+            r.RemoveC:FireServer(1)
             task.spawn(function()
                 while library.flags["GenCrystals"] do
                     for i=1,5 do
-                        rem.WinMegaBossEvent:FireServer("Dragon6","Chaos")
+                        r.WinMegaBossEvent:FireServer("Dragon6","Chaos")
                     end
                     task.wait(0.01)
                 end
             end)
         else
-            rem.RemoveC:FireServer(0)
+            r.RemoveC:FireServer(0)
         end
     end
 })
 
--- Spin Crystal Wheels
-bosses:AddToggle({
+bossTab:AddToggle({
     text = "Spin Crystal Wheels",
-    flag = "SpinWheels",
+    flag = "SpinWheel",
     callback = function(state)
         if state then
             task.spawn(function()
-                while library.flags["SpinWheels"] do
+                while library.flags["SpinWheel"] do
                     local r=game.ReplicatedStorage.Remotes.Events
                     r.WorldWheelEvent:FireServer("5")
                     r.SpinWheelSecret:FireServer("-8","563")
@@ -170,17 +160,16 @@ bosses:AddToggle({
     end
 })
 
--- Kill Title Bosses
-bosses:AddToggle({
+bossTab:AddToggle({
     text = "Kill Title Bosses",
-    flag = "KillBosses",
+    flag = "KillBoss",
     callback = function(state)
         local r=game.ReplicatedStorage.Remotes.Events
         if state then
             r.RemoveC:FireServer(1)
             task.spawn(function()
                 local b=1
-                while library.flags["KillBosses"] do
+                while library.flags["KillBoss"] do
                     r.WinBossEvent:FireServer("Boss"..b)
                     b=b+1 if b>10 then b=1 end
                     task.wait()
@@ -193,11 +182,10 @@ bosses:AddToggle({
 })
 
 --------------------------------------------------
--- EVENTS TAB
+-- EVENTS
 --------------------------------------------------
 
--- TP Herald
-events:AddToggle({
+eventTab:AddToggle({
     text = "TP Herald",
     flag = "TPHerald",
     callback = function(state)
@@ -216,14 +204,13 @@ events:AddToggle({
     end
 })
 
--- Attack Herald
-events:AddList({
+eventTab:AddList({
     text = "Select Attack Mode",
     values = {"Slow Attack","Fast Attack","Faster Attack"},
     flag = "AttackMode",
     value = "Slow Attack"
 })
-events:AddToggle({
+eventTab:AddToggle({
     text = "Attack Herald",
     flag = "AttackHerald",
     callback = function(state)
