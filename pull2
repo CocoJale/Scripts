@@ -1,18 +1,19 @@
 --// Load Tora UI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew",true))()
 
---// One main window
-local mainTab = library:CreateWindow("Pull A Sword Hub")
+--// One main hub
+local mainTab = library:CreateWindow("PAS - HUB")
 
---// Three folders inside the same tab
+--// Three folders (Main Game, Bosses, Events)
 local mainGame = mainTab:AddFolder("Main Game")
-local eventTab = mainTab:AddFolder("Events")
 local bossTab  = mainTab:AddFolder("Bosses")
+local eventTab = mainTab:AddFolder("Events")
 
 --------------------------------------------------
 -- MAIN GAME
 --------------------------------------------------
 
+-- Auto Click
 mainGame:AddToggle({
     text = "Auto Click",
     flag = "AutoClick",
@@ -28,6 +29,7 @@ mainGame:AddToggle({
     end
 })
 
+-- Hatch Nearest Egg
 local eggList = {
 "W1E1","W2E1","W3E1","W4E1","W5E1","W6E1","W7E1","W8E1","W9E1","W10E1",
 "W11E1","W12E1","W13E1","W14E1","W15E1","W16E1","W17E1","W18E1","W19E1","W20E1",
@@ -51,12 +53,7 @@ mainGame:AddToggle({
     end
 })
 
-mainGame:AddList({
-    text = "Select PvP Target",
-    values = {"Coco","Akira"},
-    flag = "PvPTarget",
-    value = "Coco"
-})
+-- Auto PvP toggle ABOVE dropdown
 mainGame:AddToggle({
     text = "Auto PvP",
     flag = "AutoPvP",
@@ -77,8 +74,16 @@ mainGame:AddToggle({
     end
 })
 
+mainGame:AddList({
+    text = "Select PvP Target",
+    values = {"Coco","Akira"},
+    flag = "PvPTarget",
+    value = "Coco"
+})
+
+-- Complete Quests
 mainGame:AddButton({
-    text = "Complete Quests",
+    text   = "Complete Quests",
     callback = function()
         local r=game.ReplicatedStorage.Remotes.Events
         r.RemoveC:FireServer(1)
@@ -96,6 +101,7 @@ mainGame:AddButton({
     end
 })
 
+-- Anti AFK
 mainGame:AddButton({
     text = "Antiafk & Antilag",
     callback = function()
@@ -112,15 +118,18 @@ mainGame:AddButton({
             elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then v.Enabled=false end
         end
         for _,e in ipairs(l:GetChildren()) do
-            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then e.Enabled=false end
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") 
+            or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") 
+            or e:IsA("DepthOfFieldEffect") then e.Enabled=false end
         end
     end
 })
 
 --------------------------------------------------
--- BOSSES
+-- BOSSES FOLDER (above Events)
 --------------------------------------------------
 
+-- Generate Crystals
 bossTab:AddToggle({
     text = "Generate Crystals",
     flag = "GenCrystals",
@@ -133,7 +142,7 @@ bossTab:AddToggle({
                     for i=1,5 do
                         r.WinMegaBossEvent:FireServer("Dragon6","Chaos")
                     end
-                    task.wait(0.01)
+                    task.wait(0.1)
                 end
             end)
         else
@@ -142,6 +151,7 @@ bossTab:AddToggle({
     end
 })
 
+-- Spin Crystal Wheels
 bossTab:AddToggle({
     text = "Spin Crystal Wheels",
     flag = "SpinWheel",
@@ -160,22 +170,47 @@ bossTab:AddToggle({
     end
 })
 
+-- Kill Title Bosses with Dropdown
+bossTab:AddList({
+    text = "Select Boss",
+    values = {"The King","Dravenar","Glacius","Anubis","Bossbot",
+              "Lazyfish","Yokai","Vort3x","Underlord","The Conquerer"},
+    flag = "BossTarget",
+    value = "The King"
+})
+
 bossTab:AddToggle({
     text = "Kill Title Bosses",
     flag = "KillBoss",
     callback = function(state)
         local r=game.ReplicatedStorage.Remotes.Events
         if state then
+            -- Enable remove C first
             r.RemoveC:FireServer(1)
+            task.wait(0.1)
+            -- Map boss names to keys
+            local bossMap = {
+                ["The King"] = "Boss1",
+                ["Dravenar"] = "Boss2",
+                ["Glacius"] = "Boss3",
+                ["Anubis"] = "Boss4",
+                ["Bossbot"] = "Boss5",
+                ["Lazyfish"] = "Boss6",
+                ["Yokai"] = "Boss7",
+                ["Vort3x"] = "Boss8",
+                ["Underlord"] = "Boss9",
+                ["The Conquerer"] = "Boss10",
+            }
+            local chosen = bossMap[library.flags["BossTarget"]] or "Boss1"
+            -- Start loop
             task.spawn(function()
-                local b=1
                 while library.flags["KillBoss"] do
-                    r.WinBossEvent:FireServer("Boss"..b)
-                    b=b+1 if b>10 then b=1 end
-                    task.wait()
+                    r.WinBossEvent:FireServer(chosen)
+                    task.wait(0.2)
                 end
             end)
         else
+            -- Disable remove C when stopping
             r.RemoveC:FireServer(0)
         end
     end
@@ -185,6 +220,7 @@ bossTab:AddToggle({
 -- EVENTS
 --------------------------------------------------
 
+-- TP Herald
 eventTab:AddToggle({
     text = "TP Herald",
     flag = "TPHerald",
@@ -204,12 +240,7 @@ eventTab:AddToggle({
     end
 })
 
-eventTab:AddList({
-    text = "Select Attack Mode",
-    values = {"Slow Attack","Fast Attack","Faster Attack"},
-    flag = "AttackMode",
-    value = "Slow Attack"
-})
+-- Attack Herald toggle ABOVE mode dropdown
 eventTab:AddToggle({
     text = "Attack Herald",
     flag = "AttackHerald",
@@ -234,6 +265,13 @@ eventTab:AddToggle({
             end)
         end
     end
+})
+
+eventTab:AddList({
+    text = "Select Attack Mode",
+    values = {"Slow Attack","Fast Attack","Faster Attack"},
+    flag = "AttackMode",
+    value = "Slow Attack"
 })
 
 --------------------------------------------------
