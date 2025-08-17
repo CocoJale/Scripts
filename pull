@@ -13,7 +13,7 @@ MainGameSection:CreateToggle("Auto Click", function(value)
         task.spawn(function()
             while autoClickEnabled do
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("ClickEvent"):FireServer()
-                task.wait(0.01)
+                task.wait()
             end
         end)
     end
