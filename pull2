@@ -129,6 +129,12 @@ mainGame:AddButton({
 -- BOSSES FOLDER (above Events)
 --------------------------------------------------
 
+-- Info Label above Generate Crystals
+bossTab:AddLabel({
+    text = "TP to Lab/Ocean to get Crystals.",
+    type = "label"
+})
+
 -- Generate Crystals
 bossTab:AddToggle({
     text = "Generate Crystals",
@@ -170,25 +176,15 @@ bossTab:AddToggle({
     end
 })
 
--- Kill Title Bosses with Dropdown
-bossTab:AddList({
-    text = "Select Boss",
-    values = {"The King","Dravenar","Glacius","Anubis","Bossbot",
-              "Lazyfish","Yokai","Vort3x","Underlord","The Conquerer"},
-    flag = "BossTarget",
-    value = "The King"
-})
-
+-- Kill Title Boss
 bossTab:AddToggle({
-    text = "Kill Title Bosses",
+    text = "Kill Title Boss",
     flag = "KillBoss",
     callback = function(state)
         local r=game.ReplicatedStorage.Remotes.Events
         if state then
-            -- Enable remove C first
             r.RemoveC:FireServer(1)
             task.wait(0.1)
-            -- Map boss names to keys
             local bossMap = {
                 ["The King"] = "Boss1",
                 ["Dravenar"] = "Boss2",
@@ -202,7 +198,6 @@ bossTab:AddToggle({
                 ["The Conquerer"] = "Boss10",
             }
             local chosen = bossMap[library.flags["BossTarget"]] or "Boss1"
-            -- Start loop
             task.spawn(function()
                 while library.flags["KillBoss"] do
                     r.WinBossEvent:FireServer(chosen)
@@ -210,11 +205,20 @@ bossTab:AddToggle({
                 end
             end)
         else
-            -- Disable remove C when stopping
             r.RemoveC:FireServer(0)
         end
     end
 })
+
+-- Select Boss dropdown BELOW toggle
+bossTab:AddList({
+    text = "Select Boss",
+    values = {"The King","Dravenar","Glacius","Anubis","Bossbot",
+              "Lazyfish","Yokai","Vort3x","Underlord","The Conquerer"},
+    flag = "BossTarget",
+    value = "The King"
+})
+
 
 --------------------------------------------------
 -- EVENTS
