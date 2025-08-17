@@ -87,6 +87,8 @@ mainGame:AddButton({
     text = "Complete Quests",
     callback = function()
         local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+
+        -- Complete Quests shit
         remotes:WaitForChild("RemoveC"):FireServer(1)
         task.wait(1)
         remotes:WaitForChild("WorldWheelEvent"):FireServer("5")
@@ -115,8 +117,28 @@ mainGame:AddButton({
             task.wait(0.1)
         end
         remotes:WaitForChild("RemoveC"):FireServer(0)
+
+        task.wait(120)
+
+        --claim quest remotes with 0.5 wait cause why not
+        local dailyArgs = {
+            {"Daily", "UseOnSideSystem"},
+            {"Daily", "Defeat10Enemies"},
+            {"Daily", "Pull10Swords"},
+            {"Daily", "Click1000Times"},
+            {"Daily", "Win20MillionPower"},
+            {"Daily", "GoTo5Worlds"},
+            {"Daily", "PlayFor60Minutes"},
+            {"Daily", "BuyItemsAtStore"},
+            {"Daily", "Complete10Quests"},
+        }
+        for _, args in ipairs(dailyArgs) do
+            remotes:WaitForChild("ClaimQuest"):FireServer(unpack(args))
+            task.wait(0.5) -- 0.5-second wait between each claim
+        end
     end
 })
+
 
 -- Anti AFK
 mainGame:AddButton({
