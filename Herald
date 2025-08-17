@@ -1,0 +1,767 @@
+-- Decompiler will be improved VERY SOON!
+-- Decompiled with Konstant V2.1, a fast Luau decompiler made in Luau by plusgiant5 (https://discord.gg/brNTY8nX8t)
+-- Decompiled on 2025-08-17 09:14:29
+-- Luau version 6, Types version 3
+-- Time taken: 0.007369 seconds
+
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage_upvr = game:GetService("ReplicatedStorage")
+local TweenService_upvr = game:GetService("TweenService")
+local LocalPlayer_upvr = game:GetService("Players").LocalPlayer
+local Herald_upvr_2 = LocalPlayer_upvr:WaitForChild("PlayerGui"):WaitForChild("Herald")
+local HealthBar = Herald_upvr_2:WaitForChild("BossBar"):WaitForChild("HealthBar")
+local Frame_upvr = HealthBar:WaitForChild("Frame")
+local HealthText_upvr_2 = HealthBar:WaitForChild("HealthText")
+local HealthText_upvr = HealthText_upvr_2:WaitForChild("HealthText")
+local _1_upvw = CollectionService:GetTagged("HeraldModel")[1]
+local Gift_upvr = Herald_upvr_2.BossBar:WaitForChild("Gift")
+if not _1_upvw then
+	CollectionService:GetInstanceAddedSignal("HeraldModel"):Wait()
+	_1_upvw = CollectionService:GetTagged("HeraldModel")[1]
+end
+local any_new_result1_upvr = require(ReplicatedStorage_upvr.Dependences.Utilities.Hover).new()
+local Herald_upvr = ReplicatedStorage_upvr:WaitForChild("Remotes"):WaitForChild("Herald")
+local any_InvokeServer_result1, any_InvokeServer_result2, any_InvokeServer_result3 = Herald_upvr.IsSpawned:InvokeServer()
+local EnemyDie_upvr = workspace:WaitForChild("Herald"):WaitForChild("SpawnEffectPart"):WaitForChild("EnemyDie")
+local var18_upvw
+local BillboardGui_upvr = workspace:WaitForChild("Herald"):WaitForChild("BillboardObject"):WaitForChild("BillboardGui")
+local var20_upvw
+local TimeOut_upvr = BillboardGui_upvr:WaitForChild("TimeOut")
+local function TimeOutTillSpawn_upvr(arg1) -- Line 55, Named "TimeOutTillSpawn"
+	--[[ Upvalues[4]:
+		[1]: BillboardGui_upvr (readonly)
+		[2]: var20_upvw (read and write)
+		[3]: Herald_upvr (readonly)
+		[4]: TimeOut_upvr (readonly)
+	]]
+	BillboardGui_upvr.Enabled = true
+	pcall(task.cancel, var20_upvw)
+	local var25_upvw
+	if not var25_upvw then
+		var25_upvw = Herald_upvr.GetRespawnTime:InvokeServer()
+		if not var25_upvw then
+			BillboardGui_upvr.Enabled = true
+			return
+		end
+	end
+	var20_upvw = task.spawn(function() -- Line 70
+		--[[ Upvalues[3]:
+			[1]: var25_upvw (read and write)
+			[2]: TimeOut_upvr (copied, readonly)
+			[3]: BillboardGui_upvr (copied, readonly)
+		]]
+		while workspace:GetServerTimeNow() < var25_upvw do
+			local var27 = var25_upvw - workspace:GetServerTimeNow()
+			TimeOut_upvr.Text = "Respawns At: "..string.format("%d:%02d", math.floor(var27 / 60), var27 % 60)
+			task.wait(1)
+		end
+		print("Desativand!@")
+		BillboardGui_upvr.Enabled = false
+	end)
+end
+local function SpawnAnimation_upvr() -- Line 92, Named "SpawnAnimation"
+	--[[ Upvalues[3]:
+		[1]: _1_upvw (read and write)
+		[2]: TweenService_upvr (readonly)
+		[3]: EnemyDie_upvr (readonly)
+	]]
+	for _, v in _1_upvw.Sword:GetDescendants() do
+		if v:IsA("BasePart") or v:IsA("Decal") and v.Name ~= "Part" then
+			v.Transparency = 1
+			TweenService_upvr:Create(v, TweenInfo.new(2.5), {
+				Transparency = 0;
+			}):Play()
+		end
+	end
+	for _, v_2 in _1_upvw.Folder:GetDescendants() do
+		if v_2:IsA("BasePart") or v_2:IsA("Decal") then
+			v_2.Transparency = 1
+			TweenService_upvr:Create(v_2, TweenInfo.new(2.5), {
+				Transparency = 0;
+			}):Play()
+		end
+	end
+	EnemyDie_upvr.Enabled = true
+	_1_upvw.Parent = workspace.Herald
+	task.delay(3, function() -- Line 112
+		--[[ Upvalues[1]:
+			[1]: EnemyDie_upvr (copied, readonly)
+		]]
+		EnemyDie_upvr.Enabled = false
+	end)
+end
+local var41_upvw
+local AnimationHandler_upvr = require(ReplicatedStorage_upvr.Dependences.Utilities.AnimationHandler)
+local Timer_upvr = Herald_upvr_2.BossBar:WaitForChild("Timer")
+local function SpawnHerald_upvr(arg1) -- Line 117, Named "SpawnHerald"
+	--[[ Upvalues[6]:
+		[1]: _1_upvw (read and write)
+		[2]: SpawnAnimation_upvr (readonly)
+		[3]: var41_upvw (read and write)
+		[4]: var18_upvw (read and write)
+		[5]: AnimationHandler_upvr (readonly)
+		[6]: Timer_upvr (readonly)
+	]]
+	_1_upvw.Parent = workspace.Herald
+	SpawnAnimation_upvr()
+	pcall(task.cancel, var41_upvw)
+	repeat
+		task.wait()
+	until _1_upvw:WaitForChild("Humanoid"):IsDescendantOf(workspace)
+	if not var18_upvw then
+		var18_upvw = AnimationHandler_upvr.new(_1_upvw:WaitForChild("Humanoid"))
+	end
+	var18_upvw:PlayAnimation("Idle")
+	var41_upvw = task.spawn(function() -- Line 133
+		--[[ Upvalues[2]:
+			[1]: arg1 (read and write)
+			[2]: Timer_upvr (copied, readonly)
+		]]
+		while 0 < arg1 do
+			Timer_upvr.Text = string.format("%d:%02d", math.floor(arg1 / 60), arg1 % 60)
+			arg1 -= 1
+			task.wait(1)
+		end
+	end)
+end
+local function UnspawnHerald_upvr(arg1) -- Line 145, Named "UnspawnHerald"
+	--[[ Upvalues[5]:
+		[1]: _1_upvw (read and write)
+		[2]: TweenService_upvr (readonly)
+		[3]: var18_upvw (read and write)
+		[4]: EnemyDie_upvr (readonly)
+		[5]: ReplicatedStorage_upvr (readonly)
+	]]
+	for _, v_3 in _1_upvw.Sword:GetDescendants() do
+		if v_3:IsA("BasePart") or v_3:IsA("Decal") and v_3.Name ~= "Part" then
+			v_3.Transparency = 0
+			TweenService_upvr:Create(v_3, TweenInfo.new(0.45), {
+				Transparency = 1;
+			}):Play()
+		end
+	end
+	for i_4, v_4 in _1_upvw.Folder:GetDescendants() do
+		if v_4:IsA("BasePart") or v_4:IsA("Decal") then
+			v_4.Transparency = 0
+			TweenService_upvr:Create(v_4, TweenInfo.new(0.45), {
+				Transparency = 1;
+			}):Play()
+		end
+	end
+	var18_upvw:StopAnimation("Idle")
+	if arg1 then
+		i_4 = {}
+		v_4 = false
+		i_4.Looped = v_4
+		var18_upvw:PlayAnimation("Die", i_4)
+	end
+	task.wait(0.25)
+	EnemyDie_upvr.Enabled = true
+	task.wait(0.25)
+	_1_upvw.Parent = ReplicatedStorage_upvr
+	task.delay(3, function() -- Line 178
+		--[[ Upvalues[1]:
+			[1]: EnemyDie_upvr (copied, readonly)
+		]]
+		EnemyDie_upvr.Enabled = false
+	end)
+end
+if any_InvokeServer_result1 then
+	SpawnHerald_upvr(any_InvokeServer_result3)
+else
+	_1_upvw.Parent = ReplicatedStorage_upvr
+	if any_InvokeServer_result2 then
+		TimeOutTillSpawn_upvr(any_InvokeServer_result2)
+	end
+end
+Herald_upvr.SpawnOrUnspawnOrder.OnClientEvent:Connect(function(arg1, ...) -- Line 195
+	--[[ Upvalues[3]:
+		[1]: SpawnHerald_upvr (readonly)
+		[2]: TimeOutTillSpawn_upvr (readonly)
+		[3]: UnspawnHerald_upvr (readonly)
+	]]
+	if arg1 then
+		SpawnHerald_upvr(300)
+	else
+		TimeOutTillSpawn_upvr(workspace:GetServerTimeNow() + 300)
+		UnspawnHerald_upvr(...)
+	end
+end)
+Herald_upvr.OnAttackOrder.OnClientEvent:Connect(function(arg1) -- Line 205
+	--[[ Upvalues[1]:
+		[1]: var18_upvw (read and write)
+	]]
+	var18_upvw:Play()
+end)
+Herald_upvr:WaitForChild("WarnPlayerWhenJoined").OnClientEvent:Connect(function(arg1) -- Line 209
+	--[[ Upvalues[1]:
+		[1]: Herald_upvr_2 (readonly)
+	]]
+	Herald_upvr_2.BossBar:SetAttribute("Visible", arg1)
+end)
+local Health_2 = _1_upvw:GetAttribute("Health")
+local MaxHealth = _1_upvw:GetAttribute("MaxHealth")
+HealthText_upvr_2.Text = Health_2..'/'..MaxHealth
+HealthText_upvr.Text = Health_2..'/'..MaxHealth
+Frame_upvr.Size = UDim2.fromScale(Health_2 / MaxHealth, 1)
+_1_upvw:GetAttributeChangedSignal("Health"):Connect(function() -- Line 221
+	--[[ Upvalues[4]:
+		[1]: _1_upvw (read and write)
+		[2]: HealthText_upvr_2 (readonly)
+		[3]: HealthText_upvr (readonly)
+		[4]: Frame_upvr (readonly)
+	]]
+	local Health = _1_upvw:GetAttribute("Health")
+	local MaxHealth_2 = _1_upvw:GetAttribute("MaxHealth")
+	HealthText_upvr_2.Text = Health..'/'..MaxHealth_2
+	HealthText_upvr.Text = Health..'/'..MaxHealth_2
+	Frame_upvr.Size = UDim2.fromScale(Health / MaxHealth_2, 1)
+end)
+local SoundService_upvr = game:GetService("SoundService")
+local Debris_upvr = game:GetService("Debris")
+local DamagePopup_upvr = _1_upvw:WaitForChild("UpperTorso"):WaitForChild("DamagePopup")
+local FormatNumber_upvr = require(ReplicatedStorage_upvr.Dependences.Objects.FormatNumber)
+Herald_upvr.AttackTheDummy.OnClientEvent:Connect(function(arg1) -- Line 231
+	--[[ Upvalues[8]:
+		[1]: SoundService_upvr (readonly)
+		[2]: LocalPlayer_upvr (readonly)
+		[3]: ReplicatedStorage_upvr (readonly)
+		[4]: _1_upvw (read and write)
+		[5]: Debris_upvr (readonly)
+		[6]: DamagePopup_upvr (readonly)
+		[7]: FormatNumber_upvr (readonly)
+		[8]: TweenService_upvr (readonly)
+	]]
+	local clone_3 = SoundService_upvr.Master.Gameplay.HitSound:Clone()
+	clone_3.Parent = LocalPlayer_upvr.Character.HumanoidRootPart
+	clone_3:Play()
+	local clone_2 = ReplicatedStorage_upvr.Assets.VFX.HitEnemy:Clone()
+	clone_2.Parent = _1_upvw.HumanoidRootPart
+	clone_2:Emit(1)
+	Debris_upvr:AddItem(clone_2, 1)
+	local clone = DamagePopup_upvr.Frame.Slot:Clone()
+	clone.Parent = DamagePopup_upvr.Frame
+	clone.Name = "Damage"
+	clone.TextLabel.Text = FormatNumber_upvr(math.round(arg1 or 1), 2)
+	clone.Visible = true
+	TweenService_upvr:Create(clone, TweenInfo.new(1), {
+		Position = UDim2.fromScale(0.5, -7);
+	}):Play()
+	TweenService_upvr:Create(clone.ImageLabel, TweenInfo.new(1), {
+		ImageTransparency = 1;
+	}):Play()
+	TweenService_upvr:Create(clone.TextLabel, TweenInfo.new(1), {
+		TextTransparency = 1;
+	}):Play()
+	TweenService_upvr:Create(clone.TextLabel.UIStroke, TweenInfo.new(1), {
+		Transparency = 1;
+	}):Play()
+	Debris_upvr:AddItem(clone, 1.1)
+end)
+local Gifts_upvr = require(ReplicatedStorage_upvr.Configurations.PrimaryData.Gifts)
+Gift_upvr.MouseEnter:Connect(function() -- Line 259
+	--[[ Upvalues[3]:
+		[1]: Gifts_upvr (readonly)
+		[2]: any_new_result1_upvr (readonly)
+		[3]: Gift_upvr (readonly)
+	]]
+	local __2 = Gifts_upvr['2']
+	any_new_result1_upvr:ChangeName(__2.Name)
+	any_new_result1_upvr:ChangeRarity(__2.Rarity)
+	any_new_result1_upvr:ApplyDescription(__2.Description)
+	any_new_result1_upvr:ApplyPossibleRewards(__2.PossibleRewards)
+	any_new_result1_upvr:MoveTo()
+	any_new_result1_upvr:FinishApplies(Gift_upvr)
+	any_new_result1_upvr:SetVisible(true)
+end)
+Gift_upvr.MouseMoved:Connect(function() -- Line 270
+	--[[ Upvalues[1]:
+		[1]: any_new_result1_upvr (readonly)
+	]]
+	any_new_result1_upvr:MoveTo()
+end)
+Gift_upvr.MouseLeave:Connect(function() -- Line 273
+	--[[ Upvalues[1]:
+		[1]: any_new_result1_upvr (readonly)
+	]]
+	any_new_result1_upvr:SetVisible(false)
+end)
+
+-- // Function Dumper made by King.Kevin
+-- // Script Path: ReplicatedStorage.Scripts.Gameplay.Herald.SpawnHerald
+
+--[[
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [number] = 284
+		2 [Instance] = Timer
+
+Function Constants: Unknown Name
+		1 [number] = 60
+		2 [string] = math
+		3 [string] = floor
+		5 [string] = string
+		6 [string] = format
+		8 [string] = %d:%02d
+		9 [string] = Text
+		10 [number] = 1
+		11 [string] = task
+		12 [string] = wait
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [number] = 0
+		2 [Instance] = Timer
+
+Function Constants: Unknown Name
+		1 [number] = 60
+		2 [string] = math
+		3 [string] = floor
+		5 [string] = string
+		6 [string] = format
+		8 [string] = %d:%02d
+		9 [string] = Text
+		10 [number] = 1
+		11 [string] = task
+		12 [string] = wait
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [number] = 1755447407.155346
+		2 [Instance] = TimeOut
+		3 [Instance] = BillboardGui
+
+Function Constants: Unknown Name
+		1 [string] = workspace
+		3 [string] = GetServerTimeNow
+		4 [number] = 60
+		5 [string] = math
+		6 [string] = floor
+		8 [string] = Respawns At: 
+		9 [string] = string
+		10 [string] = format
+		12 [string] = %d:%02d
+		13 [string] = Text
+		14 [string] = task
+		15 [string] = wait
+		17 [string] = print
+		19 [string] = Desativand!@
+		20 [string] = Enabled
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [Instance] = SoundService
+		2 [Instance] = GolfCatKi1082
+		3 [Instance] = ReplicatedStorage
+		4 [Instance] = Herald
+		5 [Instance] = Debris
+		6 [Instance] = DamagePopup
+		7 [function] = FormatNumber
+		8 [Instance] = TweenService
+
+Function Constants: Unknown Name
+		1 [string] = Master
+		2 [string] = Gameplay
+		3 [string] = HitSound
+		4 [string] = Clone
+		5 [string] = Character
+		6 [string] = HumanoidRootPart
+		7 [string] = Parent
+		8 [string] = Play
+		9 [string] = Assets
+		10 [string] = VFX
+		11 [string] = HitEnemy
+		12 [string] = Emit
+		13 [string] = AddItem
+		14 [string] = Frame
+		15 [string] = Slot
+		16 [string] = Damage
+		17 [string] = Name
+		18 [string] = TextLabel
+		19 [number] = 1
+		20 [string] = math
+		21 [string] = round
+		23 [string] = Text
+		24 [string] = Visible
+		25 [string] = TweenInfo
+		26 [string] = new
+		28 [string] = Position
+		30 [string] = UDim2
+		31 [string] = fromScale
+		33 [number] = 0.5
+		34 [string] = Create
+		35 [string] = ImageLabel
+		36 [string] = ImageTransparency
+		38 [string] = TextTransparency
+		40 [string] = UIStroke
+		41 [string] = Transparency
+		43 [number] = 1.1
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [table]:
+		1 [table] table: 0xc453c8e78433a08c
+				1 [table]:
+				_LoadedAnimations [table] table: 0xf2321d1fc0d3777c
+						1 [Instance] = Animation
+						2 [table]:
+						Attack [table] table: 0xa99728f8d655d6bc
+								1 [Instance] = Animation
+								2 [Instance] = Animation
+								3 [Instance] = Animation
+						3 [Instance] = Animation
+						4 [table]:
+						Punch [table] table: 0xd7d1f70f4b34c05c
+								1 [Instance] = Animation
+								2 [Instance] = Animation
+								3 [Instance] = Animation
+						5 [Instance] = Animation
+						6 [Instance] = Animation
+				2 [table]:
+				_LastAnimationIndex [table] table: 0xe0f132171f931bec
+						1 [number] = 0
+						2 [number] = 0
+				3 [Instance] = Humanoid
+				4 [Instance] = Animator
+
+Function Constants: Unknown Name
+		1 [string] = Play
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [Instance] = Herald
+		2 [Instance] = HealthText
+		3 [Instance] = HealthText
+		4 [Instance] = Frame
+
+Function Constants: Unknown Name
+		1 [string] = Health
+		2 [string] = GetAttribute
+		3 [string] = MaxHealth
+		4 [string] = /
+		5 [string] = Text
+		6 [string] = UDim2
+		7 [string] = fromScale
+		9 [string] = Size
+
+====================================================================================================
+
+Function Dump: TimeOutTillSpawn
+
+Function Upvalues: TimeOutTillSpawn
+		1 [Instance] = BillboardGui
+		2 [thread] = thread: 0x057e8d85d1fdba5c
+		3 [Instance] = Herald
+		4 [Instance] = TimeOut
+
+Function Constants: TimeOutTillSpawn
+		1 [string] = Enabled
+		2 [string] = pcall
+		4 [string] = task
+		5 [string] = cancel
+		7 [string] = GetRespawnTime
+		8 [string] = InvokeServer
+		9 [string] = spawn
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [table]:
+		1 [table] table: 0x74c121ec0151b8ac
+				1 [table]:
+				DescList [table] table: 0x5083a77d8e32658c
+				2 [table]:
+				Info [table] table: 0xa26cdbb15bf2b87c
+				3 [table]:
+				BoostObjects [table] table: 0x05a264383d91ed1c
+				4 [Instance] = StandartHover
+				5 [table]:
+				SpecialTextList [table] table: 0x0c446eed36d28eec
+				6 [table]:
+				_classLog [table] table: 0xdeddb19af113435c
+
+Function Constants: Unknown Name
+		1 [string] = SetVisible
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [table] (Recursive table detected)
+
+Function Constants: Unknown Name
+		1 [string] = MoveTo
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [Instance] = Herald
+
+Function Constants: Unknown Name
+		1 [string] = BossBar
+		2 [string] = Visible
+		3 [string] = SetAttribute
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [Instance] = EnemyDie
+
+Function Constants: Unknown Name
+		1 [string] = Enabled
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [Instance] = EnemyDie
+
+Function Constants: Unknown Name
+		1 [string] = Enabled
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [table]:
+		1 [table] table: 0xa158ab2301cbaf8c
+				1 [table]:
+				1 [table] table: 0xd7a9a7fb42e4a27c
+						1 [string] = Common Gift
+						2 [table]:
+						ImageConfigs [table] table: 0xa0251a35b7e61e9c
+								1 [string] = rbxassetid://75691433329004
+								2 [UDim2] = {0.889999986, 0}, {0.685000002, 0}
+								3 [UDim2] = {0.469999999, 0}, {0.432000011, 0}
+								4 [string] = rbxassetid://89802264487849
+								5 [ColorSequence] = 0 0.694118 1 0.490196 0 1 0.282353 0.827451 0.372549 0 
+						3 [table]:
+						PossibleRewards [table] table: 0xe9da2e02cb250d5c
+								1 [table]:
+								1 [table] table: 0xda3bd1123d455dcc
+										1 [string] = 1100
+										2 [string] = Craft
+										3 [number] = 56
+										4 [number] = 1
+								2 [table]:
+								2 [table] table: 0x0c6b741a51a589bc
+										1 [string] = 1101
+										2 [string] = Craft
+										3 [number] = 30
+										4 [number] = 1
+								3 [table]:
+								3 [table] table: 0xb20c37e99405b52c
+										1 [string] = 1102
+										2 [string] = Craft
+										3 [number] = 3
+										4 [number] = 1
+						4 [table]:
+						Description [table] table: 0x06897b0a8784f8ec
+								1 [string] = A common gift with basic rewards.
+						5 [string] = Common
+				2 [table]:
+				2 [table] table: 0x68a007a47a27c8dc
+						1 [string] = Angelical Gift
+						2 [table]:
+						ImageConfigs [table] table: 0xe88aac4f40983fec
+								1 [string] = rbxassetid://89608487247009
+								2 [UDim2] = {0.889999986, 0}, {0.685000002, 0}
+								3 [UDim2] = {0.469999999, 0}, {0.432000011, 0}
+								4 [string] = rbxassetid://89802264487849
+								5 [ColorSequence] = 0 0.694118 1 0.490196 0 1 0.282353 0.827451 0.372549 0 
+						3 [table]:
+						PossibleRewards [table] table: 0xb5218c8412a7653c
+								1 [table]:
+								1 [table] table: 0x21025188f118e9ac
+										1 [string] = 602
+										2 [string] = Craft
+										3 [number] = 2
+										4 [number] = 1
+								2 [table]:
+								2 [table] table: 0xd7e332f48d68b21c
+										1 [string] = 605
+										2 [string] = Craft
+										3 [number] = 10
+										4 [number] = 1
+								3 [table]:
+								3 [table] table: 0x84c3f7bf58b8448c
+										1 [string] = 603
+										2 [string] = Craft
+										3 [number] = 35
+										4 [number] = 1
+								4 [table]:
+								4 [table] table: 0xf5bc9b7707e80b7c
+										1 [string] = 604
+										2 [string] = Craft
+										3 [number] = 45
+										4 [number] = 1
+						4 [table]:
+						Description [table] table: 0x5b413a9057c7324c
+								1 [string] = Given to those with at least 6% raid contribution to the herald
+						5 [string] = Rare
+		2 [table] (Recursive table detected)
+		3 [Instance] = Gift
+
+Function Constants: Unknown Name
+		1 [string] = 2
+		2 [string] = Name
+		3 [string] = ChangeName
+		4 [string] = Rarity
+		5 [string] = ChangeRarity
+		6 [string] = Description
+		7 [string] = ApplyDescription
+		8 [string] = PossibleRewards
+		9 [string] = ApplyPossibleRewards
+		10 [string] = MoveTo
+		11 [string] = FinishApplies
+		12 [string] = SetVisible
+
+====================================================================================================
+
+Function Dump: Unknown Name
+
+Function Upvalues: Unknown Name
+		1 [function] = SpawnHerald
+		2 [function] = TimeOutTillSpawn
+		3 [function] = UnspawnHerald
+
+Function Constants: Unknown Name
+		1 [number] = 300
+		2 [string] = workspace
+		4 [string] = GetServerTimeNow
+
+====================================================================================================
+
+Function Dump: UnspawnHerald
+
+Function Upvalues: UnspawnHerald
+		1 [Instance] = Herald
+		2 [Instance] = TweenService
+		3 [table] (Recursive table detected)
+		4 [Instance] = EnemyDie
+		5 [Instance] = ReplicatedStorage
+
+Function Constants: UnspawnHerald
+		1 [string] = Sword
+		2 [string] = GetDescendants
+		3 [string] = BasePart
+		4 [string] = IsA
+		5 [string] = Decal
+		6 [string] = Name
+		7 [string] = Part
+		8 [string] = Transparency
+		9 [string] = TweenInfo
+		10 [string] = new
+		12 [number] = 0.45
+		14 [string] = Create
+		15 [string] = Play
+		16 [string] = Folder
+		17 [string] = Idle
+		18 [string] = StopAnimation
+		19 [string] = Die
+		20 [string] = Looped
+		22 [string] = PlayAnimation
+		23 [string] = task
+		24 [string] = wait
+		26 [number] = 0.25
+		27 [string] = Enabled
+		28 [string] = Parent
+		29 [string] = delay
+
+====================================================================================================
+
+Function Dump: SpawnAnimation
+
+Function Upvalues: SpawnAnimation
+		1 [Instance] = Herald
+		2 [Instance] = TweenService
+		3 [Instance] = EnemyDie
+
+Function Constants: SpawnAnimation
+		1 [string] = Sword
+		2 [string] = GetDescendants
+		3 [string] = BasePart
+		4 [string] = IsA
+		5 [string] = Decal
+		6 [string] = Name
+		7 [string] = Part
+		8 [string] = Transparency
+		9 [string] = TweenInfo
+		10 [string] = new
+		12 [number] = 2.5
+		14 [string] = Create
+		15 [string] = Play
+		16 [string] = Folder
+		17 [string] = Enabled
+		18 [string] = workspace
+		20 [string] = Herald
+		21 [string] = Parent
+		22 [string] = task
+		23 [string] = delay
+
+====================================================================================================
+
+Function Dump: SpawnHerald
+
+Function Upvalues: SpawnHerald
+		1 [Instance] = Herald
+		2 [function] = SpawnAnimation
+		3 [thread] = thread: 0xe75475b828b239dc
+		4 [table] (Recursive table detected)
+		5 [table]:
+		5 [table] table: 0xf94ee8865b57b94c
+				1 [function] = Destroy
+				2 [function] = LoadAnimation
+				3 [function] = ListLoadedAnimations
+				4 [function] = PlayAnimation
+				5 [function] = StopAllAnimations
+				6 [function] = IsAnimationLoaded
+				7 [function] = GetAnimation
+				8 [function] = StopAnimation
+				9 [table] (Recursive table detected)
+				10 [function] = new
+		6 [Instance] = Timer
+
+Function Constants: SpawnHerald
+		1 [string] = workspace
+		3 [string] = Herald
+		4 [string] = Parent
+		5 [string] = pcall
+		7 [string] = task
+		8 [string] = cancel
+		10 [string] = wait
+		12 [string] = Humanoid
+		13 [string] = WaitForChild
+		14 [string] = IsDescendantOf
+		15 [string] = new
+		16 [string] = Idle
+		17 [string] = PlayAnimation
+		18 [string] = spawn
+
+====================================================================================================
+]]
