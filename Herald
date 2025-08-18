@@ -1,6 +1,6 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew", true))()
-local tab = library:CreateWindow("Your Title")
-local folder = tab:AddFolder("Folder")
+local tab = library:CreateWindow("Build A Train")
+local folder = tab:AddFolder("Money")
 
 local teleportZ = 100000 -- default Z coordinate
 
