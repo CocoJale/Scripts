@@ -287,32 +287,15 @@ library.flags["WorldTarget"] = worldOptions[1].name
 worldTab:AddButton({
     text = "TP to World",
     callback = function()
-        -- Get current selection from dropdown
         local selected = library.flags["WorldTarget"]
-        local found = nil
         for _, opt in ipairs(worldOptions) do
             if opt.name == selected then
-                found = opt.args
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PortalC"):FireServer(unpack(opt.args))
                 break
             end
         end
-        if found then
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PortalC"):FireServer(unpack(found))
-        end
     end
 })
-
-worldTab:AddList({
-    text = "Select World",
-    values = (function()
-        local t = {}
-        for _, opt in ipairs(worldOptions) do table.insert(t, opt.name) end
-        return t
-    end)(),
-    flag = "WorldTarget",
-    value = worldOptions[1].name
-})
-
 
 local secretBossOptions = {
     {name = "Nyxra",      dragon = "Dragon-3"},
@@ -321,7 +304,6 @@ local secretBossOptions = {
     {name = "Ultra Prime",dragon = "Dragon-8"},
 }
 local difficultyOptions = {"Normal", "Hard", "Chaos"}
-
 library.flags["SecretBossTarget"] = secretBossOptions[1].name
 library.flags["SecretBossDifficulty"] = difficultyOptions[1]
 
@@ -331,7 +313,6 @@ worldTab:AddToggle({
     callback = function(state)
         local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
         if state then
-            -- Find selected boss/dragon code
             local boss = nil
             for _, b in ipairs(secretBossOptions) do
                 if library.flags["SecretBossTarget"] == b.name then
@@ -352,10 +333,20 @@ worldTab:AddToggle({
                 end)
             end
         else
-            local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
             remotes:WaitForChild("RemoveC"):FireServer(0)
         end
     end
+})
+
+worldTab:AddList({
+    text = "Select World",
+    values = (function()
+        local t = {}
+        for _, opt in ipairs(worldOptions) do table.insert(t, opt.name) end
+        return t
+    end)(),
+    flag = "WorldTarget",
+    value = worldOptions[1].name
 })
 
 worldTab:AddList({
@@ -375,7 +366,6 @@ worldTab:AddList({
     flag = "SecretBossDifficulty",
     value = difficultyOptions[1]
 })
-
 
 --------------------------------------------------
 -- EVENTS
