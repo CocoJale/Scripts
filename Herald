@@ -1,20 +1,25 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew", true))()
-local tab = library:CreateWindow("brainrot jumping")
+local tab = library:CreateWindow("Your Title")
 local folder = tab:AddFolder("Folder")
 
-local teleportY = 0 -- default Y increment
+local teleportY = 0 -- default Y coordinate
 
 folder:AddBox({
-    text = "Enter Y Coordinate",
+    text = "Enter Y Coordinate (use 'inf' for infinitely high)",
     flag = "y_coordinate",
     value = tostring(teleportY),
     callback = function(value)
-        local num = tonumber(value)
-        if num then
-            teleportY = num
-            print("Y coordinate updated to", teleportY)
+        if string.lower(value) == "inf" then
+            teleportY = math.huge -- infinite height
+            print("Y coordinate set to infinite height")
         else
-            print("Invalid number entered")
+            local num = tonumber(value)
+            if num then
+                teleportY = num
+                print("Y coordinate updated to", teleportY)
+            else
+                print("Invalid number entered")
+            end
         end
     end
 })
@@ -27,8 +32,9 @@ folder:AddButton({
         if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local hrp = player.Character.HumanoidRootPart
             local currentPos = hrp.Position
-            hrp.CFrame = CFrame.new(currentPos.X, teleportY, currentPos.Z)
-            print("Player teleported to:", currentPos.X, teleportY, currentPos.Z)
+            local yPos = teleportY == math.huge and 9e9 or teleportY -- avoid literal infinity by using a very large number
+            hrp.CFrame = CFrame.new(currentPos.X, yPos, currentPos.Z)
+            print("Player teleported to:", currentPos.X, yPos, currentPos.Z)
         else
             warn("Player character or HumanoidRootPart not found")
         end
