@@ -7,6 +7,11 @@ local bossTab  = mainTab:AddFolder("Bosses")
 local worldTab = mainTab:AddFolder("Worlds/Secret Worlds")
 local eventTab = mainTab:AddFolder("Events")
 
+bossTab:AddLabel({
+    text = "Creator = Mystery...",
+    type = "label"
+})
+
 --------------------------------------------------
 -- MAIN GAME
 --------------------------------------------------
