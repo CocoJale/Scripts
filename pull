@@ -448,5 +448,36 @@ mainTab:AddLabel({
     type = "label"
 })
 
+local eyeOpenIcon = "rbxassetid://6473251980"
+local eyeClosedIcon = "rbxassetid://6473252655"
+
+local screenGui = library.base 
+
+local toggleGui = Instance.new("ScreenGui")
+toggleGui.Name = "ToggleToraGui"
+toggleGui.ResetOnSpawn = false
+toggleGui.Parent = game:GetService("CoreGui")
+
+local toggleButton = Instance.new("ImageButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 40, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundTransparency = 1
+toggleButton.Image = eyeOpenIcon
+toggleButton.Parent = toggleGui
+toggleButton.ZIndex = 9999
+
+local isVisible = true
+
+toggleButton.MouseButton1Click:Connect(function()
+    isVisible = not isVisible
+    screenGui.Enabled = isVisible
+    -- Switch the icon depending on the menu visibility
+    if isVisible then
+        toggleButton.Image = eyeOpenIcon
+    else
+        toggleButton.Image = eyeClosedIcon
+    end
+end)
 
 library:Init()
