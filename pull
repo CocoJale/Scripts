@@ -448,38 +448,4 @@ ainTab:AddLabel({
     type = "label"
 })
 
--- Eye icon assets
-local eyeOpenIcon = "rbxassetid://6473251980"
-local eyeClosedIcon = "rbxassetid://6473252655"
-
-local screenGui = library.base -- The main ScreenGui of the library
-
--- Create separate ScreenGui for toggle button
-local toggleGui = Instance.new("ScreenGui")
-toggleGui.Name = "ToggleToraGui"
-toggleGui.ResetOnSpawn = false
-toggleGui.Parent = game:GetService("CoreGui")
-
-local toggleButton = Instance.new("ImageButton")
-toggleButton.Name = "ToggleButton"
-toggleButton.Size = UDim2.new(0, 40, 0, 40)
-toggleButton.Position = UDim2.new(0, 10, 0, 10) -- Change position as needed
-toggleButton.BackgroundTransparency = 1
-toggleButton.Image = eyeOpenIcon
-toggleButton.Parent = toggleGui
-toggleButton.ZIndex = 9999
-
-local isVisible = true
-
--- Use Activated for best cross-platform compatibility
-toggleButton.Activated:Connect(function()
-    isVisible = not isVisible
-    screenGui.Enabled = isVisible
-    if isVisible then
-        toggleButton.Image = eyeOpenIcon
-    else
-        toggleButton.Image = eyeClosedIcon
-    end
-end)
-
 library:Init()
