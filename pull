@@ -50,6 +50,17 @@ mainGame:AddToggle({
     end
 })
 
+local function getPlayerNames()
+    local t = {}
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        table.insert(t, player.Name)
+    end
+    return t
+end
+
+local playerNames = getPlayerNames()
+
+-- Add Auto PvP toggle
 mainGame:AddToggle({
     text = "Auto PvP",
     flag = "AutoPvP",
@@ -58,10 +69,9 @@ mainGame:AddToggle({
             task.spawn(function()
                 while library.flags["AutoPvP"] do
                     local r = game.ReplicatedStorage.Remotes.Events
-                    if library.flags["PvPTarget"] == "Coco" then
-                        r.WinEvent_PVP:FireServer("Cocojale", true, true)
-                    else
-                        r.WinEvent_PVP:FireServer("Rip_AkiraToriyama55", true, true)
+                    local targetName = library.flags["PvPTarget"]
+                    if targetName and targetName ~= "" then
+                        r.WinEvent_PVP:FireServer(targetName, true, true)
                     end
                     task.wait(10820)
                 end
@@ -70,11 +80,25 @@ mainGame:AddToggle({
     end
 })
 
-mainGame:AddList({
+local dropdownRef
+dropdownRef = mainGame:AddList({
     text = "Select PvP Target",
-    values = {"Coco", "Akira"},
+    values = playerNames,
     flag = "PvPTarget",
-    value = "Coco"
+    value = playerNames[1] or ""
+})
+
+mainGame:AddButton({
+    text = "Refresh Players",
+    callback = function()
+        playerNames = getPlayerNames()
+        if dropdownRef then
+            dropdownRef.values = playerNames
+            dropdownRef.value = playerNames[11] or ""
+            dropdownRef:SetValue(dropdownRef.value) -- update displayed selection
+        end
+        print("Player list refreshed")
+    end
 })
 
 mainGame:AddButton({
