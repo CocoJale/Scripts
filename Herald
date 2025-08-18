@@ -1,8 +1,8 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew", true))()
-local tab = library:CreateWindow("Your Title")
+local tab = library:CreateWindow("brainrot jumping")
 local folder = tab:AddFolder("Folder")
 
-local teleportY = 154 -- default Y coordinate
+local teleportY = 0 -- default Y increment
 
 folder:AddBox({
     text = "Enter Y Coordinate",
@@ -25,8 +25,10 @@ folder:AddButton({
     callback = function()
         local player = game:GetService("Players").LocalPlayer
         if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = CFrame.new(-55, teleportY, 100000)
-            print("Player teleported to:", -55, teleportY, 100000)
+            local hrp = player.Character.HumanoidRootPart
+            local currentPos = hrp.Position
+            hrp.CFrame = CFrame.new(currentPos.X, teleportY, currentPos.Z)
+            print("Player teleported to:", currentPos.X, teleportY, currentPos.Z)
         else
             warn("Player character or HumanoidRootPart not found")
         end
