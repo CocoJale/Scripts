@@ -313,6 +313,70 @@ worldTab:AddList({
     value = worldOptions[1].name
 })
 
+
+local secretBossOptions = {
+    {name = "Nyxra",      dragon = "Dragon-3"},
+    {name = "RaZar",      dragon = "Dragon-4"},
+    {name = "Viridian",   dragon = "Dragon-5"},
+    {name = "Ultra Prime",dragon = "Dragon-8"},
+}
+local difficultyOptions = {"Normal", "Hard", "Chaos"}
+
+library.flags["SecretBossTarget"] = secretBossOptions[1].name
+library.flags["SecretBossDifficulty"] = difficultyOptions[1]
+
+worldTab:AddToggle({
+    text = "Kill Secret Boss",
+    flag = "KillSecretBoss",
+    callback = function(state)
+        local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+        if state then
+            -- Find selected boss/dragon code
+            local boss = nil
+            for _, b in ipairs(secretBossOptions) do
+                if library.flags["SecretBossTarget"] == b.name then
+                    boss = b.dragon
+                    break
+                end
+            end
+            local difficulty = library.flags["SecretBossDifficulty"]
+
+            if boss and difficulty then
+                remotes:WaitForChild("RemoveC"):FireServer(1)
+                task.wait(0.2)
+                task.spawn(function()
+                    while library.flags["KillSecretBoss"] do
+                        remotes:WaitForChild("WinMegaBossEvent"):FireServer(boss, difficulty)
+                        task.wait(0.2)
+                    end
+                end)
+            end
+        else
+            local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events")
+            remotes:WaitForChild("RemoveC"):FireServer(0)
+        end
+    end
+})
+
+worldTab:AddList({
+    text = "Select Which Boss",
+    values = (function()
+        local t = {}
+        for _, b in ipairs(secretBossOptions) do table.insert(t, b.name) end
+        return t
+    end)(),
+    flag = "SecretBossTarget",
+    value = secretBossOptions[1].name
+})
+
+worldTab:AddList({
+    text = "Difficulty",
+    values = difficultyOptions,
+    flag = "SecretBossDifficulty",
+    value = difficultyOptions[1]
+})
+
+
 --------------------------------------------------
 -- EVENTS
 --------------------------------------------------
