@@ -2,7 +2,7 @@ local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebe
 local tab = library:CreateWindow("Your Title")
 local folder = tab:AddFolder("Folder")
 
-local teleportZ = 100000
+local teleportZ = 100000 -- default Z coordinate
 
 folder:AddBox({
     text = "Enter Z Coordinate",
@@ -26,11 +26,12 @@ folder:AddButton({
         local surface = game:GetService("Workspace").Plots.Location.Cart.Surface
         if surface and surface:IsA("BasePart") then
             surface.Position = Vector3.new(-55, 154, teleportZ)
-            print("Surface teleported to: ", -55, 154, teleportZ)
+            print("Surface teleported to:", -55, 154, teleportZ)
         else
             warn("Surface not found or is not a BasePart")
         end
     end
 })
 
+library:Close()
 library:Init()
