@@ -1,4 +1,3 @@
-local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
@@ -6,36 +5,31 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
 local swordModel = character:WaitForChild("SWORD_MODEL")
-local floatAmplitude = 0.5  -- vertical floating range (studs)
-local floatSpeed = 2        -- speed of floating
 
--- Make sure the sword model's primary part is set or use Handle if available
 local primaryPart = swordModel.PrimaryPart or swordModel:FindFirstChild("Handle")
 if not primaryPart then
     warn("SWORD_MODEL has no PrimaryPart or Handle!")
     return
 end
 
--- Anchor the sword model parts so it won't be affected by physics
 for _, part in ipairs(swordModel:GetDescendants()) do
     if part:IsA("BasePart") then
         part.Anchored = true
     end
 end
 
+local floatAmplitude = 0.5
+local floatSpeed = 2
 local startTime = tick()
 
--- Update position every frame for smooth float and follow
 RunService.RenderStepped:Connect(function()
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
 
     local hrp = character.HumanoidRootPart.CFrame
-
-    -- Target position: 5 studs behind the player with vertical sine float
     local backOffset = -5
     local verticalOffset = math.sin((tick() - startTime) * floatSpeed) * floatAmplitude
     local targetCFrame = hrp * CFrame.new(0, verticalOffset, backOffset)
 
+    -- Move only the primary part of the sword floating behind the player
     primaryPart.CFrame = targetCFrame
-    swordModel:SetPrimaryPartCFrame(primaryPart.CFrame)
 end)
