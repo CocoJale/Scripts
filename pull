@@ -7,6 +7,7 @@ local mainTab = library:CreateWindow("PAS - HUB")
 --// Three folders (Main Game, Bosses, Events)
 local mainGame = mainTab:AddFolder("Main Game")
 local bossTab  = mainTab:AddFolder("Bosses")
+local worldTab = mainTab:AddFolder("Worlds/Secret Worlds")
 local eventTab = mainTab:AddFolder("Events")
 
 --------------------------------------------------
@@ -262,6 +263,54 @@ bossTab:AddList({
               "Lazyfish", "Yokai", "Vort3x", "Underlord", "The Conquerer"},
     flag = "BossTarget",
     value = "The King"
+})
+
+local worldOptions = {
+    {name = "Castle",        args = {"2", true}},
+    {name = "Volcano Cave",  args = {"1", true}},
+    {name = "Glacier Peaks", args = {"3", true}},
+    {name = "Desert Island", args = {"5", true}},
+    {name = "The Lab",       args = {"7", true}},
+    {name = "Ocean",         args = {"9", true}},
+    {name = "Temple",        args = {"11", true}},
+    {name = "Arcade",        args = {"13", true}},
+    {name = "Underworld",    args = {"15", true}},
+    {name = "Darkstar",      args = {"17", true}},
+    {name = "Nyxra Place",   args = {"-6", false}},
+    {name = "Anubis",        args = {"-8", false}},
+    {name = "Viridian",      args = {"-14", false}},
+    {name = "Ultra Prime",   args = {"-10", false}},
+}
+
+library.flags["WorldTarget"] = worldOptions[1].name
+
+worldTab:AddButton({
+    text = "TP to World",
+    callback = function()
+        -- Get current selection from dropdown
+        local selected = library.flags["WorldTarget"]
+        local found = nil
+        for _, opt in ipairs(worldOptions) do
+            if opt.name == selected then
+                found = opt.args
+                break
+            end
+        end
+        if found then
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PortalC"):FireServer(unpack(found))
+        end
+    end
+})
+
+worldTab:AddList({
+    text = "Select World",
+    values = (function()
+        local t = {}
+        for _, opt in ipairs(worldOptions) do table.insert(t, opt.name) end
+        return t
+    end)(),
+    flag = "WorldTarget",
+    value = worldOptions[1].name
 })
 
 --------------------------------------------------
