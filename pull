@@ -1,10 +1,7 @@
---// Load Tora UI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew",true))()
 
---// One main hub
 local mainTab = library:CreateWindow("PAS - HUB")
 
---// Three folders (Main Game, Bosses, Events)
 local mainGame = mainTab:AddFolder("Main Game")
 local bossTab  = mainTab:AddFolder("Bosses")
 local worldTab = mainTab:AddFolder("Worlds/Secret Worlds")
@@ -14,7 +11,6 @@ local eventTab = mainTab:AddFolder("Events")
 -- MAIN GAME
 --------------------------------------------------
 
--- Auto Click
 mainGame:AddToggle({
     text = "Auto Click",
     flag = "AutoClick",
@@ -30,7 +26,6 @@ mainGame:AddToggle({
     end
 })
 
--- Hatch Nearest Egg
 local eggList = {
     "W1E1","W2E1","W3E1","W4E1","W5E1","W6E1","W7E1","W8E1","W9E1","W10E1",
     "W11E1","W12E1","W13E1","W14E1","W15E1","W16E1","W17E1","W18E1","W19E1","W20E1",
@@ -55,7 +50,6 @@ mainGame:AddToggle({
     end
 })
 
--- Auto PvP toggle ABOVE dropdown
 mainGame:AddToggle({
     text = "Auto PvP",
     flag = "AutoPvP",
@@ -83,7 +77,6 @@ mainGame:AddList({
     value = "Coco"
 })
 
--- Complete Quests
 mainGame:AddButton({
     text = "Complete Quests",
     callback = function()
@@ -121,7 +114,6 @@ mainGame:AddButton({
 
         task.wait(120)
 
-        --claim quest remotes with 0.5 wait cause why not
         local dailyArgs = {
             {"Daily", "UseOnSideSystem"},
             {"Daily", "Defeat10Enemies"},
@@ -135,13 +127,12 @@ mainGame:AddButton({
         }
         for _, args in ipairs(dailyArgs) do
             remotes:WaitForChild("ClaimQuest"):FireServer(unpack(args))
-            task.wait(0.5) -- 0.5-second wait between each claim
+            task.wait(0.5)
         end
     end
 })
 
 
--- Anti AFK
 mainGame:AddButton({
     text = "Antiafk & Antilag",
     callback = function()
@@ -175,13 +166,11 @@ mainGame:AddButton({
 -- BOSSES FOLDER (above Events)
 --------------------------------------------------
 
--- Info Label above Generate Crystals
 bossTab:AddLabel({
     text = "TP Lab/Ocean = Crystals.",
     type = "label"
 })
 
--- Generate Crystals
 bossTab:AddToggle({
     text = "Generate Crystals",
     flag = "GenCrystals",
@@ -203,7 +192,6 @@ bossTab:AddToggle({
     end
 })
 
--- Spin Crystal Wheels
 bossTab:AddToggle({
     text = "Spin Crystal Wheels",
     flag = "SpinWheel",
@@ -222,7 +210,6 @@ bossTab:AddToggle({
     end
 })
 
--- Kill Title Boss
 bossTab:AddToggle({
     text = "Kill Title Boss",
     flag = "KillBoss",
@@ -256,7 +243,6 @@ bossTab:AddToggle({
     end
 })
 
--- Select Boss dropdown BELOW toggle
 bossTab:AddList({
     text = "Select Boss",
     values = {"The King", "Dravenar", "Glacius", "Anubis", "Bossbot",
@@ -371,7 +357,6 @@ worldTab:AddList({
 -- EVENTS
 --------------------------------------------------
 
--- TP Herald
 eventTab:AddToggle({
     text = "TP Herald",
     flag = "TPHerald",
@@ -391,7 +376,6 @@ eventTab:AddToggle({
     end
 })
 
--- Craft Event Pets toggle ABOVE Attack Herald toggle
 eventTab:AddToggle({
     text = "Craft Event Pets",
     flag = "CraftEventPets",
@@ -414,7 +398,6 @@ eventTab:AddToggle({
     end
 })
 
--- Attack Herald toggle ABOVE dropdown
 eventTab:AddToggle({
     text = "Attack Herald",
     flag = "AttackHerald",
