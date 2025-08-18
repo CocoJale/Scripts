@@ -432,7 +432,7 @@ eventTab:AddToggle({
                     local mode = library.flags["AttackMode"]
                     if mode == "Slow Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.018)
+                        task.wait(0.01)
                     elseif mode == "Fast Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
                         task.wait()
