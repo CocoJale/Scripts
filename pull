@@ -7,6 +7,10 @@ local bossTab  = mainTab:AddFolder("Bosses")
 local worldTab = mainTab:AddFolder("Worlds/Secret Worlds")
 local eventTab = mainTab:AddFolder("Events")
 
+--------------------------------------------------
+-- MAIN GAME
+--------------------------------------------------
+
 mainGame:AddToggle({
     text = "Auto Click",
     flag = "AutoClick",
@@ -46,6 +50,7 @@ mainGame:AddToggle({
     end
 })
 
+-- Get current player list (initial)
 local function getPlayerNames()
     local t = {}
     for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
@@ -55,7 +60,6 @@ local function getPlayerNames()
 end
 
 local playerNames = getPlayerNames()
-
 
 mainGame:AddToggle({
     text = "Auto PvP",
@@ -181,6 +185,10 @@ mainGame:AddButton({
         end
     end
 })
+
+--------------------------------------------------
+-- BOSSES FOLDER (above Events)
+--------------------------------------------------
 
 bossTab:AddLabel({
     text = "TP Lab/Ocean = Crystals.",
@@ -369,6 +377,10 @@ worldTab:AddList({
     value = difficultyOptions[1]
 })
 
+--------------------------------------------------
+-- EVENTS
+--------------------------------------------------
+
 eventTab:AddToggle({
     text = "TP Herald",
     flag = "TPHerald",
@@ -443,9 +455,8 @@ eventTab:AddList({
     value = "Slow Attack"
 })
 
-ainTab:AddLabel({
-    text = "Credits = Mystery...",
-    type = "label"
-})
+--------------------------------------------------
+-- INIT
+--------------------------------------------------
 
 library:Init()
