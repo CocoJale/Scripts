@@ -10,7 +10,7 @@ local mainGame = mainTab:AddFolder("Main Game")
 local bossTab  = mainTab:AddFolder("Bosses")
 local worldTab = mainTab:AddFolder("Worlds/Secret Worlds")
 
-mainTab:AddLabel({ text = "Creator = Mystery...", type = "label" })
+mainTab:AddLabel({ text = "Creator = Not me", type = "label" })
 
 --------------------------------------------------
 -- HERALD EVENT WINDOW
@@ -210,6 +210,13 @@ mainGame:AddButton({
 --------------------------------------------------
 -- BOSSES
 --------------------------------------------------
+
+-- Info Label above Generate Crystals
+bossTab:AddLabel({
+    text = "TP Lab/Ocean = Crystals.",
+    type = "label"
+})
+
 bossTab:AddToggle({
     text = "Generate Crystals",
     flag = "GenCrystals",
@@ -219,10 +226,10 @@ bossTab:AddToggle({
             r.RemoveC:FireServer(1)
             task.spawn(function()
                 while library.flags["GenCrystals"] do
-                    for i=1,5 do
+                    for i=1,20 do
                         r.WinMegaBossEvent:FireServer("Dragon6", "Chaos")
                     end
-                    task.wait(0.1)
+                    task.wait()
                 end
             end)
         else
@@ -361,7 +368,7 @@ worldTab:AddList({
 })
 
 --------------------------------------------------
--- HERALD EVENTS (only Snail Attack + Sonic Attack)
+-- HERALD EVENTS (only Snail Attack + Fast Attack)
 --------------------------------------------------
 eventTab:AddToggle({
     text="TP Herald",
@@ -408,9 +415,9 @@ eventTab:AddToggle({
                     local mode=library.flags["AttackMode"]
                     if mode=="Slow Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.015)
-                    elseif mode=="Sonic Attack" then
-                        for i=1,5 do game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer() end
+                        task.wait(0.02)
+                    elseif mode=="Fast Attack" then
+                        for i=1,2 do game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer() end
                         task.wait()
                     end
                 end
@@ -421,7 +428,7 @@ eventTab:AddToggle({
 
 eventTab:AddList({
     text="Select Attack Mode",
-    values={"Slow Attack","Sonic Attack"},
+    values={"Slow Attack","Fast Attack"},
     flag="AttackMode",
     value="Slow Attack"
 })
