@@ -472,12 +472,12 @@ eventTab:AddToggle({
             task.spawn(function()
                 while library.flags["AttackHerald"] do
                     local mode = library.flags["AttackMode"]
-                    if mode == "Slowest Attack" then
+                    if mode == "Snail Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.023)
-                    if mode == "Slow Attack" then
+                        task.wait(0.024) -- attacks once every 2 seconds
+                    elseif mode == "Slow Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.01)
+                        task.wait(0.015)
                     elseif mode == "Fast Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
                         task.wait()
@@ -495,9 +495,9 @@ eventTab:AddToggle({
 
 eventTab:AddList({
     text = "Select Attack Mode",
-    values = {"Slowest Attack", "Slow Attack", "Fast Attack", "Faster Attack"},
+    values = {"Snail Attack", "Slow Attack", "Fast Attack", "Faster Attack"},
     flag = "AttackMode",
-    value = "Slowest Attack"
+    value = "Snail Attack"  -- default selection can be "Snail Attack"
 })
 
 --------------------------------------------------
