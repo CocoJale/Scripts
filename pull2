@@ -1,24 +1,24 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
-local Window = OrionLib:MakeWindow({Name = "PAS - HUB", HidePremium = false, SaveConfig = true, ConfigFolder = "PAS-HUB"})
+-- Go show spongebob some love https://v3rmillion.net/member.php?action=profile&uid=485232
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/Zinzo"))()
+local window = library:window("PAS - HUB")
 
--- Create Tabs
-local mainTab = Window:MakeTab({Name = "Main Game", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-local bossTab = Window:MakeTab({Name = "Bosses", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-local worldTab = Window:MakeTab({Name = "Worlds / Secret Worlds", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-local eventTab = Window:MakeTab({Name = "Events", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+-- Create folders (equivalent to your original folders/tabs)
+local mainGame = window:folder("Main Game")
+local bosses = window:folder("Bosses")
+local worlds = window:folder("Worlds / Secret Worlds")
+local events = window:folder("Events")
 
 --------------------------------------------------
 -- MAIN GAME
 --------------------------------------------------
 
-mainTab:AddToggle({
-    Name = "Auto Click",
-    Default = false,
-    Flag = "AutoClick",
-    Callback = function(state)
+mainGame:toggle({
+    name = "Auto Click",
+    flag = "AutoClick",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["AutoClick"] do
+                while library.flags["AutoClick"] do
                     game.ReplicatedStorage.Remotes.Events.ClickEvent:FireServer()
                     task.wait()
                 end
@@ -34,16 +34,15 @@ local eggList = {
     "W31E1","W32E1","W33E1","W34E1","W35E1","Common Egg"
 }
 
-mainTab:AddToggle({
-    Name = "Hatch Nearest",
-    Default = false,
-    Flag = "HatchNearest",
-    Callback = function(state)
+mainGame:toggle({
+    name = "Hatch Nearest",
+    flag = "HatchNearest",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["HatchNearest"] do
+                while library.flags["HatchNearest"] do
                     for _, egg in ipairs(eggList) do
-                        game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(egg, "Buy1")
+                        game.ReplicatedStorage.GameClient.Events.RemoteFunction.BuyEgg:InvokeServer(egg,"Buy1")
                     end
                     task.wait(0.3)
                 end
@@ -52,14 +51,13 @@ mainTab:AddToggle({
     end
 })
 
-mainTab:AddToggle({
-    Name = "Auto Spin Wheel",
-    Default = false,
-    Flag = "AutoSpinWheel",
-    Callback = function(state)
+mainGame:toggle({
+    name = "Auto Spin Wheel",
+    flag = "AutoSpinWheel",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["AutoSpinWheel"] do
+                while library.flags["AutoSpinWheel"] do
                     game:GetService("ReplicatedStorage").GameClient.Events.RemoteEvent.SpaceEggEvent:FireServer()
                     task.wait(5)
                 end
@@ -78,26 +76,21 @@ end
 
 local playerNames = getPlayerNames()
 
-mainTab:AddDropdown({
-    Name = "Select PvP Target",
-    Default = playerNames[1] or "",
-    Options = playerNames,
-    Flag = "PvPTarget",
-    Callback = function(value)
-        -- No special action on dropdown change
-    end
+local pvpDropdown = mainGame:dropdown({
+    name = "Select PvP Target",
+    flag = "PvPTarget",
+    content = playerNames
 })
 
-mainTab:AddToggle({
-    Name = "Auto PvP",
-    Default = false,
-    Flag = "AutoPvP",
-    Callback = function(state)
+mainGame:toggle({
+    name = "Auto PvP",
+    flag = "AutoPvP",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["AutoPvP"] do
+                while library.flags["AutoPvP"] do
                     local r = game.ReplicatedStorage.Remotes.Events
-                    local targetName = OrionLib.Flags["PvPTarget"]
+                    local targetName = library.flags["PvPTarget"]
                     if targetName and targetName ~= "" then
                         r.WinEvent_PVP:FireServer(targetName, true, true)
                     end
@@ -108,18 +101,18 @@ mainTab:AddToggle({
     end
 })
 
-mainTab:AddButton({
-    Name = "Refresh Players",
-    Callback = function()
+mainGame:button({
+    name = "Refresh Players",
+    callback = function()
         playerNames = getPlayerNames()
-        mainTab:SetDropdownOptions("Select PvP Target", playerNames)
+        pvpDropdown:refresh(playerNames)
         print("Player list refreshed")
     end
 })
 
-mainTab:AddButton({
-    Name = "Complete Quests",
-    Callback = function()
+mainGame:button({
+    name = "Complete Quests",
+    callback = function()
         local remotes = game:GetService("ReplicatedStorage").Remotes.Events
 
         remotes.RemoveC:FireServer(1)
@@ -171,14 +164,16 @@ mainTab:AddButton({
     end
 })
 
-mainTab:AddButton({
-    Name = "Antiafk & Antilag",
-    Callback = function()
+mainGame:button({
+    name = "Antiafk & Antilag",
+    callback = function()
+        -- AntiAFK
         game:GetService('Players').LocalPlayer.Idled:Connect(function()
             game:GetService('VirtualUser'):CaptureController()
             game:GetService('VirtualUser'):ClickButton2(Vector2.new())
         end)
 
+        -- Antilag
         local decalsyeeted = true
         local g = game
         local w = g.Workspace
@@ -223,18 +218,17 @@ mainTab:AddButton({
 -- BOSSES
 --------------------------------------------------
 
-bossTab:AddLabel("TP Lab/Ocean = Crystals.")
+bosses:label({name = "TP Lab/Ocean = Crystals."})
 
-bossTab:AddToggle({
-    Name = "Generate Crystals",
-    Default = false,
-    Flag = "GenCrystals",
-    Callback = function(state)
+bosses:toggle({
+    name = "Generate Crystals",
+    flag = "GenCrystals",
+    callback = function(state)
         local r = game.ReplicatedStorage.Remotes.Events
         if state then
             r.RemoveC:FireServer(1)
             task.spawn(function()
-                while OrionLib.Flags["GenCrystals"] do
+                while library.flags["GenCrystals"] do
                     for i = 1, 5 do
                         r.WinMegaBossEvent:FireServer("Dragon6", "Chaos")
                     end
@@ -247,14 +241,13 @@ bossTab:AddToggle({
     end
 })
 
-bossTab:AddToggle({
-    Name = "Spin Crystal Wheels",
-    Default = false,
-    Flag = "SpinWheel",
-    Callback = function(state)
+bosses:toggle({
+    name = "Spin Crystal Wheels",
+    flag = "SpinWheel",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["SpinWheel"] do
+                while library.flags["SpinWheel"] do
                     local r = game.ReplicatedStorage.Remotes.Events
                     r.WorldWheelEvent:FireServer("5")
                     r.SpinWheelSecret:FireServer("-8", "563")
@@ -266,11 +259,10 @@ bossTab:AddToggle({
     end
 })
 
-bossTab:AddToggle({
-    Name = "Kill Title Boss",
-    Default = false,
-    Flag = "KillBoss",
-    Callback = function(state)
+bosses:toggle({
+    name = "Kill Title Boss",
+    flag = "KillBoss",
+    callback = function(state)
         local r = game.ReplicatedStorage.Remotes.Events
         if state then
             r.RemoveC:FireServer(1)
@@ -287,9 +279,9 @@ bossTab:AddToggle({
                 ["Underlord"] = "Boss9",
                 ["The Conquerer"] = "Boss10",
             }
-            local chosen = bossMap[OrionLib.Flags["BossTarget"]] or "Boss1"
+            local chosen = bossMap[library.flags["BossTarget"]] or "Boss1"
             task.spawn(function()
-                while OrionLib.Flags["KillBoss"] do
+                while library.flags["KillBoss"] do
                     r.WinBossEvent:FireServer(chosen)
                     task.wait(0.2)
                 end
@@ -300,64 +292,58 @@ bossTab:AddToggle({
     end
 })
 
-bossTab:AddDropdown({
-    Name = "Select Boss",
-    Default = "The King",
-    Options = {"The King", "Dravenar", "Glacius", "Anubis", "Bossbot", "Lazyfish", "Yokai", "Vort3x", "Underlord", "The Conquerer"},
-    Flag = "BossTarget",
-    Callback = function(value) end
+bosses:dropdown({
+    name = "Select Boss",
+    flag = "BossTarget",
+    content = {"The King", "Dravenar", "Glacius", "Anubis", "Bossbot",
+               "Lazyfish", "Yokai", "Vort3x", "Underlord", "The Conquerer"}
 })
 
 --------------------------------------------------
--- WORLDS/SECRET BOSSES
+-- WORLDS / SECRET BOSSES
 --------------------------------------------------
 
 local worldOptions = {
-    "Castle","Volcano Cave","Glacier Peaks","Desert Island","The Lab", "Ocean",
-    "Temple","Arcade","Underworld","Darkstar","Nyxra Place","Anubis","Viridian","Ultra Prime"
+    "Castle",        "Volcano Cave",  "Glacier Peaks", "Desert Island",
+    "The Lab",       "Ocean",         "Temple",        "Arcade",
+    "Underworld",    "Darkstar",      "Nyxra Place",   "Anubis",
+    "Viridian",      "Ultra Prime"
 }
 
-worldTab:AddDropdown({
-    Name = "Select World",
-    Default = worldOptions[1],
-    Options = worldOptions,
-    Flag = "WorldTarget",
-    Callback = function(value) end
+worlds:dropdown({
+    name = "Select World",
+    flag = "WorldTarget",
+    content = worldOptions
 })
 
-local secretBossOptions = {"Nyxra","RaZar","Viridian","Ultra Prime"}
+local secretBossOptions = {"Nyxra", "RaZar", "Viridian", "Ultra Prime"}
 local difficultyOptions = {"Normal", "Hard", "Chaos"}
 
-worldTab:AddDropdown({
-    Name = "Select Secret Boss",
-    Default = secretBossOptions[1],
-    Options = secretBossOptions,
-    Flag = "SecretBossTarget",
-    Callback = function(value) end
+worlds:dropdown({
+    name = "Select Secret Boss",
+    flag = "SecretBossTarget",
+    content = secretBossOptions
 })
 
-worldTab:AddDropdown({
-    Name = "Difficulty",
-    Default = difficultyOptions[1],
-    Options = difficultyOptions,
-    Flag = "SecretBossDifficulty",
-    Callback = function(value) end
+worlds:dropdown({
+    name = "Difficulty",
+    flag = "SecretBossDifficulty",
+    content = difficultyOptions
 })
 
-worldTab:AddToggle({
-    Name = "Kill Secret Boss",
-    Default = false,
-    Flag = "KillSecretBoss",
-    Callback = function(state)
+worlds:toggle({
+    name = "Kill Secret Boss",
+    flag = "KillSecretBoss",
+    callback = function(state)
         local remotes = game.ReplicatedStorage.Remotes.Events
         if state then
             remotes.RemoveC:FireServer(1)
             task.wait(0.2)
             task.spawn(function()
-                while OrionLib.Flags["KillSecretBoss"] do
+                while library.flags["KillSecretBoss"] do
                     local bossMap = {Nyxra="Dragon-3", RaZar="Dragon-4", Viridian="Dragon-5", ["Ultra Prime"]="Dragon-8"}
-                    local boss = bossMap[OrionLib.Flags["SecretBossTarget"]] or "Dragon-3"
-                    remotes.WinMegaBossEvent:FireServer(boss, OrionLib.Flags["SecretBossDifficulty"])
+                    local boss = bossMap[library.flags["SecretBossTarget"]] or "Dragon-3"
+                    remotes.WinMegaBossEvent:FireServer(boss, library.flags["SecretBossDifficulty"])
                     task.wait(0.2)
                 end
             end)
@@ -371,18 +357,17 @@ worldTab:AddToggle({
 -- EVENTS
 --------------------------------------------------
 
-eventTab:AddToggle({
-    Name = "TP Herald",
-    Default = false,
-    Flag = "TPHerald",
-    Callback = function(state)
+events:toggle({
+    name = "TP Herald",
+    flag = "TPHerald",
+    callback = function(state)
         local r = game.ReplicatedStorage.Remotes.Events.PortalC
         if state then
             r:FireServer("2", true)
             task.spawn(function()
                 local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
                 local pos = Vector3.new(-723, 14, -249)
-                while OrionLib.Flags["TPHerald"] do
+                while library.flags["TPHerald"] do
                     h.CFrame = CFrame.new(pos)
                     task.wait()
                 end
@@ -391,20 +376,21 @@ eventTab:AddToggle({
     end
 })
 
-eventTab:AddToggle({
-    Name = "Craft Event Pets",
-    Default = false,
-    Flag = "CraftEventPets",
-    Callback = function(state)
+events:toggle({
+    name = "Craft Event Pets",
+    flag = "CraftEventPets",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["CraftEventPets"] do
+                while library.flags["CraftEventPets"] do
                     local remotes = game:GetService("ReplicatedStorage").Remotes.Events
                     local argsList = {"602", "603", "604", "605", "606"}
+
                     for _, arg in ipairs(argsList) do
                         remotes.OnCraftingEvent:FireServer(arg)
                         task.wait(0.5)
                     end
+
                     task.wait(5)
                 end
             end)
@@ -412,23 +398,20 @@ eventTab:AddToggle({
     end
 })
 
-eventTab:AddDropdown({
-    Name = "Select Attack Mode",
-    Default = "Snail Attack",
-    Options = {"Snail Attack","Slow Attack","Fast Attack","Faster Attack"},
-    Flag = "AttackMode",
-    Callback = function(value) end
+events:dropdown({
+    name = "Select Attack Mode",
+    flag = "AttackMode",
+    content = {"Snail Attack", "Slow Attack", "Fast Attack", "Faster Attack"}
 })
 
-eventTab:AddToggle({
-    Name = "Attack Herald",
-    Default = false,
-    Flag = "AttackHerald",
-    Callback = function(state)
+events:toggle({
+    name = "Attack Herald",
+    flag = "AttackHerald",
+    callback = function(state)
         if state then
             task.spawn(function()
-                while OrionLib.Flags["AttackHerald"] do
-                    local mode = OrionLib.Flags["AttackMode"]
+                while library.flags["AttackHerald"] do
+                    local mode = library.flags["AttackMode"]
                     if mode == "Snail Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
                         task.wait(2)
@@ -451,4 +434,4 @@ eventTab:AddToggle({
 })
 
 -- Initialize the GUI
-OrionLib:Init()
+library:init()
