@@ -55,6 +55,21 @@ mainGame:AddToggle({
     end
 })
 
+mainGame:AddToggle({
+    text = "Auto Spin Wheel",
+    flag = "AutoSpinWheel",
+    callback = function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AutoSpinWheel"] do
+                    game:GetService("ReplicatedStorage"):WaitForChild("GameClient"):WaitForChild("Events"):WaitForChild("RemoteEvent"):WaitForChild("SpaceEggEvent"):FireServer()
+                    task.wait(5)
+                end
+            end)
+        end
+    end
+})
+
 -- Get current player list (initial)
 local function getPlayerNames()
     local t = {}
