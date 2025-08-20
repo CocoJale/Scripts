@@ -472,9 +472,12 @@ eventTab:AddToggle({
             task.spawn(function()
                 while library.flags["AttackHerald"] do
                     local mode = library.flags["AttackMode"]
+                    if mode == "Slowest Attack" then
+                        game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
+                        task.wait(0.023)
                     if mode == "Slow Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.018)
+                        task.wait(0.01)
                     elseif mode == "Fast Attack" then
                         game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
                         task.wait()
@@ -492,9 +495,9 @@ eventTab:AddToggle({
 
 eventTab:AddList({
     text = "Select Attack Mode",
-    values = {"Slow Attack", "Fast Attack", "Faster Attack"},
+    values = {"Slowest Attack", "Slow Attack", "Fast Attack", "Faster Attack"},
     flag = "AttackMode",
-    value = "Slow Attack"
+    value = "Slowest Attack"
 })
 
 --------------------------------------------------
