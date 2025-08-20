@@ -9,8 +9,6 @@ local bossTab    = mainWindow:folder("Bosses")
 local worldTab   = mainWindow:folder("Worlds/Secret Worlds")
 local eventTab   = mainWindow:folder("Events")
 
--- Label substitute
-mainWindow:button({name = "Creator = Mystery...", callback = function() end})
 
 --------------------------------------------------
 -- MAIN GAME
