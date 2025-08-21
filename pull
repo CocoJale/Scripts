@@ -5,12 +5,11 @@ local Players = game:GetService("Players")
 local tab = library:CreateWindow("Utilities")
 local folder = tab:AddFolder("Part Control")
 
--- Variables
 local bringDistance = 50
 local bringEnabled = false
-local bringLoop -- loop connection for bring and noclip
+local bringLoop
 
--- Textbox to define bring distance
+-- Textbox to input bring distance
 folder:AddBox({
     text = "Bring Distance",
     flag = "bring_distance",
@@ -23,27 +22,25 @@ folder:AddBox({
     end
 })
 
--- Function to teleport and anchor all "Handle" parts (except your own) 8 studs in front of player
+-- Function to teleport and anchor all "Handle" parts except those of the local player
 local function bringHandles()
     local player = Players.LocalPlayer
     local char = player.Character
-    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not char then return end
+
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
     local ownHandles = {}
-    -- Cache own handles to exclude from teleport
-    if char then
-        for _, part in ipairs(char:GetDescendants()) do
-            if part:IsA("BasePart") and part.Name == "Handle" then
-                ownHandles[part] = true
-            end
+    for _, part in ipairs(char:GetDescendants()) do
+        if part:IsA("BasePart") and part.Name == "Handle" then
+            ownHandles[part] = true
         end
     end
 
-    if not root then return end
-    
     for _, part in ipairs(workspace:GetDescendants()) do
         if part:IsA("BasePart") and part.Name == "Handle" and not ownHandles[part] then
             if (part.Position - root.Position).Magnitude <= bringDistance then
-                -- Move part 8 studs in front of player and anchor it
                 local offset = root.CFrame.LookVector * 8
                 part.CFrame = CFrame.new(root.Position + offset)
                 part.Anchored = true
@@ -52,7 +49,7 @@ local function bringHandles()
     end
 end
 
--- Noclip function: Make player character parts non-collidable continuously
+-- Noclip for local player, making all parts non-collidable every frame
 local function noclip()
     local player = Players.LocalPlayer
     local char = player.Character
@@ -65,7 +62,6 @@ local function noclip()
     end
 end
 
--- Toggle to enable/disable bring + noclip loop
 folder:AddToggle({
     text = "Bring nearest Handle and Noclip",
     flag = "bring_toggle",
@@ -83,7 +79,6 @@ folder:AddToggle({
                 bringLoop:Disconnect()
                 bringLoop = nil
             end
-            -- Optionally unanchor parts and reset CanCollide here if needed
         end
     end
 })
