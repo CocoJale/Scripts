@@ -68,7 +68,7 @@ mainGame:AddToggle({
             task.spawn(function()
                 while library.flags["AutoSpinWheel"] do
                     game:GetService("ReplicatedStorage").GameClient.Events.RemoteEvent.SpaceEggEvent:FireServer()
-                    task.wait(5)
+                    task.wait(20)
                 end
             end)
         end
@@ -130,15 +130,21 @@ mainGame:AddButton({
         local remotes = game:GetService("ReplicatedStorage").Remotes.Events
 
         remotes.RemoveC:FireServer(1)
-        task.wait(1)
+        task.wait()
         remotes.WorldWheelEvent:FireServer("5")
         remotes.OnStandartShopRequest:FireServer("Buy", 2, 3)
         remotes.OnStandartShopRequest:FireServer("Buy", 2, 1)
-        task.wait(2)
+        task.wait()
+        remotes.PortalC:FireServer("1", true)
+        task.wait(1)
+        remotes.PortalC:FireServer("2", true)
+        task.wait(1)
+        remotes.PortalC:FireServer("1", true)
+        task.wait(1)
+        remotes.PortalC:FireServer("2", true)
+        task.wait(1)
         remotes.PortalC:FireServer("1", true)
         task.wait(2)
-        remotes.PortalC:FireServer("2", true)
-        task.wait(3)
         for i = 1, 10 do
             remotes.WinEvent:FireServer("5")
             task.wait(2)
@@ -146,7 +152,7 @@ mainGame:AddButton({
         task.wait(2)
         for i = 1, 20 do
             remotes.WinBossEvent:FireServer("Boss1")
-            task.wait(0.1)
+            task.wait()
         end
         remotes.RemoveC:FireServer(0)
 
