@@ -1,13 +1,16 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/library",true))()
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+
 local tab = library:CreateWindow("Utilities")
 local folder = tab:AddFolder("Part Control")
 
 -- Variables
 local bringDistance = 50
 local bringEnabled = false
-local bringLoop -- for repeating action
+local bringLoop -- loop connection for bring and noclip
 
--- Textbox for distance input
+-- Textbox to define bring distance
 folder:AddBox({
     text = "Bring Distance",
     flag = "bring_distance",
@@ -20,42 +23,67 @@ folder:AddBox({
     end
 })
 
--- Bring parts function: teleports every "Handle" within bringDistance in front of the player
+-- Function to teleport and anchor all "Handle" parts (except your own) 8 studs in front of player
 local function bringHandles()
-    local player = game:GetService("Players").LocalPlayer
+    local player = Players.LocalPlayer
     local char = player.Character
     local root = char and char:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    local ownHandles = {}
+    -- Cache own handles to exclude from teleport
+    if char then
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") and part.Name == "Handle" then
+                ownHandles[part] = true
+            end
+        end
+    end
 
+    if not root then return end
+    
     for _, part in ipairs(workspace:GetDescendants()) do
-        if part:IsA("BasePart") and part.Name == "Handle" then
+        if part:IsA("BasePart") and part.Name == "Handle" and not ownHandles[part] then
             if (part.Position - root.Position).Magnitude <= bringDistance then
-                local offset = root.CFrame.LookVector * 5
+                -- Move part 8 studs in front of player and anchor it
+                local offset = root.CFrame.LookVector * 8
                 part.CFrame = CFrame.new(root.Position + offset)
+                part.Anchored = true
             end
         end
     end
 end
 
--- Toggle for enabling/disabling bring loop
+-- Noclip function: Make player character parts non-collidable continuously
+local function noclip()
+    local player = Players.LocalPlayer
+    local char = player.Character
+    if not char then return end
+
+    for _, part in ipairs(char:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+end
+
+-- Toggle to enable/disable bring + noclip loop
 folder:AddToggle({
-    text = "Bring nearest Handle",
+    text = "Bring nearest Handle and Noclip",
     flag = "bring_toggle",
     state = false,
     callback = function(state)
         bringEnabled = state
         if bringEnabled then
-            -- Start the bring loop
-            bringLoop = game:GetService("RunService").RenderStepped:Connect(function()
+            bringLoop = RunService.RenderStepped:Connect(function()
                 bringHandles()
+                noclip()
                 wait(0.1)
             end)
         else
-            -- Stop the loop if running
             if bringLoop then
                 bringLoop:Disconnect()
                 bringLoop = nil
             end
+            -- Optionally unanchor parts and reset CanCollide here if needed
         end
     end
 })
