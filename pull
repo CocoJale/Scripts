@@ -150,9 +150,9 @@ mainGame:AddButton({
             task.wait(2)
         end
         task.wait(2)
-        for i = 1, 20 do
+        for i = 1, 25 do
             remotes.WinBossEvent:FireServer("Boss1")
-            task.wait()
+            task.wait(0.1)
         end
         remotes.RemoveC:FireServer(0)
 
