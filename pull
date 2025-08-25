@@ -15,8 +15,8 @@ mainTab:AddLabel({ text = "Creator = Not me", type = "label" })
 --------------------------------------------------
 -- HERALD EVENT WINDOW
 --------------------------------------------------
-local heraldWindow = library:CreateWindow("Herald Event")
-local eventTab     = heraldWindow:AddFolder("Events")
+local heraldWindow = library:CreateWindow("Underworld Event")
+local eventTab     = heraldWindow:AddFolder("Event")
 
 --------------------------------------------------
 -- MAIN GAME
@@ -375,38 +375,19 @@ worldTab:AddList({
     value=difficultyOptions[1]
 })
 
---------------------------------------------------
--- HERALD EVENTS (only Snail Attack + Fast Attack)
---------------------------------------------------
 eventTab:AddToggle({
-    text="TP Herald",
-    flag="TPHerald",
+    text="TP Commander",
+    flag="TPCommander",
     callback=function(state)
-        local r=game.ReplicatedStorage.Remotes.Events.PortalC
+        local r = game.ReplicatedStorage.Remotes.Events.PortalC
         if state then
-            r:FireServer("2",true)
+            r:FireServer("-234", false)
             task.spawn(function()
-                local h=(game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-                local pos=Vector3.new(-723,14,-249)
-                while library.flags["TPHerald"] do h.CFrame=CFrame.new(pos) task.wait() end
-            end)
-        end
-    end
-})
-
-eventTab:AddToggle({
-    text="Craft Event Pets",
-    flag="CraftEventPets",
-    callback=function(state)
-        if state then
-            task.spawn(function()
-                while library.flags["CraftEventPets"] do
-                    local remotes=game.ReplicatedStorage.Remotes.Events
-                    for _,v in ipairs({"602","603","604","605","606"}) do
-                        remotes.OnCraftingEvent:FireServer(v)
-                        task.wait(0.5)
-                    end
-                    task.wait(5)
+                local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+                local pos = Vector3.new(4804, 537.6, -1793)
+                while library.flags["TPCommander"] do
+                    h.CFrame = CFrame.new(pos)
+                    task.wait()
                 end
             end)
         end
@@ -414,32 +395,44 @@ eventTab:AddToggle({
 })
 
 eventTab:AddToggle({
-    text="Attack Herald",
-    flag="AttackHerald",
+    text="TP Skelly",
+    flag="TPSkelly",
     callback=function(state)
+        local r = game.ReplicatedStorage.Remotes.Events.PortalC
         if state then
+            r:FireServer("-234", false)
             task.spawn(function()
-                while library.flags["AttackHerald"] do
-                    local mode=library.flags["AttackMode"]
-                    if mode=="Slow Attack" then
-                        game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer()
-                        task.wait(0.02)
-                    elseif mode=="Fast Attack" then
-                        for i=1,2 do game.ReplicatedStorage.Remotes.Herald.AttackTheDummy:FireServer() end
-                        task.wait()
-                    end
+                local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+                local pos = Vector3.new(4804, 537.6, -1793)
+                while library.flags["TPSkelly"] do
+                    h.CFrame = CFrame.new(pos)
+                    task.wait()
                 end
             end)
         end
     end
 })
 
-eventTab:AddList({
-    text="Select Attack Mode",
-    values={"Slow Attack","Fast Attack"},
-    flag="AttackMode",
-    value="Slow Attack"
+
+eventTab:AddToggle({
+    text="Attack Aura",
+    flag="AttackAura",
+    callback=function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AttackAura"] do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("OnAttackMob")
+                        :FireServer()
+                    task.wait()
+                end
+            end)
+        end
+    end
 })
+
 
 --------------------------------------------------
 -- INIT WINDOWS
