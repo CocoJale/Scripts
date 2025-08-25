@@ -1,55 +1,38 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/library",true))()
-local tab = library:CreateWindow("Utilities")
-local folder = tab:AddFolder("Enemy Control")
-
--- Default bring distance
-local bringDistance = 50
-local bringEnabled = false
-
--- TextBox for distance
-folder:AddBox({
-    text = "Bring Distance",
-    flag = "bring_distance",
-    value = tostring(bringDistance),
-    callback = function(val)
-        local num = tonumber(val)
-        if num then
-            bringDistance = num
-        end
-    end
-})
-
--- Teleport all enemy characters within bringDistance in front of the player
-local function bringEnemies()
-    local localPlayer = game:GetService("Players").LocalPlayer
-    local myChar = localPlayer.Character
-    local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-    if not myRoot then return end
-
-    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-        if player ~= localPlayer then
-            local char = player.Character
-            local root = char and char:FindFirstChild("HumanoidRootPart")
-            if root and (root.Position - myRoot.Position).Magnitude <= bringDistance then
-                -- 5 studs in front of the LOCAL player
-                local offset = myRoot.CFrame.LookVector * 5
-                root.CFrame = CFrame.new(myRoot.Position + offset)
+local Players=game:GetService("Players")
+local localPlayer=Players.LocalPlayer
+local function findNearestUpperTorso1WithinRadius(radius)
+    local character=localPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
+    local hrp=character.HumanoidRootPart
+    local closestPart=nil
+    local shortestDistance=math.huge
+    for _,obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") and obj.Name=="UpperTorso1" then
+            local playerForChar=Players:GetPlayerFromCharacter(obj.Parent)
+            if not playerForChar then
+                local distance=(obj.Position-hrp.Position).Magnitude
+                if distance<shortestDistance and distance<=radius then
+                    shortestDistance=distance
+                    closestPart=obj
+                end
             end
         end
     end
+    return closestPart
 end
-
--- Toggle for enabling/disabling bring
-folder:AddToggle({
-    text = "Bring nearest enemy",
-    flag = "bring_enemy_toggle",
-    state = false,
-    callback = function(state)
-        bringEnabled = state
-        if bringEnabled then
-            bringEnemies()
+local function teleportLoop()
+    while true do
+        local targetPart=findNearestUpperTorso1WithinRadius(100)
+        if targetPart then
+            local character=localPlayer.Character
+            local hrp=character and character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame=CFrame.new(targetPart.Position+Vector3.new(0,3,0))
+            end
+        else
+            warn("No 'UpperTorso1' part found within 100 studs.")
         end
+        task.wait(1)
     end
-})
-
-library:Init()
+end
+task.spawn(teleportLoop)
