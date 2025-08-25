@@ -467,7 +467,7 @@ local dropdown = eventTab:AddList({
 })
 
 eventTab:AddToggle({
-    text = "TP to Skeleton",
+    text = "Enable Teleport",
     flag = "EnableTeleport",
     callback = function(state)
         unfreezePlayer()
