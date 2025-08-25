@@ -396,48 +396,47 @@ eventTab:AddToggle({
 
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
-
 local teleporting = false
 
-local function findNearestUpperTorso1WithinRadius(radius)
+local function findNearestUpperTorso1(radius)
     local character = localPlayer.Character
-    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
-    local hrp = character.HumanoidRootPart
-    local closestPart = nil
+    if not character then return nil end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+    
+    local closest
     local shortestDistance = math.huge
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") and obj.Name == "UpperTorso1" then
-            local playerForChar = Players:GetPlayerFromCharacter(obj.Parent)
-            if not playerForChar then
-                local distance = (obj.Position - hrp.Position).Magnitude
-                if distance < shortestDistance and distance <= radius then
-                    shortestDistance = distance
-                    closestPart = obj
+    
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Name == "UpperTorso1" then
+            if not Players:GetPlayerFromCharacter(part.Parent) then
+                local dist = (part.Position - hrp.Position).Magnitude
+                if dist < shortestDistance and dist <= radius then
+                    shortestDistance = dist
+                    closest = part
                 end
             end
         end
     end
-    return closestPart
+    
+    return closest, hrp
 end
 
 local function teleportLoop()
     teleporting = true
     while teleporting do
-        local targetPart = findNearestUpperTorso1WithinRadius(100)
-        if targetPart then
-            local character = localPlayer.Character
-            local hrp = character and character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 0, 0))
-            end
+        local targetPart, hrp = findNearestUpperTorso1(200)
+        if targetPart and hrp then
+            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 0, 0))
         end
-        task.wait(0.1)
+        task.wait(0.2)
     end
 end
 
 local function teleportCommander()
     local character = localPlayer.Character
-    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+    if not character then return end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
     if hrp then
         hrp.CFrame = CFrame.new(4758, 538, -1768)
     end
@@ -452,7 +451,7 @@ eventTab:AddToggle({
             if library.flags["TeleportTarget"] == "Skeletons" then
                 task.spawn(teleportLoop)
             elseif library.flags["TeleportTarget"] == "Commander Skeleton" then
-                teleportCommander()
+                teleportCommander() -- instant teleport
             end
         end
     end,
@@ -469,11 +468,13 @@ local dropdown = eventTab:AddList({
             if value == "Skeletons" then
                 task.spawn(teleportLoop)
             elseif value == "Commander Skeleton" then
-                teleportCommander()
+                teleportCommander() -- instant teleport
             end
         end
     end,
 })
+
+
 
 
 --------------------------------------------------
