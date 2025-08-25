@@ -402,15 +402,24 @@ local function findNearestUpperTorso1WithinRadius(radius)
     return closestPart
 end
 
-local function freezePlayerAbove(part)
+local function freezePlayerAboveDynamic()
     local character = localPlayer.Character
     local hrp = character and character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
+    if freezeConnection then
+        freezeConnection:Disconnect()
+        freezeConnection = nil
+    end
+
     freezeConnection = game:GetService("RunService").Heartbeat:Connect(function()
-        hrp.CFrame = CFrame.new(part.Position + Vector3.new(0, 6, 0))
-        hrp.Velocity = Vector3.new(0, 0, 0)
-        hrp.RotVelocity = Vector3.new(0, 0, 0)
+        if not teleporting then return end
+        local targetPart = findNearestUpperTorso1WithinRadius(100)
+        if targetPart and hrp then
+            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 10, 0))
+            hrp.Velocity = Vector3.new(0, 0, 0)
+            hrp.RotVelocity = Vector3.new(0, 0, 0)
+        end
     end)
 end
 
@@ -423,17 +432,9 @@ end
 
 local function teleportInstantLoop()
     teleporting = true
-    while teleporting and library.flags["TeleportTarget"] == "Skeletons" do
-        local targetPart = findNearestUpperTorso1WithinRadius(100)
-        if targetPart then
-            local character = localPlayer.Character
-            local hrp = character and character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 6, 0))
-                freezePlayerAbove(targetPart)
-            end
-        end
-        task.wait(1)
+    freezePlayerAboveDynamic()
+    while teleporting do
+        task.wait() -- just yields; position updating handled by freezePlayerAboveDynamic
     end
     unfreezePlayer()
 end
@@ -454,8 +455,8 @@ local dropdown = eventTab:AddList({
     value = "Skeletons",
     callback = function(value)
         unfreezePlayer()
+        teleporting = false
         if library.flags["EnableTeleport"] then
-            teleporting = false
             if value == "Skeletons" then
                 task.spawn(teleportInstantLoop)
             elseif value == "Commander Skeleton" then
