@@ -384,7 +384,7 @@ eventTab:AddToggle({
             r:FireServer("-234", false)
             task.spawn(function()
                 local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-                local pos = Vector3.new(4804, 537.6, -1793)
+                local pos = Vector3.new(4758, 538, -1768)
                 while library.flags["TPCommander"] do
                     h.CFrame = CFrame.new(pos)
                     task.wait()
