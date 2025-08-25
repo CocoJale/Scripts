@@ -375,11 +375,29 @@ worldTab:AddList({
     value=difficultyOptions[1]
 })
 
+eventTab:AddToggle({
+    text="Attack Aura",
+    flag="AttackAura",
+    callback=function(state)
+        if state then
+            task.spawn(function()
+                while library.flags["AttackAura"] do
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Remotes")
+                        :WaitForChild("Events")
+                        :WaitForChild("OnAttackMob")
+                        :FireServer()
+                    task.wait()
+                end
+            end)
+        end
+    end
+})
+
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
 local teleporting = false
-local freezeConnection
 
 local function findNearestUpperTorso1WithinRadius(radius)
     local character = localPlayer.Character
@@ -402,45 +420,22 @@ local function findNearestUpperTorso1WithinRadius(radius)
     return closestPart
 end
 
-local function freezePlayerAboveDynamic()
-    local character = localPlayer.Character
-    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    if freezeConnection then
-        freezeConnection:Disconnect()
-        freezeConnection = nil
-    end
-
-    freezeConnection = game:GetService("RunService").Heartbeat:Connect(function()
-        if not teleporting then return end
-        local targetPart = findNearestUpperTorso1WithinRadius(100)
-        if targetPart and hrp then
-            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 10, 0))
-            hrp.Velocity = Vector3.new(0, 0, 0)
-            hrp.RotVelocity = Vector3.new(0, 0, 0)
-        end
-    end)
-end
-
-local function unfreezePlayer()
-    if freezeConnection then
-        freezeConnection:Disconnect()
-        freezeConnection = nil
-    end
-end
-
-local function teleportInstantLoop()
+local function teleportLoop()
     teleporting = true
-    freezePlayerAboveDynamic()
     while teleporting do
-        task.wait(1) -- just yields; position updating handled by freezePlayerAboveDynamic
+        local targetPart = findNearestUpperTorso1WithinRadius(100)
+        if targetPart then
+            local character = localPlayer.Character
+            local hrp = character and character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, -2, 0))
+            end
+        end
+        task.wait(0.1)
     end
-    unfreezePlayer()
 end
 
 local function teleportCommander()
-    unfreezePlayer()
     local character = localPlayer.Character
     local hrp = character and character:FindFirstChild("HumanoidRootPart")
     if hrp then
@@ -448,33 +443,14 @@ local function teleportCommander()
     end
 end
 
-local dropdown = eventTab:AddList({
-    text = "Select Target",
-    values = {"Skeletons", "Commander Skeleton"},
-    flag = "TeleportTarget",
-    value = "Skeletons",
-    callback = function(value)
-        unfreezePlayer()
-        teleporting = false
-        if library.flags["EnableTeleport"] then
-            if value == "Skeletons" then
-                task.spawn(teleportInstantLoop)
-            elseif value == "Commander Skeleton" then
-                teleportCommander()
-            end
-        end
-    end,
-})
-
 eventTab:AddToggle({
     text = "Enable Teleport",
     flag = "EnableTeleport",
     callback = function(state)
-        unfreezePlayer()
         teleporting = false
         if state then
             if library.flags["TeleportTarget"] == "Skeletons" then
-                task.spawn(teleportInstantLoop)
+                task.spawn(teleportLoop)
             elseif library.flags["TeleportTarget"] == "Commander Skeleton" then
                 teleportCommander()
             end
@@ -482,23 +458,21 @@ eventTab:AddToggle({
     end,
 })
 
-eventTab:AddToggle({
-    text="Attack Aura",
-    flag="AttackAura",
-    callback=function(state)
-        if state then
-            task.spawn(function()
-                while library.flags["AttackAura"] do
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Remotes")
-                        :WaitForChild("Events")
-                        :WaitForChild("OnAttackMob")
-                        :FireServer()
-                    task.wait()
-                end
-            end)
+local dropdown = eventTab:AddList({
+    text = "Select Target",
+    values = {"Skeletons", "Commander Skeleton"},
+    flag = "TeleportTarget",
+    value = "Skeletons",
+    callback = function(value)
+        teleporting = false
+        if library.flags["EnableTeleport"] then
+            if value == "Skeletons" then
+                task.spawn(teleportLoop)
+            elseif value == "Commander Skeleton" then
+                teleportCommander()
+            end
         end
-    end
+    end,
 })
 
 
