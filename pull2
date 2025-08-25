@@ -376,7 +376,7 @@ worldTab:AddList({
 })
 
 eventTab:AddToggle({
-    text="Attack Aura",
+    text="Attack Aura.",
     flag="AttackAura",
     callback=function(state)
         if state then
@@ -395,15 +395,14 @@ eventTab:AddToggle({
 })
 
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
 local localPlayer = Players.LocalPlayer
 local teleporting = false
+local teleportInterval = 0.3 -- Delay in seconds between updates to reduce lag
+local thresholdDistance = 0.5 -- Minimum distance to update teleport position
 
-local function findNearestUpperTorso1(radius)
-    local character = localPlayer.Character
-    if not character then return nil end
-    local hrp = character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return nil end
-    
+local function findNearestUpperTorso1(radius, hrp)
     local closest
     local shortestDistance = math.huge
     
@@ -419,18 +418,46 @@ local function findNearestUpperTorso1(radius)
         end
     end
     
-    return closest, hrp
+    return closest
 end
 
 local function teleportLoop()
     teleporting = true
-    while teleporting do
-        local targetPart, hrp = findNearestUpperTorso1(200)
-        if targetPart and hrp then
-            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 0, 0))
+    local character = localPlayer.Character
+    if not character then return end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    -- Anchor HumanoidRootPart to prevent physics glitches during teleport
+    local anchoredPrev = hrp.Anchored
+    hrp.Anchored = true
+    
+    local nextTeleportTime = 0
+    RunService.Heartbeat:Connect(function()
+        if not teleporting then return end
+        local currentTime = tick()
+        if currentTime < nextTeleportTime then return end
+        nextTeleportTime = currentTime + teleportInterval
+        
+        local targetPart = findNearestUpperTorso1(200, hrp)
+        if targetPart then
+            local targetPos = targetPart.Position + Vector3.new(0, 0, 0)
+            local dist = (hrp.Position - targetPos).Magnitude
+            if dist > thresholdDistance then
+                hrp.CFrame = CFrame.new(targetPos)
+                hrp.Velocity = Vector3.new(0, 0, 0)
+                hrp.RotVelocity = Vector3.new(0, 0, 0)
+            end
         end
-        task.wait(0.2)
-    end
+    end)
+    
+    -- Unanchor when teleporting ends
+    task.spawn(function()
+        while teleporting do
+            task.wait()
+        end
+        hrp.Anchored = anchoredPrev
+    end)
 end
 
 local function teleportCommander()
@@ -442,6 +469,7 @@ local function teleportCommander()
     end
 end
 
+-- UI Hooks
 eventTab:AddToggle({
     text = "Enable Teleport",
     flag = "EnableTeleport",
@@ -449,15 +477,15 @@ eventTab:AddToggle({
         teleporting = false
         if state then
             if library.flags["TeleportTarget"] == "Skeletons" then
-                task.spawn(teleportLoop)
+                teleportLoop()
             elseif library.flags["TeleportTarget"] == "Commander Skeleton" then
-                teleportCommander() -- instant teleport
+                teleportCommander()
             end
         end
     end,
 })
 
-local dropdown = eventTab:AddList({
+eventTab:AddList({
     text = "Select Target",
     values = {"Skeletons", "Commander Skeleton"},
     flag = "TeleportTarget",
@@ -466,16 +494,13 @@ local dropdown = eventTab:AddList({
         teleporting = false
         if library.flags["EnableTeleport"] then
             if value == "Skeletons" then
-                task.spawn(teleportLoop)
+                teleportLoop()
             elseif value == "Commander Skeleton" then
-                teleportCommander() -- instant teleport
+                teleportCommander()
             end
         end
     end,
 })
-
-
-
 
 --------------------------------------------------
 -- INIT WINDOWS
