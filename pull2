@@ -376,7 +376,7 @@ worldTab:AddList({
 })
 
 eventTab:AddToggle({
-    text="Attack Aura.",
+    text="Attack Aura",
     flag="AttackAura",
     callback=function(state)
         if state then
