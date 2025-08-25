@@ -408,7 +408,7 @@ local function freezePlayerAbove(part)
     if not hrp then return end
 
     freezeConnection = game:GetService("RunService").Heartbeat:Connect(function()
-        hrp.CFrame = CFrame.new(part.Position + Vector3.new(0, 10, 0))
+        hrp.CFrame = CFrame.new(part.Position + Vector3.new(0, 6, 0))
         hrp.Velocity = Vector3.new(0, 0, 0)
         hrp.RotVelocity = Vector3.new(0, 0, 0)
     end)
@@ -429,11 +429,11 @@ local function teleportInstantLoop()
             local character = localPlayer.Character
             local hrp = character and character:FindFirstChild("HumanoidRootPart")
             if hrp then
-                hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 10, 0))
+                hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 6, 0))
                 freezePlayerAbove(targetPart)
             end
         end
-        task.wait() -- no delay: yield so loop doesn't freeze
+        task.wait(1)
     end
     unfreezePlayer()
 end
