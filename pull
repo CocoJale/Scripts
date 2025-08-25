@@ -144,6 +144,8 @@ mainGame:AddButton({
         remotes.PortalC:FireServer("2", true)
         task.wait(1)
         remotes.PortalC:FireServer("1", true)
+        task.wait(1)
+        remotes.PortalC:FireServer("2", true)
         task.wait(2)
         for i = 1, 10 do
             remotes.WinEvent:FireServer("5")
