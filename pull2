@@ -396,11 +396,10 @@ eventTab:AddToggle({
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
 
 local localPlayer = Players.LocalPlayer
 local teleporting = false
-local teleportInterval = 0.3 -- Delay between updates
+local teleportInterval = 0.5 -- Delay between updates
 local thresholdDistance = 10 -- Minimum distance to update teleport position
 
 local function findNearestUpperTorso1(radius, hrp)
@@ -420,17 +419,6 @@ local function findNearestUpperTorso1(radius, hrp)
     end
     
     return closest
-end
-
-local function tweenTeleport(hrp, targetCFrame, time)
-    local tweenInfo = TweenInfo.new(
-        time,
-        Enum.EasingStyle.Linear,
-        Enum.EasingDirection.Out
-    )
-    local tween = TweenService:Create(hrp, tweenInfo, {CFrame = targetCFrame})
-    tween:Play()
-    tween.Completed:Wait()
 end
 
 local function teleportLoop()
@@ -454,10 +442,12 @@ local function teleportLoop()
             local targetPart = findNearestUpperTorso1(100, hrp)
             
             if targetPart then
-                local targetPos = targetPart.Position + Vector3.new(0, 0, 0)
+                local targetPos = targetPart.Position + Vector3.new(0, 1, 0)
                 local dist = (hrp.Position - targetPos).Magnitude
                 if dist > thresholdDistance then
-                    tweenTeleport(hrp, CFrame.new(targetPos), 0.05)
+                    hrp.CFrame = CFrame.new(targetPos)
+                    hrp.Velocity = Vector3.new()
+                    hrp.RotVelocity = Vector3.new()
                 end
             end
         end
@@ -469,7 +459,9 @@ local function teleportCommander()
     if not character then return end
     local hrp = character:FindFirstChild("HumanoidRootPart")
     if hrp then
-        tweenTeleport(hrp, CFrame.new(4758, 538, -1768), 0.05)
+        hrp.CFrame = CFrame.new(4758, 538, -1768)
+        hrp.Velocity = Vector3.new()
+        hrp.RotVelocity = Vector3.new()
     end
 end
 
@@ -504,6 +496,7 @@ eventTab:AddList({
         end
     end,
 })
+
 
 --------------------------------------------------
 -- INIT WINDOWS
