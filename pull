@@ -405,15 +405,18 @@ eventTab:AddToggle({
                 local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
                 local pos1 = Vector3.new(4807, 538, -1800)
                 local pos2 = Vector3.new(4804, 538, -1804)
+                local pos3 = Vector3.new(4758, 538, -1768)
                 local toggle = true
                 while library.flags["TPSkelly"] do
                     if toggle then
                         h.CFrame = CFrame.new(pos1)
                     else
                         h.CFrame = CFrame.new(pos2)
+                    else
+                        h.CFrame = CFrame.new(pos3)
                     end
                     toggle = not toggle
-                    task.wait(0.6)
+                    task.wait(0.5)
                 end
             end)
         end
