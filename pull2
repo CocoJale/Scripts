@@ -431,7 +431,7 @@ local function teleportLoop()
                 hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 0, 0))
             end
         end
-        task.wait()
+        task.wait(0.1)
     end
 end
 
