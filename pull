@@ -395,7 +395,7 @@ eventTab:AddToggle({
 })
 
 eventTab:AddToggle({
-    text="TP Skellyy",
+    text="TP Skelly",
     flag="TPSkelly",
     callback=function(state)
         local r = game.ReplicatedStorage.Remotes.Events.PortalC
@@ -403,25 +403,25 @@ eventTab:AddToggle({
             r:FireServer("-234", false)
             task.spawn(function()
                 local h = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
-                local pos1 = Vector3.new(4807, 538, -1800)
-                local pos2 = Vector3.new(4804, 538, -1804)
-                local pos3 = Vector3.new(4758, 538, -1768)
-                local toggle = true
+                local positions = {
+                    Vector3.new(4807, 538, -1800),
+                    Vector3.new(4804, 538, -1804),
+                    Vector3.new(4758, 538, -1768),
+                }
+                local index = 1
                 while library.flags["TPSkelly"] do
-                    if toggle then
-                        h.CFrame = CFrame.new(pos1)
-                    else
-                        h.CFrame = CFrame.new(pos2)
-                    else
-                        h.CFrame = CFrame.new(pos3)
+                    h.CFrame = CFrame.new(positions[index])
+                    index = index + 1
+                    if index > #positions then
+                        index = 1
                     end
-                    toggle = not toggle
-                    task.wait(0.5)
+                    task.wait(1)
                 end
             end)
         end
     end
 })
+
 
 
 
