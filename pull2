@@ -414,9 +414,9 @@ local function freezePlayerAboveDynamic()
 
     freezeConnection = game:GetService("RunService").Heartbeat:Connect(function()
         if not teleporting then return end
-        local targetPart = findNearestUpperTorso1WithinRadius(100)
+        local targetPart = findNearestUpperTorso1WithinRadius(300)
         if targetPart and hrp then
-            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 10, 0))
+            hrp.CFrame = CFrame.new(targetPart.Position + Vector3.new(0, 4, 0))
             hrp.Velocity = Vector3.new(0, 0, 0)
             hrp.RotVelocity = Vector3.new(0, 0, 0)
         end
@@ -434,7 +434,7 @@ local function teleportInstantLoop()
     teleporting = true
     freezePlayerAboveDynamic()
     while teleporting do
-        task.wait() -- just yields; position updating handled by freezePlayerAboveDynamic
+        task.wait(1
     end
     unfreezePlayer()
 end
